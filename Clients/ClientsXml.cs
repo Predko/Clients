@@ -79,7 +79,7 @@ namespace Clients
 
 
         // Load filename(xml) to XDocument and fill CollectionClients and CollectionContracts (foreach(Element))
-        public bool LoadXml(string filename, ref List<Client> clients, ref List<Contract> contracts)
+        public bool LoadXml(string filename, ref List<Client> clients)
         {
             _load_Ok = true;
             try
@@ -93,7 +93,7 @@ namespace Clients
                 return _load_Ok;
             }
 
-            XmlToClientsAndContracts(ref clients, ref contracts);
+            XmlToClientsAndContracts(ref clients);
 
 
             return _load_Ok;
@@ -119,11 +119,10 @@ namespace Clients
 
 
         // Fill List clients and List contracts (foreach(Element))
-        public void XmlToClientsAndContracts(ref List<Client> clients, ref List<Contract> contracts)
+        public void XmlToClientsAndContracts(ref List<Client> clients)
         {
             clients.Clear();
-            contracts.Clear();
-
+ 
             #region CultureInfo
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
 
@@ -140,7 +139,7 @@ namespace Clients
                 int id = int.Parse(xe.Element("Id").Value);
                 string name = xe.Element("Name").Value;
 
-                clients.Add(new Client(name, id));
+                Client client = new Client(name, id);
 
                 foreach (XElement element in xe.Element("Contracts").Elements())
                 {
@@ -149,16 +148,16 @@ namespace Clients
 
                     double number = double.Parse(element.Element("Number").Value);
 
-                    contracts.Add(new Contract(id, dt, number, summ));
+                    client.contracts.Add(new Contract(id, dt, number, summ));
                 }
+                clients.Add(client);
             }
         }
 
         // Fill List clients and List contracts (foreach(Element))
-        public void XmlToClientsAndContracts(ref BindingList<Client> clients, ref BindingList<Contract> contracts)
+        public void XmlToClientsAndContracts(ref BindingList<Client> clients)
         {
             clients.Clear();
-            contracts.Clear();
 
             #region CultureInfo
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
@@ -176,7 +175,7 @@ namespace Clients
                 int id = int.Parse(xe.Element("Id").Value);
                 string name = xe.Element("Name").Value;
 
-                clients.Add(new Client(name, id));
+                Client client = new Client(name, id);
 
                 foreach (XElement element in xe.Element("Contracts").Elements())
                 {
@@ -185,8 +184,9 @@ namespace Clients
 
                     double number = double.Parse(element.Element("Number").Value);
 
-                    contracts.Add(new Contract(id, dt, number, summ));
+                    client.contracts.Add(new Contract(id, dt, number, summ));
                 }
+                clients.Add(client);
             }
         }
 

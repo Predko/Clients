@@ -17,8 +17,8 @@ namespace Clients
     public partial class Clients : Form
     {
         public BindingList<Client> clients = new BindingList<Client>();
-        public BindingList<Contract> contracts = new BindingList<Contract>();
-        protected BindingList<Contract> clientContract = new BindingList<Contract>();
+        //public BindingList<Contract> contracts = new BindingList<Contract>();
+        //protected BindingList<Contract> clientContract = new BindingList<Contract>();
 
 
         public Clients()
@@ -27,16 +27,7 @@ namespace Clients
 
             comboBoxClients.DataSource = clients;
 
-            listBoxContracts.DataSource = clientContract;
-            // Открываем и загружаем файл данных со списком клиентов и сонтрактов(xml)
-            //ClientsXml clientsXml = new ClientsXml(@"d:\Clients.xml");
-
-            //if (clientsXml.Load_Ok)
-            //{
-            //    comboBoxClients.BeginUpdate();
-            //    clientsXml.XmlToClientsAndContracts(ref clients, ref contracts);
-            //    comboBoxClients.EndUpdate();
-            //}
+            
         }
 
         private void toolStripMenuItemExit_Click(object sender, EventArgs e)
@@ -55,7 +46,7 @@ namespace Clients
 
                 if (clientsXml.Load_Ok)
                 {
-                    clientsXml.XmlToClientsAndContracts(ref clients, ref contracts);
+                    clientsXml.XmlToClientsAndContracts(ref clients);
                     comboBoxClients.SelectedIndex = 0;
                     SetClientContracts(clients[0]);
                 }
@@ -67,25 +58,19 @@ namespace Clients
             if (cl == null)
                 return;
 
-            clientContract.Clear();
-
-            int numbContracts = 0;
             double Summ = 0;
 
-            foreach (Contract c in contracts.Where(c => c.id == cl.id).Select(c => c))
-            {
-                clientContract.Add(c);
-                numbContracts++;
-                DateTime d = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US"));
+            DateTime d = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US"));
+            foreach (Contract c in cl.contracts)
                 Summ += (c.dt >= d) ? c.sum
                                     : c.sum / 10000; // denomination after 07/01/2016
-            }
-
-            labelListContractsTotals.Text = String.Format($"Договоров: {numbContracts,-5}  на сумму: {Summ:C}");
 
             //
+            labelListContractsTotals.Text = String.Format($"Договоров: {cl.contracts.Count,-5}  на сумму: {Summ:C}");
 
-            labelContract.Text = String.Format($"Договор № {clientContract[0].numb}");
+            labelContract.Text = String.Format($"Договор № {cl.contracts[0].numb}");
+
+            listBoxContracts.DataSource = cl.contracts;  // binding the contracts to listBoxContracts
         }
 
 
@@ -105,10 +90,11 @@ namespace Clients
         private void listBoxContracts_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxContracts.SelectedIndex;
+            
             if (i == -1)
                 return;
 
-            Contract c = clientContract[i];
+            Contract c = (Contract)listBoxContracts.SelectedItem;   //((BindingList<Contract>)listBoxContracts.DataSource)[i];
 
             labelContract.Text = String.Format($"Договор № {c.numb}"); 
         }

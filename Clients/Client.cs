@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Collections;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,8 @@ using System.Xml;
 using System.Text;
 using System.Globalization;
 using System.Threading;
+using System.Data;
+
 
 namespace Clients
 {
@@ -17,7 +20,7 @@ namespace Clients
         public int id;
         public string name;
 
-        public List<Contract> contracts = new List<Contract>(); // список договоров с данным клиентом
+        public BindingList<Contract> contracts = new BindingList<Contract>(); // список договоров с данным клиентом
 
 
 
