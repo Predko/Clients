@@ -22,9 +22,9 @@ namespace Clients
             get { return _load_Ok; }
         }
 
-        public ClientsXml(List<Client> clients, List<Contract> contracts)
+        public ClientsXml(List<Client> clients)
         {
-            xClients = ToXml(clients, contracts, ""); // namespace = "" 
+            xClients = ToXml(clients, ""); // namespace = "" 
         }
 
         public ClientsXml(string filename)
@@ -35,7 +35,8 @@ namespace Clients
             _load_Ok = true;
         }
 
-        public XDocument ToXml(List<Client> clients, List<Contract> contracts, string ns)
+
+        public XDocument ToXml(List<Client> clients, string ns)
         {
             XNamespace namesp = ns;
 
@@ -45,22 +46,16 @@ namespace Clients
                         clients.Select(c => new XElement("Client",
                             new XElement("Id", c.id),
                             new XElement("Name", c.name),
-                                new XElement("Contracts", new XAttribute("Count",
-                                                                (from cn in contracts
-                                                                 where cn.id == c.id
-                                                                 select cn).Count()),
-                                                contracts.Where(t => t.id == c.id)
-                                                            .Select(t =>
-                                                            new XElement("Contract",
-                                                            new XElement("Number", t.numb),
-                                                            new XElement("Date", t.dt.ToString("d")),
-                                                            new XElement("Summ", t.sum))
-                                                    )
+                                new XElement("Contracts", new XAttribute("Count", c.contracts.Count),
+                                                            c.contracts.Select(t =>
+                                                                new XElement("Contract",
+                                                                new XElement("Number", t.numb),
+                                                                new XElement("Date", t.dt.ToString("d")),
+                                                                new XElement("Summ", t.sum))
+                                                            )
                                             )
-                                        )
-                                        )
-                                )
-                                );
+                                        ))
+                                ));
 
         }
 

@@ -17,7 +17,8 @@ namespace Clients
         public int id;
         public string name;
 
-     
+        public List<Contract> contracts = new List<Contract>(); // список договоров с данным клиентом
+
 
 
         public Client(string name, int id)
