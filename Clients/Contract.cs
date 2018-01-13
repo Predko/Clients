@@ -15,6 +15,9 @@ namespace Clients
         public double numb { get; set; }
         public double sum { get; set; }
 
+
+
+
         public Contract(int id, DateTime dt, double numb, double sum)
         {
             this.id = id;

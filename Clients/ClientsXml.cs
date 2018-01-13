@@ -154,7 +154,7 @@ namespace Clients
             }
         }
 
-        // Fill List clients and List contracts (foreach(Element))
+        // Fill List clients and BindingList contracts (foreach(Element))
         public void XmlToClientsAndContracts(ref BindingList<Client> clients)
         {
             clients.Clear();
