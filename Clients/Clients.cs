@@ -58,17 +58,17 @@ namespace Clients
             if (cl == null)
                 return;
 
-            double Summ = 0;
+            decimal Summ = 0;
 
             DateTime d = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US"));
             foreach (Contract c in cl.contracts)
-                Summ += (c.dt >= d) ? c.sum
-                                    : c.sum / 10000; // denomination after 07/01/2016
+                Summ += (c.Dt >= d) ? c.Summ
+                                    : c.Summ / 10000; // denomination after 07/01/2016
 
             //
             labelListContractsTotals.Text = String.Format($"Договоров: {cl.contracts.Count,-5}  на сумму: {Summ:C}");
 
-            labelContract.Text = String.Format($"Договор № {cl.contracts[0].numb}");
+            labelContract.Text = String.Format($"Договор № {cl.contracts[0].Numb}");
 
             listBoxContracts.DataSource = cl.contracts;  // binding the contracts to listBoxContracts
         }
@@ -96,7 +96,7 @@ namespace Clients
 
             Contract c = (Contract)listBoxContracts.SelectedItem;   //((BindingList<Contract>)listBoxContracts.DataSource)[i];
 
-            labelContract.Text = String.Format($"Договор № {c.numb}"); 
+            labelContract.Text = String.Format($"Договор № {c.Numb}"); 
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)

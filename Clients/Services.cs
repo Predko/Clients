@@ -9,17 +9,17 @@ namespace Clients
     #region class Price
     public class Price
     {
-        public static int lastId = 1;       // последний не использованный идентификатор.
-                                         // инкрементируется при создании объекта
-        public int id { get; set;}          // идентификатор цены
-        public decimal price { get; set;}   // стоимость работы
-        public DateTime date { get; set;}   // дата изменения цены
+        private static int lastId = 1;      // последний не использованный идентификатор.
+                                                // инкрементируется при создании объекта
+        public int Id { get; set;}          // идентификатор цены
+        public decimal Summ { get; set;}    // стоимость работы
+        public DateTime Date { get; set;}   // дата изменения цены
 
         public Price(decimal price, DateTime date)
         {
-            this.id = lastId++;
-            this.price = price;
-            this.date = date;
+            this.Id = lastId++;
+            this.Summ = price;
+            this.Date = date;
         }
     }
 
@@ -29,19 +29,19 @@ namespace Clients
     #region class NameWork
     public class NameWork
     {
-        public static int lastId = 1;           // последний не использованный идентификатор.
-                                             // инкрементируется при создании объекта
-        public int id { get; set; }             // идентификатор работы
+        private static int lastId = 1;          // последний не использованный идентификатор.
+                                                    // инкрементируется при создании объекта
+        public int Id { get; set; }             // идентификатор работы
 
-        public string name { get; set; }        // название выполненной работы, например: "Заправка картриджа"
+        public string Name { get; set; }        // название выполненной работы, например: "Заправка картриджа"
 
-        public Price price { get; set; }        // стоимость услуги
+        public Price Val { get; set; }          // стоимость услуги
 
         public NameWork(string name, Price price)
         {
-            this.id = lastId++;
-            this.name = name;
-            this.price = price;
+            this.Id = lastId++;
+            this.Name = name;
+            this.Val = price;
         }
     }
     #endregion
@@ -50,15 +50,15 @@ namespace Clients
     #region class Subdivision
     public class Subdivision
     {
-        public static int lastId = 1;       // последний не использованный идентификатор.
-                                         // инкрементируется при создании объекта
-        public int id { get; set; }         // идентификатор подразделения
-        public string name { get; set; }    // название подразделения, например "к. 410"
+        private static int lastId = 1;      // последний не использованный идентификатор.
+                                                // инкрементируется при создании объекта
+        public int Id { get; set; }         // идентификатор подразделения
+        public string Name { get; set; }    // название подразделения, например "к. 410"
                                             // (сокращение от кабинет 410)
         public Subdivision(string name)
         {
-            this.id = id;
-            this.name = name;
+            this.Id = lastId++;
+            this.Name = name;
         }
     }
     #endregion
@@ -67,15 +67,15 @@ namespace Clients
     #region class NameDevice
     public class NameDevice
     {
-        public static int lastId = 1;       // последний не использованный идентификатор.
-                                         // инкрементируется при создании объекта
-        public int id { get; set; }         // идентификатор устройства
-        public string name { get; set; }    // название (например, "Canon 725")
+        private static int lastId = 1;      // последний не использованный идентификатор.
+                                                // инкрементируется при создании объекта
+        public int Id { get; set; }         // идентификатор устройства
+        public string Name { get; set; }    // название (например, "Canon 725")
 
         public NameDevice(int id, string name)
         {
-            this.id = lastId++;
-            this.name = name;
+            this.Id = lastId++;
+            this.Name = name;
         }
     }
     #endregion
@@ -85,22 +85,22 @@ namespace Clients
     #region class Service
     public class Service
     {
-        public static int lastId = 1;       // последний не использованный идентификатор.
-                                         // инкрементируется при создании объекта
-        public int id { get; set; }         // идентификатор услуги
-        public NameWork nw { get; set; }    // услуга/работа - "Заправка картриджа"
-        public NameDevice nd { get; set; }  // устройство    - "Canon 725"
-        public Subdivision sb { get; set; } // подразделение - "(к. 410)"
-        public int number { get; set; }     // порядковый номер выполненной работы, например - 13791
+        private static int lastId = 0;      // последний не использованный идентификатор.
+                                                // инкрементируется при создании объекта
+        public int Id { get; set; }         // идентификатор услуги
+        public NameWork Nw { get; set; }    // услуга/работа - "Заправка картриджа"
+        public NameDevice Nd { get; set; }  // устройство    - "Canon 725"
+        public Subdivision Sd { get; set; } // подразделение - "(к. 410)"
+        public int Number { get; set; }     // порядковый номер выполненной работы, например - 13791
 
         public Service(NameWork nw, NameDevice nd, Subdivision sd, int number)
         {
-            id = lastId++;
+            Id = lastId++;
 
-            this.nw = nw;
-            this.nd = nd;
-            this.sb = sb;
-            this.number = number;
+            this.Nw = nw;
+            this.Nd = nd;
+            this.Sd = sd;
+            this.Number = number;
         }
     }
     #endregion

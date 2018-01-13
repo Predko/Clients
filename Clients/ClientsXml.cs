@@ -49,9 +49,9 @@ namespace Clients
                                 new XElement("Contracts", new XAttribute("Count", c.contracts.Count),
                                                             c.contracts.Select(t =>
                                                                 new XElement("Contract",
-                                                                new XElement("Number", t.numb),
-                                                                new XElement("Date", t.dt.ToString("d")),
-                                                                new XElement("Summ", t.sum))
+                                                                new XElement("Number", t.Numb),
+                                                                new XElement("Date", t.Dt.ToString("d")),
+                                                                new XElement("Summ", t.Summ))
                                                             )
                                             )
                                         ))
@@ -144,9 +144,9 @@ namespace Clients
                 foreach (XElement element in xe.Element("Contracts").Elements())
                 {
                     DateTime dt = DateTime.Parse(element.Element("Date").Value);
-                    double summ = double.Parse(element.Element("Summ").Value);
+                    decimal summ = decimal.Parse(element.Element("Summ").Value);
 
-                    double number = double.Parse(element.Element("Number").Value);
+                    int number = (int)double.Parse(element.Element("Number").Value);
 
                     client.contracts.Add(new Contract(id, dt, number, summ));
                 }
@@ -180,9 +180,9 @@ namespace Clients
                 foreach (XElement element in xe.Element("Contracts").Elements())
                 {
                     DateTime dt = DateTime.Parse(element.Element("Date").Value);
-                    double summ = double.Parse(element.Element("Summ").Value);
+                    decimal summ = decimal.Parse(element.Element("Summ").Value);
 
-                    double number = double.Parse(element.Element("Number").Value);
+                    int number = (int)double.Parse(element.Element("Number").Value);
 
                     client.contracts.Add(new Contract(id, dt, number, summ));
                 }
