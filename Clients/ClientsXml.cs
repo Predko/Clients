@@ -46,16 +46,34 @@ namespace Clients
                         clients.Select(c => new XElement("Client",
                             new XElement("Id", c.id),
                             new XElement("Name", c.name),
-                                new XElement("Contracts", new XAttribute("Count", c.contracts.Count),
+                            new XElement("Contracts", new XAttribute("Count", c.contracts.Count),
                                                             c.contracts.Select(t =>
                                                                 new XElement("Contract",
                                                                 new XElement("Number", t.Numb),
                                                                 new XElement("Date", t.Dt.ToString("d")),
-                                                                new XElement("Summ", t.Summ))
-                                                            )
-                                            )
+                                                                new XElement("Summ", t.Summ),
+                                                                new XElement("Services", 
+                                                                    t.services.Select(s => 
+                                                                    new XElement("Service",
+                                                                    new XElement("Id",s.Id),
+                                                                    new XElement("Number", s.Number),
+                                                                    new XElement("NameWork", 
+                                                                       new XElement("Id",s.Nw.Id),
+                                                                       new XElement("Name", s.Nw.Name),
+                                                                       new XElement("Price",
+                                                                          new XElement("Id", s.Nw.Val.Id),
+                                                                          new XElement("Summ", s.Nw.Val.Summ),
+                                                                          new XElement("Date", s.Nw.Val.Date.ToString("d")))),
+                                                                    new XElement("NameDevice",
+                                                                       new XElement("Id", s.Nd.Id),
+                                                                       new XElement("Name", s.Nd.Name)),
+                                                                    new XElement("Subdivision",
+                                                                       new XElement("Id", s.Sd.Id),
+                                                                       new XElement("Name", s.Sd.Name))
+                                                                    )
+                                                            ))
                                         ))
-                                ));
+                                )))));
 
         }
 

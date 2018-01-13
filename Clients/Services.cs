@@ -88,10 +88,10 @@ namespace Clients
         private static int lastId = 0;      // последний не использованный идентификатор.
                                                 // инкрементируется при создании объекта
         public int Id { get; set; }         // идентификатор услуги
+        public int Number { get; set; }     // порядковый номер выполненной работы, например - 13791
         public NameWork Nw { get; set; }    // услуга/работа - "Заправка картриджа"
         public NameDevice Nd { get; set; }  // устройство    - "Canon 725"
         public Subdivision Sd { get; set; } // подразделение - "(к. 410)"
-        public int Number { get; set; }     // порядковый номер выполненной работы, например - 13791
 
         public Service(NameWork nw, NameDevice nd, Subdivision sd, int number)
         {

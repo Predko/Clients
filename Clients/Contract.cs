@@ -25,7 +25,7 @@ namespace Clients
         public decimal Summ { get; set; }                   // Сумма по договору. 
                                                             // Вычисляется из сумм всех оказанных услуг
 
-        private List<Service> services;                     // Список оказанных услуг
+        public readonly List<Service> services;             // Список оказанных услуг
 
         public int IdClient;                                // Для совместимости со старой базой данных.
 

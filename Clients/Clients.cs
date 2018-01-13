@@ -94,7 +94,7 @@ namespace Clients
             if (i == -1)
                 return;
 
-            Contract c = (Contract)listBoxContracts.SelectedItem;   //((BindingList<Contract>)listBoxContracts.DataSource)[i];
+            Contract c = (Contract)listBoxContracts.SelectedItem;
 
             labelContract.Text = String.Format($"Договор № {c.Numb}"); 
         }
