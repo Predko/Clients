@@ -17,8 +17,6 @@ namespace Clients
     public partial class Clients : Form
     {
         public BindingList<Client> clients = new BindingList<Client>();
-        //public BindingList<Contract> contracts = new BindingList<Contract>();
-        //protected BindingList<Contract> clientContract = new BindingList<Contract>();
 
 
         public Clients()
