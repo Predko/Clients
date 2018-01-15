@@ -16,17 +16,17 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-        public BindingList<Client> clients = new BindingList<Client>();
+        public List<Client> clients = new List<Client>();
 
+        
 
         public Clients()
         {
             InitializeComponent();
 
             comboBoxClients.DataSource = clients;
-
-            
         }
+
 
         private void toolStripMenuItemExit_Click(object sender, EventArgs e)
         {
