@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ListClients.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="Clients.cs">
       <SubType>Form</SubType>
