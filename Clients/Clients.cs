@@ -16,7 +16,7 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-        public List<Client> clients = new List<Client>();
+        public ListClients clients = new ListClients();
 
         
 
@@ -24,7 +24,7 @@ namespace Clients
         {
             InitializeComponent();
 
-            comboBoxClients.DataSource = clients;
+            clients.ListClientsChanged += ChangeComboBox;
         }
 
 
@@ -44,12 +44,36 @@ namespace Clients
 
                 if (clientsXml.Load_Ok)
                 {
-                    clientsXml.XmlToClientsAndContracts(ref clients);
-                    comboBoxClients.SelectedIndex = 0;
+                    comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
+
+                    clientsXml.XmlToClientsAndContracts(clients);
                     SetClientContracts(clients[0]);
+
+                    comboBoxClients.SelectedIndex = 0;
+
+                    comboBoxClients.EndUpdate();               // обновляем содержимое ComboBox, отображающего clients
                 }
             }
         }
+
+        public void ChangeComboBox(Object sender, ChangedListClientsEventArgs e)
+        {
+            switch (e.changed)
+            {
+                case Change.Add:                            // добавляем элемент в список
+                    comboBoxClients.Items.Add(e.client);
+                    break;
+
+                case Change.Clear:                          // очищаем список
+                    comboBoxClients.Items.Clear();
+                    break;
+
+                case Change.Set:                            // устанавливаем элемент с данным индексом
+                    comboBoxClients.Items[e.index] = e.client;
+                    break;
+            }
+        }
+
 
         private void SetClientContracts(Client cl)
         {
@@ -66,7 +90,9 @@ namespace Clients
             //
             labelListContractsTotals.Text = String.Format($"Договоров: {cl.contracts.Count,-5}  на сумму: {Summ:C}");
 
-            labelContract.Text = String.Format($"Договор № {cl.contracts[0].Numb}");
+            String numb = (cl.contracts.Count != 0) ? cl.contracts[0].Numb.ToString() : "";
+
+            labelContract.Text = String.Format($"Договор № {numb}");
 
             listBoxContracts.DataSource = cl.contracts;  // binding the contracts to listBoxContracts
         }

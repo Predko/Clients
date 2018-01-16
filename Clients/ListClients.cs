@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,39 +10,14 @@ namespace Clients
     // Класс-обёртка списка клиентов
     // предназначен для отображения списка в комбобоксе при изменении
     // Вместо binding...
-    class ListClients
+    public class ListClients:IEnumerable<Client>
     {
-        private List<Client> clients = new List<Client>();  // список клиентов
+        private readonly List<Client> clients = new List<Client>();  // список клиентов
 
-        public event EventHandler ListClientsChanged;       // событие для обработки(отображения) изменений
+        public event EventHandler<ChangedListClientsEventArgs> ListClientsChanged;       // событие для обработки(отображения) изменений
+        private ChangedListClientsEventArgs ChangedEventArgs = new ChangedListClientsEventArgs();
 
-
-        #region Begin - End - ClientListChanging
-
-        private bool IsBeginClientListChanging = false;     // true - если был вызван метод BeginClientListChanging
-        private event EventHandler SaveEventHandler;        // временно сохраняется событие до конца изменений
-        
-        // начало изменения списка
-        // Используется чтобы предотвратить вызов события ListClientsChanged
-        // при каждом изменении списка в случае множественного изменения
-        // работает в паре с методом EndClientListChanging, который событие
-        public void BeginClientListChanging()
-        {
-            IsBeginClientListChanging = true;
-            SaveEventHandler = ListClientsChanged;
-            ListClientsChanged = null;
-        }
-
-        public void EndClientListChanging(EventArgs e)
-        {
-            if (IsBeginClientListChanging)
-            {
-                ListClientsChanged = SaveEventHandler;
-                OnChangeListClients(e);
-            }
-        }
-        #endregion
-
+ 
 
         public ListClients()
         {
@@ -49,8 +25,13 @@ namespace Clients
         }
 
 
+        public List<Client> GetListClients()
+        {
+            return clients;
+        }
+
         // запуск обработки изменений
-        protected virtual void OnChangeListClients(EventArgs e)
+        protected virtual void OnChangeListClients(ChangedListClientsEventArgs e)
         {
             ListClientsChanged?.Invoke(this, e);
         }
@@ -60,15 +41,48 @@ namespace Clients
         {
             clients.Clear();
 
-            OnChangeListClients(EventArgs.Empty);
+            ChangedEventArgs.changed = Change.Clear;
+            OnChangeListClients(ChangedEventArgs);
         }
+
+        public int Count { get => clients.Count; }
 
         // добавления нового клиента в список
         public void Add(Client client)
         {
             clients.Add(client);
 
-            OnChangeListClients(EventArgs.Empty);
+            ChangedEventArgs.changed = Change.Add;
+            ChangedEventArgs.client = client;
+            OnChangeListClients(ChangedEventArgs);
         }
+
+        public Client this[int i]
+        {
+            get { return clients[i]; }
+            set
+            {
+                clients[i] = value;
+
+                ChangedEventArgs.changed = Change.Set;
+                ChangedEventArgs.client = value;
+                ChangedEventArgs.index = i;
+                OnChangeListClients(ChangedEventArgs);
+            }
+        }
+
+
+        public IEnumerator<Client> GetEnumerator() => ((IEnumerable<Client>)clients).GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    public enum Change { Add, Clear, Set}
+
+    public class ChangedListClientsEventArgs : EventArgs
+    {
+        public Change changed;
+        public Client client;
+        public int index;
     }
 }

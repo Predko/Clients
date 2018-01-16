@@ -92,12 +92,12 @@ namespace Clients
                 {
                     xClients.Save(xw);
                 }
-            }
         }
 
 
-        // Load filename(xml) to XDocument and fill CollectionClients and CollectionContracts (foreach(Element))
-        public bool LoadXml(string filename, ref List<Client> clients)
+            }
+        // Load filename(xml) to XDocument and fill ListClients (foreach(Element))
+        public bool LoadXml(string filename, ListClients clients)
         {
             _load_Ok = true;
             try
@@ -111,7 +111,7 @@ namespace Clients
                 return _load_Ok;
             }
 
-            XmlToClientsAndContracts(ref clients);
+            XmlToClientsAndContracts(clients);
 
 
             return _load_Ok;
@@ -137,7 +137,7 @@ namespace Clients
 
 
         // Fill List clients and List contracts (foreach(Element))
-        public void XmlToClientsAndContracts(ref List<Client> clients)
+        public void XmlToClientsAndContracts(ListClients clients)
         {
             clients.Clear();
  
@@ -173,40 +173,42 @@ namespace Clients
         }
 
         // Fill List clients and BindingList contracts (foreach(Element))
-        public void XmlToClientsAndContracts(ref BindingList<Client> clients)
-        {
-            clients.Clear();
+        #region
+        //public void XmlToClientsAndContracts(ref BindingList<Client> clients)
+        //{
+        //    clients.Clear();
 
-            #region CultureInfo
-            CultureInfo ci = Thread.CurrentThread.CurrentCulture;
+        //    #region CultureInfo
+        //    CultureInfo ci = Thread.CurrentThread.CurrentCulture;
 
-            ci = (CultureInfo)ci.Clone();
+        //    ci = (CultureInfo)ci.Clone();
 
-            ci.NumberFormat.CurrencyGroupSeparator = " ";
-            ci.NumberFormat.NumberDecimalSeparator = ".";
+        //    ci.NumberFormat.CurrencyGroupSeparator = " ";
+        //    ci.NumberFormat.NumberDecimalSeparator = ".";
 
-            Thread.CurrentThread.CurrentCulture = ci;
-            #endregion
+        //    Thread.CurrentThread.CurrentCulture = ci;
+        //    #endregion
 
-            foreach (XElement xe in xClients.Element("Clients").Elements("Client"))
-            {// 
-                int id = int.Parse(xe.Element("Id").Value);
-                string name = xe.Element("Name").Value;
+        //    foreach (XElement xe in xClients.Element("Clients").Elements("Client"))
+        //    {// 
+        //        int id = int.Parse(xe.Element("Id").Value);
+        //        string name = xe.Element("Name").Value;
 
-                Client client = new Client(name, id);
+        //        Client client = new Client(name, id);
 
-                foreach (XElement element in xe.Element("Contracts").Elements())
-                {
-                    DateTime dt = DateTime.Parse(element.Element("Date").Value);
-                    decimal summ = decimal.Parse(element.Element("Summ").Value);
+        //        foreach (XElement element in xe.Element("Contracts").Elements())
+        //        {
+        //            DateTime dt = DateTime.Parse(element.Element("Date").Value);
+        //            decimal summ = decimal.Parse(element.Element("Summ").Value);
 
-                    int number = (int)double.Parse(element.Element("Number").Value);
+        //            int number = (int)double.Parse(element.Element("Number").Value);
 
-                    client.contracts.Add(new Contract(id, dt, number, summ));
-                }
-                clients.Add(client);
-            }
-        }
+        //            client.contracts.Add(new Contract(id, dt, number, summ));
+        //        }
+        //        clients.Add(client);
+        //    }
+        //}
+        #endregion
 
 
     }
