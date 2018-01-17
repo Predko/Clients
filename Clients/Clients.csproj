@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComboBoxClients.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ListBoxContracts.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ListClients.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="Clients.cs">
@@ -57,6 +63,9 @@
     <Compile Include="Contract.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToolStripMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <EmbeddedResource Include="Clients.resx">
       <DependentUpon>Clients.cs</DependentUpon>
     </EmbeddedResource>

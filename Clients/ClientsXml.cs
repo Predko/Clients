@@ -171,45 +171,5 @@ namespace Clients
                 clients.Add(client);
             }
         }
-
-        // Fill List clients and BindingList contracts (foreach(Element))
-        #region
-        //public void XmlToClientsAndContracts(ref BindingList<Client> clients)
-        //{
-        //    clients.Clear();
-
-        //    #region CultureInfo
-        //    CultureInfo ci = Thread.CurrentThread.CurrentCulture;
-
-        //    ci = (CultureInfo)ci.Clone();
-
-        //    ci.NumberFormat.CurrencyGroupSeparator = " ";
-        //    ci.NumberFormat.NumberDecimalSeparator = ".";
-
-        //    Thread.CurrentThread.CurrentCulture = ci;
-        //    #endregion
-
-        //    foreach (XElement xe in xClients.Element("Clients").Elements("Client"))
-        //    {// 
-        //        int id = int.Parse(xe.Element("Id").Value);
-        //        string name = xe.Element("Name").Value;
-
-        //        Client client = new Client(name, id);
-
-        //        foreach (XElement element in xe.Element("Contracts").Elements())
-        //        {
-        //            DateTime dt = DateTime.Parse(element.Element("Date").Value);
-        //            decimal summ = decimal.Parse(element.Element("Summ").Value);
-
-        //            int number = (int)double.Parse(element.Element("Number").Value);
-
-        //            client.contracts.Add(new Contract(id, dt, number, summ));
-        //        }
-        //        clients.Add(client);
-        //    }
-        //}
-        #endregion
-
-
     }
 }

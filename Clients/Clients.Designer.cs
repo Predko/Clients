@@ -45,16 +45,16 @@
             this.comboBoxClients = new System.Windows.Forms.ComboBox();
             this.tabPageContractEdit = new System.Windows.Forms.TabPage();
             this.dataGridViewContract = new System.Windows.Forms.DataGridView();
-            this.ColumnNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.columnNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.columnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.columnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemLoad = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControlClients.SuspendLayout();
             this.tabPageClients.SuspendLayout();
@@ -223,7 +223,7 @@
             this.comboBoxClients.Name = "comboBoxClients";
             this.comboBoxClients.Size = new System.Drawing.Size(1217, 31);
             this.comboBoxClients.TabIndex = 0;
-            this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.comboBoxClients_SelectedIndexChanged);
+            this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClients_SelectedIndexChanged);
             // 
             // tabPageContractEdit
             // 
@@ -244,11 +244,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewContract.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewContract.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ColumnNumb,
-            this.ColumnNameService,
-            this.ColumnServiceNumb,
-            this.ColumnServiceSumm,
-            this.ColumnSubdivision});
+            this.columnNumb,
+            this.columnNameService,
+            this.columnServiceNumb,
+            this.columnServiceSumm,
+            this.columnSubdivision});
             this.dataGridViewContract.Location = new System.Drawing.Point(6, 71);
             this.dataGridViewContract.Name = "dataGridViewContract";
             this.dataGridViewContract.RowTemplate.Height = 28;
@@ -257,41 +257,41 @@
             // 
             // ColumnNumb
             // 
-            this.ColumnNumb.Frozen = true;
-            this.ColumnNumb.HeaderText = "№";
-            this.ColumnNumb.Name = "ColumnNumb";
-            this.ColumnNumb.ReadOnly = true;
-            this.ColumnNumb.Width = 57;
+            this.columnNumb.Frozen = true;
+            this.columnNumb.HeaderText = "№";
+            this.columnNumb.Name = "ColumnNumb";
+            this.columnNumb.ReadOnly = true;
+            this.columnNumb.Width = 57;
             // 
             // ColumnNameService
             // 
-            this.ColumnNameService.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColumnNameService.HeaderText = "Оказанные услуги";
-            this.ColumnNameService.Name = "ColumnNameService";
-            this.ColumnNameService.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnNameService.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.columnNameService.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.columnNameService.HeaderText = "Оказанные услуги";
+            this.columnNameService.Name = "ColumnNameService";
+            this.columnNameService.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.columnNameService.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // ColumnServiceNumb
             // 
-            this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnServiceNumb.HeaderText = "№ услуги";
-            this.ColumnServiceNumb.Name = "ColumnServiceNumb";
-            this.ColumnServiceNumb.Width = 80;
+            this.columnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.columnServiceNumb.HeaderText = "№ услуги";
+            this.columnServiceNumb.Name = "ColumnServiceNumb";
+            this.columnServiceNumb.Width = 80;
             // 
             // ColumnServiceSumm
             // 
-            this.ColumnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnServiceSumm.HeaderText = "Сумма";
-            this.ColumnServiceSumm.Name = "ColumnServiceSumm";
+            this.columnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.columnServiceSumm.HeaderText = "Сумма";
+            this.columnServiceSumm.Name = "ColumnServiceSumm";
             // 
             // ColumnSubdivision
             // 
-            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnSubdivision.HeaderText = "Подразделение (кабинет)";
-            this.ColumnSubdivision.Name = "ColumnSubdivision";
-            this.ColumnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.ColumnSubdivision.Width = 150;
+            this.columnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.columnSubdivision.HeaderText = "Подразделение (кабинет)";
+            this.columnSubdivision.Name = "ColumnSubdivision";
+            this.columnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.columnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.columnSubdivision.Width = 150;
             // 
             // comboBox1
             // 
@@ -318,8 +318,8 @@
             // toolStripMenuItemFile
             // 
             this.toolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItemSave,
-            this.ToolStripMenuItemLoad,
+            this.toolStripMenuItemSave,
+            this.toolStripMenuItemLoad,
             this.toolStripMenuItemExit});
             this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
             this.toolStripMenuItemFile.Size = new System.Drawing.Size(65, 29);
@@ -327,23 +327,23 @@
             // 
             // ToolStripMenuItemSave
             // 
-            this.ToolStripMenuItemSave.Name = "ToolStripMenuItemSave";
-            this.ToolStripMenuItemSave.Size = new System.Drawing.Size(183, 30);
-            this.ToolStripMenuItemSave.Text = "Сохранить";
+            this.toolStripMenuItemSave.Name = "ToolStripMenuItemSave";
+            this.toolStripMenuItemSave.Size = new System.Drawing.Size(183, 30);
+            this.toolStripMenuItemSave.Text = "Сохранить";
             // 
             // ToolStripMenuItemLoad
             // 
-            this.ToolStripMenuItemLoad.Name = "ToolStripMenuItemLoad";
-            this.ToolStripMenuItemLoad.Size = new System.Drawing.Size(183, 30);
-            this.ToolStripMenuItemLoad.Text = "Загрузить";
-            this.ToolStripMenuItemLoad.Click += new System.EventHandler(this.ToolStripMenuItemLoad_Click);
+            this.toolStripMenuItemLoad.Name = "ToolStripMenuItemLoad";
+            this.toolStripMenuItemLoad.Size = new System.Drawing.Size(183, 30);
+            this.toolStripMenuItemLoad.Text = "Загрузить";
+            this.toolStripMenuItemLoad.Click += new System.EventHandler(this.ToolStripMenuItemLoad_Click);
             // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
             this.toolStripMenuItemExit.Size = new System.Drawing.Size(183, 30);
             this.toolStripMenuItemExit.Text = "Выход";
-            this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
+            this.toolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click);
             // 
             // Clients
             // 
@@ -375,8 +375,8 @@
         private System.Windows.Forms.MenuStrip menuStripMain;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFile;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemExit;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemSave;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemLoad;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSave;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemLoad;
         private System.Windows.Forms.Button buttonDeleteContract;
         private System.Windows.Forms.Button buttonDeleteClient;
         private System.Windows.Forms.Button buttonEditClient;
@@ -391,11 +391,11 @@
         private System.Windows.Forms.Label labelListContracts;
         private System.Windows.Forms.Label labelListContractsTotals;
         private System.Windows.Forms.DataGridView dataGridViewContract;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnNumb;
-        private System.Windows.Forms.DataGridViewComboBoxColumn ColumnNameService;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceNumb;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceSumm;
-        private System.Windows.Forms.DataGridViewComboBoxColumn ColumnSubdivision;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnNumb;
+        private System.Windows.Forms.DataGridViewComboBoxColumn columnNameService;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnServiceNumb;
+        private System.Windows.Forms.DataGridViewTextBoxColumn columnServiceSumm;
+        private System.Windows.Forms.DataGridViewComboBoxColumn columnSubdivision;
         private System.Windows.Forms.ComboBox comboBox1;
     }
 }
