@@ -20,7 +20,7 @@ namespace Clients
         public int id;
         public string name;
 
-        public BindingList<Contract> contracts = new BindingList<Contract>(); // список договоров с данным клиентом
+        public Contracts contracts = new Contracts(); // список договоров с данным клиентом
 
 
 

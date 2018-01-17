@@ -11,7 +11,7 @@ namespace Clients
     {
         private void InitComboBoxClients()
         {
-            clients.ListClientsChanged += ChangeComboBox;
+            clients.ListClientsChanged += ChangeComboBoxClients;
         }
 
         //
@@ -21,12 +21,17 @@ namespace Clients
         {
             Client cl = (Client)((ComboBox)sender).SelectedItem;
 
+            // заполняем listBoxContracts текущим списком договоров
+            listBoxContracts.BeginUpdate();
+
             SetClientContracts(cl);
+
+            listBoxContracts.EndUpdate();
         }
 
-        public void ChangeComboBox(Object sender, ChangedListClientsEventArgs e)
+        public void ChangeComboBoxClients(Object sender, ChangedListClientsEventArgs e)
         {
-            switch (e.changed)
+            switch (e.change)
             {
                 case Change.Add:                            // добавляем элемент в список
                     comboBoxClients.Items.Add(e.client);
@@ -41,6 +46,5 @@ namespace Clients
                     break;
             }
         }
-
     }
 }

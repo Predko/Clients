@@ -12,7 +12,7 @@ namespace Clients
     // класс аргумента события изменения списка
     public class ChangedListClientsEventArgs : EventArgs
     {
-        public Change changed;  // вид изменения
+        public Change change;  // вид изменения
         public Client client;   // опционально. добавляемый или устанавливаемый по индексу объект
         public int index;       // индекс для события Set
     }
@@ -32,7 +32,7 @@ namespace Clients
         {
             clients.Clear();
 
-            ChangedEventArgs.changed = Change.Clear;
+            ChangedEventArgs.change = Change.Clear;
             OnChangeListClients(ChangedEventArgs);
         }
 
@@ -43,7 +43,7 @@ namespace Clients
         {
             clients.Add(client);
 
-            ChangedEventArgs.changed = Change.Add;
+            ChangedEventArgs.change = Change.Add;
             ChangedEventArgs.client = client;
             OnChangeListClients(ChangedEventArgs);
         }
@@ -57,7 +57,7 @@ namespace Clients
             {
                 clients[i] = value;
 
-                ChangedEventArgs.changed = Change.Set;
+                ChangedEventArgs.change = Change.Set;
                 ChangedEventArgs.client = value;
                 ChangedEventArgs.index = i;
                 OnChangeListClients(ChangedEventArgs);

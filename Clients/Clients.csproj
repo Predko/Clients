@@ -45,6 +45,7 @@
     <Compile Include="ComboBoxClients.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Contracts.cs" />
     <Compile Include="ListBoxContracts.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -57,9 +58,7 @@
       <DependentUpon>Clients.cs</DependentUpon>
     </Compile>
     <Compile Include="ClientsXml.cs" />
-    <Compile Include="Client.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Client.cs" />
     <Compile Include="Contract.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

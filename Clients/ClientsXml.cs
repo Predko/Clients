@@ -22,7 +22,7 @@ namespace Clients
             get { return _load_Ok; }
         }
 
-        public ClientsXml(List<Client> clients)
+        public ClientsXml(ListClients clients)
         {
             xClients = ToXml(clients, ""); // namespace = "" 
         }
@@ -36,7 +36,7 @@ namespace Clients
         }
 
 
-        public XDocument ToXml(List<Client> clients, string ns)
+        public XDocument ToXml(ListClients clients, string ns)
         {
             XNamespace namesp = ns;
 
