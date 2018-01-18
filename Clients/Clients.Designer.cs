@@ -45,17 +45,18 @@
             this.comboBoxClients = new System.Windows.Forms.ComboBox();
             this.tabPageContractEdit = new System.Windows.Forms.TabPage();
             this.dataGridViewContract = new System.Windows.Forms.DataGridView();
-            this.columnNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.columnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.columnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxTypeContract = new System.Windows.Forms.ComboBox();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemLoad = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.ColumnNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.NameDevice = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControlClients.SuspendLayout();
             this.tabPageClients.SuspendLayout();
             this.tabPageContractEdit.SuspendLayout();
@@ -65,20 +66,19 @@
             // 
             // tabControlClients
             // 
-            this.tabControlClients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControlClients.Controls.Add(this.tabPageClients);
             this.tabControlClients.Controls.Add(this.tabPageContractEdit);
+            this.tabControlClients.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlClients.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tabControlClients.Location = new System.Drawing.Point(12, 50);
+            this.tabControlClients.Location = new System.Drawing.Point(5, 38);
             this.tabControlClients.Name = "tabControlClients";
             this.tabControlClients.SelectedIndex = 0;
-            this.tabControlClients.Size = new System.Drawing.Size(1263, 575);
+            this.tabControlClients.Size = new System.Drawing.Size(1712, 594);
             this.tabControlClients.TabIndex = 2;
             // 
             // tabPageClients
             // 
+            this.tabPageClients.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.tabPageClients.Controls.Add(this.labelListContractsTotals);
             this.tabPageClients.Controls.Add(this.labelListContracts);
             this.tabPageClients.Controls.Add(this.buttonDeleteContract);
@@ -93,17 +93,19 @@
             this.tabPageClients.Controls.Add(this.listBoxContracts);
             this.tabPageClients.Controls.Add(this.comboBoxClients);
             this.tabPageClients.Location = new System.Drawing.Point(4, 32);
+            this.tabPageClients.Margin = new System.Windows.Forms.Padding(5);
             this.tabPageClients.Name = "tabPageClients";
-            this.tabPageClients.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageClients.Size = new System.Drawing.Size(1255, 539);
+            this.tabPageClients.Padding = new System.Windows.Forms.Padding(5);
+            this.tabPageClients.Size = new System.Drawing.Size(1704, 558);
             this.tabPageClients.TabIndex = 0;
             this.tabPageClients.Text = "Клиенты";
             this.tabPageClients.UseVisualStyleBackColor = true;
             // 
             // labelListContractsTotals
             // 
+            this.labelListContractsTotals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelListContractsTotals.AutoSize = true;
-            this.labelListContractsTotals.Location = new System.Drawing.Point(6, 496);
+            this.labelListContractsTotals.Location = new System.Drawing.Point(8, 513);
             this.labelListContractsTotals.Name = "labelListContractsTotals";
             this.labelListContractsTotals.Size = new System.Drawing.Size(307, 23);
             this.labelListContractsTotals.TabIndex = 13;
@@ -113,7 +115,7 @@
             // 
             this.labelListContracts.AutoSize = true;
             this.labelListContracts.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelListContracts.Location = new System.Drawing.Point(6, 137);
+            this.labelListContracts.Location = new System.Drawing.Point(8, 139);
             this.labelListContracts.Name = "labelListContracts";
             this.labelListContracts.Size = new System.Drawing.Size(351, 23);
             this.labelListContracts.TabIndex = 12;
@@ -131,7 +133,7 @@
             // buttonDeleteClient
             // 
             this.buttonDeleteClient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDeleteClient.Location = new System.Drawing.Point(1041, 2);
+            this.buttonDeleteClient.Location = new System.Drawing.Point(1488, 4);
             this.buttonDeleteClient.Name = "buttonDeleteClient";
             this.buttonDeleteClient.Size = new System.Drawing.Size(182, 38);
             this.buttonDeleteClient.TabIndex = 10;
@@ -177,7 +179,7 @@
             // labelClient
             // 
             this.labelClient.AutoSize = true;
-            this.labelClient.Location = new System.Drawing.Point(6, 13);
+            this.labelClient.Location = new System.Drawing.Point(8, 15);
             this.labelClient.Name = "labelClient";
             this.labelClient.Size = new System.Drawing.Size(76, 23);
             this.labelClient.TabIndex = 5;
@@ -186,7 +188,7 @@
             // labelContract
             // 
             this.labelContract.AutoSize = true;
-            this.labelContract.Location = new System.Drawing.Point(481, 99);
+            this.labelContract.Location = new System.Drawing.Point(483, 101);
             this.labelContract.Name = "labelContract";
             this.labelContract.Size = new System.Drawing.Size(109, 23);
             this.labelContract.TabIndex = 4;
@@ -195,7 +197,7 @@
             // labelContracts
             // 
             this.labelContracts.AutoSize = true;
-            this.labelContracts.Location = new System.Drawing.Point(6, 99);
+            this.labelContracts.Location = new System.Drawing.Point(8, 101);
             this.labelContracts.Name = "labelContracts";
             this.labelContracts.Size = new System.Drawing.Size(98, 23);
             this.labelContracts.TabIndex = 3;
@@ -208,7 +210,7 @@
             this.listBoxContracts.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.listBoxContracts.FormattingEnabled = true;
             this.listBoxContracts.ItemHeight = 23;
-            this.listBoxContracts.Location = new System.Drawing.Point(6, 163);
+            this.listBoxContracts.Location = new System.Drawing.Point(8, 165);
             this.listBoxContracts.Name = "listBoxContracts";
             this.listBoxContracts.Size = new System.Drawing.Size(454, 326);
             this.listBoxContracts.TabIndex = 1;
@@ -219,20 +221,20 @@
             this.comboBoxClients.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxClients.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.comboBoxClients.Location = new System.Drawing.Point(6, 46);
+            this.comboBoxClients.Location = new System.Drawing.Point(8, 48);
             this.comboBoxClients.Name = "comboBoxClients";
-            this.comboBoxClients.Size = new System.Drawing.Size(1217, 31);
+            this.comboBoxClients.Size = new System.Drawing.Size(1662, 31);
             this.comboBoxClients.TabIndex = 0;
             this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClients_SelectedIndexChanged);
             // 
             // tabPageContractEdit
             // 
             this.tabPageContractEdit.Controls.Add(this.dataGridViewContract);
-            this.tabPageContractEdit.Controls.Add(this.comboBox1);
+            this.tabPageContractEdit.Controls.Add(this.comboBoxTypeContract);
             this.tabPageContractEdit.Location = new System.Drawing.Point(4, 32);
             this.tabPageContractEdit.Name = "tabPageContractEdit";
             this.tabPageContractEdit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageContractEdit.Size = new System.Drawing.Size(1255, 539);
+            this.tabPageContractEdit.Size = new System.Drawing.Size(1704, 558);
             this.tabPageContractEdit.TabIndex = 1;
             this.tabPageContractEdit.Text = "Договор";
             this.tabPageContractEdit.UseVisualStyleBackColor = true;
@@ -244,74 +246,38 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewContract.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewContract.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.columnNumb,
-            this.columnNameService,
-            this.columnServiceNumb,
-            this.columnServiceSumm,
-            this.columnSubdivision});
-            this.dataGridViewContract.Location = new System.Drawing.Point(6, 71);
+            this.ColumnNumb,
+            this.ColumnNameService,
+            this.NameDevice,
+            this.ColumnSubdivision,
+            this.ColumnServiceNumb,
+            this.ColumnServiceSumm});
+            this.dataGridViewContract.Location = new System.Drawing.Point(6, 74);
             this.dataGridViewContract.Name = "dataGridViewContract";
             this.dataGridViewContract.RowTemplate.Height = 28;
-            this.dataGridViewContract.Size = new System.Drawing.Size(1243, 462);
+            this.dataGridViewContract.Size = new System.Drawing.Size(1692, 481);
             this.dataGridViewContract.TabIndex = 1;
+            this.dataGridViewContract.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellContentClick);
             // 
-            // ColumnNumb
+            // comboBoxTypeContract
             // 
-            this.columnNumb.Frozen = true;
-            this.columnNumb.HeaderText = "№";
-            this.columnNumb.Name = "ColumnNumb";
-            this.columnNumb.ReadOnly = true;
-            this.columnNumb.Width = 57;
-            // 
-            // ColumnNameService
-            // 
-            this.columnNameService.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.columnNameService.HeaderText = "Оказанные услуги";
-            this.columnNameService.Name = "ColumnNameService";
-            this.columnNameService.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.columnNameService.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // ColumnServiceNumb
-            // 
-            this.columnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.columnServiceNumb.HeaderText = "№ услуги";
-            this.columnServiceNumb.Name = "ColumnServiceNumb";
-            this.columnServiceNumb.Width = 80;
-            // 
-            // ColumnServiceSumm
-            // 
-            this.columnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.columnServiceSumm.HeaderText = "Сумма";
-            this.columnServiceSumm.Name = "ColumnServiceSumm";
-            // 
-            // ColumnSubdivision
-            // 
-            this.columnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.columnSubdivision.HeaderText = "Подразделение (кабинет)";
-            this.columnSubdivision.Name = "ColumnSubdivision";
-            this.columnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.columnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.columnSubdivision.Width = 150;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.comboBoxTypeContract.FormattingEnabled = true;
+            this.comboBoxTypeContract.Items.AddRange(new object[] {
             "Договор №",
             "Акт выполненных работ №"});
-            this.comboBox1.Location = new System.Drawing.Point(368, 25);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(418, 31);
-            this.comboBox1.TabIndex = 0;
+            this.comboBoxTypeContract.Location = new System.Drawing.Point(368, 25);
+            this.comboBoxTypeContract.Name = "comboBoxTypeContract";
+            this.comboBoxTypeContract.Size = new System.Drawing.Size(418, 31);
+            this.comboBoxTypeContract.TabIndex = 0;
             // 
             // menuStripMain
             // 
             this.menuStripMain.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemFile});
-            this.menuStripMain.Location = new System.Drawing.Point(0, 0);
+            this.menuStripMain.Location = new System.Drawing.Point(5, 5);
             this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size(1364, 33);
+            this.menuStripMain.Size = new System.Drawing.Size(1712, 33);
             this.menuStripMain.TabIndex = 3;
             this.menuStripMain.Text = "Главное меню";
             // 
@@ -325,15 +291,15 @@
             this.toolStripMenuItemFile.Size = new System.Drawing.Size(65, 29);
             this.toolStripMenuItemFile.Text = "Файл";
             // 
-            // ToolStripMenuItemSave
+            // toolStripMenuItemSave
             // 
-            this.toolStripMenuItemSave.Name = "ToolStripMenuItemSave";
+            this.toolStripMenuItemSave.Name = "toolStripMenuItemSave";
             this.toolStripMenuItemSave.Size = new System.Drawing.Size(183, 30);
             this.toolStripMenuItemSave.Text = "Сохранить";
             // 
-            // ToolStripMenuItemLoad
+            // toolStripMenuItemLoad
             // 
-            this.toolStripMenuItemLoad.Name = "ToolStripMenuItemLoad";
+            this.toolStripMenuItemLoad.Name = "toolStripMenuItemLoad";
             this.toolStripMenuItemLoad.Size = new System.Drawing.Size(183, 30);
             this.toolStripMenuItemLoad.Text = "Загрузить";
             this.toolStripMenuItemLoad.Click += new System.EventHandler(this.ToolStripMenuItemLoad_Click);
@@ -345,15 +311,62 @@
             this.toolStripMenuItemExit.Text = "Выход";
             this.toolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click);
             // 
+            // ColumnNumb
+            // 
+            this.ColumnNumb.Frozen = true;
+            this.ColumnNumb.HeaderText = "№";
+            this.ColumnNumb.Name = "ColumnNumb";
+            this.ColumnNumb.ReadOnly = true;
+            this.ColumnNumb.Width = 30;
+            // 
+            // ColumnNameService
+            // 
+            this.ColumnNameService.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColumnNameService.HeaderText = "Оказанные услуги";
+            this.ColumnNameService.Name = "ColumnNameService";
+            this.ColumnNameService.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnNameService.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // NameDevice
+            // 
+            this.NameDevice.HeaderText = "Имя устройства";
+            this.NameDevice.Name = "NameDevice";
+            this.NameDevice.Width = 150;
+            // 
+            // ColumnSubdivision
+            // 
+            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ColumnSubdivision.HeaderText = "Подразделение (кабинет)";
+            this.ColumnSubdivision.Name = "ColumnSubdivision";
+            this.ColumnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.ColumnSubdivision.Width = 200;
+            // 
+            // ColumnServiceNumb
+            // 
+            this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ColumnServiceNumb.HeaderText = "№ услуги";
+            this.ColumnServiceNumb.Name = "ColumnServiceNumb";
+            this.ColumnServiceNumb.Width = 80;
+            // 
+            // ColumnServiceSumm
+            // 
+            this.ColumnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ColumnServiceSumm.HeaderText = "Сумма";
+            this.ColumnServiceSumm.Name = "ColumnServiceSumm";
+            // 
             // Clients
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1364, 637);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(1722, 637);
             this.Controls.Add(this.tabControlClients);
             this.Controls.Add(this.menuStripMain);
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "Clients";
+            this.Padding = new System.Windows.Forms.Padding(5);
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Клиенты";
             this.tabControlClients.ResumeLayout(false);
             this.tabPageClients.ResumeLayout(false);
@@ -391,12 +404,13 @@
         private System.Windows.Forms.Label labelListContracts;
         private System.Windows.Forms.Label labelListContractsTotals;
         private System.Windows.Forms.DataGridView dataGridViewContract;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnNumb;
-        private System.Windows.Forms.DataGridViewComboBoxColumn columnNameService;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnServiceNumb;
-        private System.Windows.Forms.DataGridViewTextBoxColumn columnServiceSumm;
-        private System.Windows.Forms.DataGridViewComboBoxColumn columnSubdivision;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxTypeContract;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnNumb;
+        private System.Windows.Forms.DataGridViewComboBoxColumn ColumnNameService;
+        private System.Windows.Forms.DataGridViewComboBoxColumn NameDevice;
+        private System.Windows.Forms.DataGridViewComboBoxColumn ColumnSubdivision;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceNumb;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceSumm;
     }
 }
 

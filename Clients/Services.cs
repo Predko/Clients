@@ -35,13 +35,10 @@ namespace Clients
 
         public string Name { get; set; }        // название выполненной работы, например: "Заправка картриджа"
 
-        public Price Val { get; set; }          // стоимость услуги
-
-        public NameWork(string name, Price price)
+        public NameWork(string name)
         {
             this.Id = lastId++;
             this.Name = name;
-            this.Val = price;
         }
     }
     #endregion
@@ -92,8 +89,9 @@ namespace Clients
         public NameWork Nw { get; set; }    // услуга/работа - "Заправка картриджа"
         public NameDevice Nd { get; set; }  // устройство    - "Canon 725"
         public Subdivision Sd { get; set; } // подразделение - "(к. 410)"
+        public Price Value { get; set; }      // стоимость услуги
 
-        public Service(NameWork nw, NameDevice nd, Subdivision sd, int number)
+        public Service(NameWork nw, NameDevice nd, Subdivision sd, int number, Price value)
         {
             Id = lastId++;
 
@@ -101,6 +99,7 @@ namespace Clients
             this.Nd = nd;
             this.Sd = sd;
             this.Number = number;
+            Value = value;
         }
     }
     #endregion

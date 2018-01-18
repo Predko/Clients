@@ -16,7 +16,7 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-        public ListClients clients = new ListClients();
+        public readonly ListClients clients = new ListClients();
 
         
 
@@ -25,6 +25,11 @@ namespace Clients
             InitializeComponent();
 
             InitComboBoxClients();
+        }
+
+        private void dataGridViewContract_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

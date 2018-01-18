@@ -76,7 +76,7 @@ namespace Clients
         // добавить услугу
         public void AddService(Service sv)
         {
-            Summ += sv.Nw.Val.Summ;
+            Summ += sv.Value.Summ;
             services.Add(sv);
         }
 
@@ -87,7 +87,7 @@ namespace Clients
 
             if (i != -1)                                    // если найдена
             {
-                Summ -= services[i].Nw.Val.Summ;            // уменьшаем сумму договора на стоимость этой услуги
+                Summ -= services[i].Value.Summ;            // уменьшаем сумму договора на стоимость этой услуги
                 services.RemoveAt(i);                       // удаляем
             }
         }

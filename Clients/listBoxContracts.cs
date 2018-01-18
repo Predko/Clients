@@ -24,7 +24,9 @@ namespace Clients
             labelContract.Text = String.Format($"Договор № {c.Numb}");
         }
 
-       private void SetClientContracts(Client cl)
+        // Заполняет listBoxContracts списком договоров
+        // при выборе другого клиента
+        private void SetClientContracts(Client cl)
         {
             if (cl == null)
                 return;

@@ -52,24 +52,29 @@ namespace Clients
                                                                 new XElement("Number", t.Numb),
                                                                 new XElement("Date", t.Dt.ToString("d")),
                                                                 new XElement("Summ", t.Summ),
+
                                                                 new XElement("Services", 
                                                                     t.services.Select(s => 
-                                                                    new XElement("Service",
-                                                                    new XElement("Id",s.Id),
-                                                                    new XElement("Number", s.Number),
-                                                                    new XElement("NameWork", 
-                                                                       new XElement("Id",s.Nw.Id),
-                                                                       new XElement("Name", s.Nw.Name),
-                                                                       new XElement("Price",
-                                                                          new XElement("Id", s.Nw.Val.Id),
-                                                                          new XElement("Summ", s.Nw.Val.Summ),
-                                                                          new XElement("Date", s.Nw.Val.Date.ToString("d")))),
-                                                                    new XElement("NameDevice",
-                                                                       new XElement("Id", s.Nd.Id),
-                                                                       new XElement("Name", s.Nd.Name)),
-                                                                    new XElement("Subdivision",
-                                                                       new XElement("Id", s.Sd.Id),
-                                                                       new XElement("Name", s.Sd.Name))
+                                                                        new XElement("Service",
+                                                                        new XElement("Id",s.Id),
+                                                                        new XElement("Number", s.Number),
+
+                                                                        new XElement("Value",
+                                                                            new XElement("Id", s.Value.Id),
+                                                                            new XElement("Summ", s.Value.Summ),
+                                                                            new XElement("Date", s.Value.Date.ToString("d"))),
+
+                                                                        new XElement("NameWork", 
+                                                                           new XElement("Id",s.Nw.Id),
+                                                                           new XElement("Name", s.Nw.Name)),
+
+                                                                        new XElement("NameDevice",
+                                                                           new XElement("Id", s.Nd.Id),
+                                                                           new XElement("Name", s.Nd.Name)),
+
+                                                                        new XElement("Subdivision",
+                                                                           new XElement("Id", s.Sd.Id),
+                                                                           new XElement("Name", s.Sd.Name))
                                                                     )
                                                             ))
                                         ))
@@ -165,6 +170,11 @@ namespace Clients
                     decimal summ = decimal.Parse(element.Element("Summ").Value);
 
                     int number = (int)double.Parse(element.Element("Number").Value);
+
+                    //
+                    //  Здесь загрузить Services
+                    //
+                    //
 
                     client.contracts.Add(new Contract(id, dt, number, summ));
                 }
