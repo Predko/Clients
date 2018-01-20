@@ -266,10 +266,13 @@
             this.dataGridViewContract.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellEndEdit);
             this.dataGridViewContract.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellEnter);
             this.dataGridViewContract.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellLeave);
+            this.dataGridViewContract.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridViewContract_CellStateChanged);
             this.dataGridViewContract.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellValidated);
             this.dataGridViewContract.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellValueChanged);
             this.dataGridViewContract.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewContract_KeyDown);
+            this.dataGridViewContract.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dataGridViewContract_KeyPress);
             this.dataGridViewContract.KeyUp += new System.Windows.Forms.KeyEventHandler(this.dataGridViewContract_KeyUp_1);
+            this.dataGridViewContract.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.dataGridViewContract_PreviewKeyDown);
             // 
             // ColumnNumb
             // 
