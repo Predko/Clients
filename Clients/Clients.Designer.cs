@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControlClients = new System.Windows.Forms.TabControl();
             this.tabPageClients = new System.Windows.Forms.TabPage();
             this.labelListContractsTotals = new System.Windows.Forms.Label();
@@ -53,7 +54,6 @@
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.PanelTabs = new System.Windows.Forms.Panel();
             this.richTextBoxDebug = new System.Windows.Forms.RichTextBox();
-            this.ColumnNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.ColumnNameDevice = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.ColumnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -249,7 +249,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewContract.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewContract.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ColumnNumb,
             this.ColumnNameService,
             this.ColumnNameDevice,
             this.ColumnSubdivision,
@@ -257,6 +256,9 @@
             this.ColumnServiceSumm});
             this.dataGridViewContract.Location = new System.Drawing.Point(6, 71);
             this.dataGridViewContract.Name = "dataGridViewContract";
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewContract.RowTemplate.Height = 28;
             this.dataGridViewContract.Size = new System.Drawing.Size(1225, 481);
             this.dataGridViewContract.StandardTab = true;
@@ -345,14 +347,6 @@
             this.richTextBoxDebug.Size = new System.Drawing.Size(491, 594);
             this.richTextBoxDebug.TabIndex = 5;
             this.richTextBoxDebug.Text = "";
-            // 
-            // ColumnNumb
-            // 
-            this.ColumnNumb.Frozen = true;
-            this.ColumnNumb.HeaderText = "№";
-            this.ColumnNumb.Name = "ColumnNumb";
-            this.ColumnNumb.ReadOnly = true;
-            this.ColumnNumb.Width = 30;
             // 
             // ColumnNameService
             // 
@@ -450,7 +444,6 @@
         private System.Windows.Forms.ComboBox comboBoxTypeContract;
         private System.Windows.Forms.Panel PanelTabs;
         private System.Windows.Forms.RichTextBox richTextBoxDebug;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnNumb;
         private System.Windows.Forms.DataGridViewComboBoxColumn ColumnNameService;
         private System.Windows.Forms.DataGridViewComboBoxColumn ColumnNameDevice;
         private System.Windows.Forms.DataGridViewComboBoxColumn ColumnSubdivision;
