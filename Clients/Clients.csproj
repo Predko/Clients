@@ -46,6 +46,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Contracts.cs" />
+    <Compile Include="DataGridViewContract.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ListBoxContracts.cs">
       <SubType>Form</SubType>
     </Compile>
