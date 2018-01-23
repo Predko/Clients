@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControlClients = new System.Windows.Forms.TabControl();
             this.tabPageClients = new System.Windows.Forms.TabPage();
             this.labelListContractsTotals = new System.Windows.Forms.Label();
@@ -46,6 +47,11 @@
             this.comboBoxClients = new System.Windows.Forms.ComboBox();
             this.tabPageContractEdit = new System.Windows.Forms.TabPage();
             this.dataGridViewContract = new System.Windows.Forms.DataGridView();
+            this.ColumnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnNameDevice = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.comboBoxTypeContract = new System.Windows.Forms.ComboBox();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,11 +60,6 @@
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.PanelTabs = new System.Windows.Forms.Panel();
             this.richTextBoxDebug = new System.Windows.Forms.RichTextBox();
-            this.ColumnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnNameDevice = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControlClients.SuspendLayout();
             this.tabPageClients.SuspendLayout();
             this.tabPageContractEdit.SuspendLayout();
@@ -224,9 +225,9 @@
             this.comboBoxClients.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxClients.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.comboBoxClients.Location = new System.Drawing.Point(8, 48);
+            this.comboBoxClients.Location = new System.Drawing.Point(12, 50);
             this.comboBoxClients.Name = "comboBoxClients";
-            this.comboBoxClients.Size = new System.Drawing.Size(1811, 31);
+            this.comboBoxClients.Size = new System.Drawing.Size(1217, 31);
             this.comboBoxClients.TabIndex = 0;
             this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClients_SelectedIndexChanged);
             // 
@@ -256,27 +257,78 @@
             this.ColumnServiceSumm});
             this.dataGridViewContract.Location = new System.Drawing.Point(6, 71);
             this.dataGridViewContract.Name = "dataGridViewContract";
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewContract.RowTemplate.Height = 28;
             this.dataGridViewContract.Size = new System.Drawing.Size(1225, 481);
             this.dataGridViewContract.StandardTab = true;
             this.dataGridViewContract.TabIndex = 1;
             this.dataGridViewContract.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DataGridViewContract_CellBeginEdit);
             this.dataGridViewContract.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellClick);
-            this.dataGridViewContract.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellEndEdit);
+            this.dataGridViewContract.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellEndEdit);
             this.dataGridViewContract.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellEnter);
-            this.dataGridViewContract.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellLeave);
-            this.dataGridViewContract.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridViewContract_CellStateChanged);
-            this.dataGridViewContract.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellValidated);
-            this.dataGridViewContract.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewContract_CellValueChanged);
+            this.dataGridViewContract.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellLeave);
+            this.dataGridViewContract.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.DataGridViewContract_CellStateChanged);
+            this.dataGridViewContract.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellValidated);
+            this.dataGridViewContract.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellValueChanged);
             this.dataGridViewContract.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.DataGridViewContract_DefaultValuesNeeded);
-            this.dataGridViewContract.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridViewContract_EditingControlShowing);
-            this.dataGridViewContract.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridViewContract_RowValidating);
-            this.dataGridViewContract.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridViewContract_KeyDown);
-            this.dataGridViewContract.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dataGridViewContract_KeyPress);
+            this.dataGridViewContract.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.DataGridViewContract_EditingControlShowing);
+            this.dataGridViewContract.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DataGridViewContract_RowsRemoved);
+            this.dataGridViewContract.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DataGridViewContract_RowValidating);
+            this.dataGridViewContract.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridViewContract_KeyDown);
+            this.dataGridViewContract.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DataGridViewContract_KeyPress);
             this.dataGridViewContract.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.DataGridViewContract_PreviewKeyDown);
+            // 
+            // ColumnNameService
+            // 
+            this.ColumnNameService.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColumnNameService.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.ColumnNameService.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnNameService.HeaderText = "Оказанные услуги";
+            this.ColumnNameService.Name = "ColumnNameService";
+            this.ColumnNameService.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnNameService.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // ColumnNameDevice
+            // 
+            this.ColumnNameDevice.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.ColumnNameDevice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnNameDevice.HeaderText = "Имя устройства";
+            this.ColumnNameDevice.Name = "ColumnNameDevice";
+            this.ColumnNameDevice.Width = 150;
+            // 
+            // ColumnSubdivision
+            // 
+            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ColumnSubdivision.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.ColumnSubdivision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnSubdivision.HeaderText = "Подразделение (кабинет)";
+            this.ColumnSubdivision.Name = "ColumnSubdivision";
+            this.ColumnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.ColumnSubdivision.Width = 200;
+            // 
+            // ColumnServiceNumb
+            // 
+            this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ColumnServiceNumb.HeaderText = "№ услуги";
+            this.ColumnServiceNumb.Name = "ColumnServiceNumb";
+            this.ColumnServiceNumb.Width = 80;
+            // 
+            // ColumnServiceSumm
+            // 
+            this.ColumnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.ColumnServiceSumm.HeaderText = "Сумма";
+            this.ColumnServiceSumm.Name = "ColumnServiceSumm";
             // 
             // comboBoxTypeContract
             // 
@@ -347,48 +399,6 @@
             this.richTextBoxDebug.Size = new System.Drawing.Size(491, 594);
             this.richTextBoxDebug.TabIndex = 5;
             this.richTextBoxDebug.Text = "";
-            // 
-            // ColumnNameService
-            // 
-            this.ColumnNameService.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColumnNameService.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.ColumnNameService.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColumnNameService.HeaderText = "Оказанные услуги";
-            this.ColumnNameService.Name = "ColumnNameService";
-            this.ColumnNameService.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnNameService.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // ColumnNameDevice
-            // 
-            this.ColumnNameDevice.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.ColumnNameDevice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColumnNameDevice.HeaderText = "Имя устройства";
-            this.ColumnNameDevice.Name = "ColumnNameDevice";
-            this.ColumnNameDevice.Width = 150;
-            // 
-            // ColumnSubdivision
-            // 
-            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnSubdivision.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.ColumnSubdivision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColumnSubdivision.HeaderText = "Подразделение (кабинет)";
-            this.ColumnSubdivision.Name = "ColumnSubdivision";
-            this.ColumnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.ColumnSubdivision.Width = 200;
-            // 
-            // ColumnServiceNumb
-            // 
-            this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnServiceNumb.HeaderText = "№ услуги";
-            this.ColumnServiceNumb.Name = "ColumnServiceNumb";
-            this.ColumnServiceNumb.Width = 80;
-            // 
-            // ColumnServiceSumm
-            // 
-            this.ColumnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnServiceSumm.HeaderText = "Сумма";
-            this.ColumnServiceSumm.Name = "ColumnServiceSumm";
             // 
             // Clients
             // 

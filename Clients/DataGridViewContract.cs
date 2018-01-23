@@ -12,11 +12,18 @@ using System.Globalization;
 
 namespace Clients
 {
+    //------------------------------------------------------------------------
+    //                          dataGridViewContract
+    //------------------------------------------------------------------------
+
+
+
     public partial class Clients : Form
     {
-        private bool KeyEnterPressed = false;       // флаг нажатия клавиши Enter
-        private Point EditingCell;                  // координаты редактируемой ячейки
+        private bool NeedNextColumns = false;       // перейти в следующую колонку
 
+
+        //--------- Методы ----------
 
         // Инициализация ячеек, содержащих элемент ComboBoxColumn
         private void InitComboBoxColumns()
@@ -45,14 +52,7 @@ namespace Clients
         //----------------------------------------------------------------------------------------
         private void NextColumn()
         {
-            Point TargetCell = EditingCell;
-            Point cc = dataGridViewContract.CurrentCellAddress;
-
-            if(cc != EditingCell) // можно использовать координаты текущей ячейки?
-            {
-                PrintDebugInfo("NextColumn currentCell:", cc.X, cc.Y);
-                PrintDebugInfo("NextColumn EditingCell:", EditingCell.X, EditingCell.Y);
-            }
+            Point TargetCell = dataGridViewContract.CurrentCellAddress;
 
             // проверяем, последняя ли колонка
             if (TargetCell.X >= dataGridViewContract.ColumnCount - 1)
@@ -60,51 +60,69 @@ namespace Clients
                 TargetCell.X = 0;      // если да, переходим в первую колонку
                 TargetCell.Y++;        // следующей строки
 
-                if (TargetCell.Y == dataGridViewContract.RowCount)
-                {
-                    if (!dataGridViewContract.IsCurrentRowDirty) // нельзя покидать строку, не прошедшую проверку
-                        return;                                  // на правильность значений
-
-                    // добавляем шаблонную строку
-                    dataGridViewContract.Rows.Add();
-                }
+                if (TargetCell.Y == dataGridViewContract.RowCount && !dataGridViewContract.IsCurrentRowDirty)
+                                // нельзя покидать строку, не прошедшую проверку
+                        return; // на правильность значений
             }
             else
                 TargetCell.X++;        // иначе, переходим в следующую колонку
 
-            
-
             // делаем следующую колонку текущей
-            dataGridViewContract.CurrentCell = dataGridViewContract[TargetCell.X, TargetCell.Y];
+            // если её строка создана.
+            // новая строка создаётся автоматически, если последняя редактировалась.
+            if (TargetCell.Y != dataGridViewContract.RowCount)
+                dataGridViewContract.CurrentCell = dataGridViewContract[TargetCell.X, TargetCell.Y];
         }
+
+        // устанавливаем номера строк в заголовки строк, начиная с номера строки beginIndex
+        private void SetRowsHeaderValue(int beginIndex)
+        {
+            while(beginIndex != dataGridViewContract.Rows.Count) // начинаем с заданного индекса
+            {
+                dataGridViewContract.Rows[beginIndex].HeaderCell.Value = String.Format("{0,3}", ++beginIndex);
+            }
+
+            // пересчитываем размер заголовков строк
+            dataGridViewContract.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+        }
+
+        //------------------- События ------------------------
 
         private void DataGridViewContract_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
-            e.Row.HeaderCell.Value = (e.Row.Index + 1).ToString();
-            dataGridViewContract.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+            // Заголовок строки содержит нумерацию строк
+            SetRowsHeaderValue(0);
 
+            // Значения по умолчанию для новых ячеек, содержащих ComboBox
             e.Row.Cells["ColumnNameService"].Value = ColumnNameService.Items[0];
             e.Row.Cells["ColumnNameDevice"].Value = ColumnNameDevice.Items[0];
             e.Row.Cells["ColumnSubdivision"].Value = ColumnSubdivision.Items[0];
 
-            e.Row.Cells["ColumnServiceNumb"].Value = 14;
-            e.Row.Cells["ColumnServiceSumm"].Value = 12;
-
+            // Значения по умолчанию для новых ячеек, содержащих TextBox
+            e.Row.Cells["ColumnServiceNumb"].Value = "";
+            e.Row.Cells["ColumnServiceSumm"].Value = "";
         }
 
-        // проверка правильности введённых значений в строке
-        private void dataGridViewContract_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
+        // при удалении строки, переписываем изначения заголовков строк, начиная со следующей, после удалённой
+        private void DataGridViewContract_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            if (!dataGridViewContract.IsCurrentRowDirty)
-                e.Cancel = true;
+            SetRowsHeaderValue(e.RowIndex);
         }
 
-        private void dataGridViewContract_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        // проверка правильности введённых значений в строке (не работает)
+        private void DataGridViewContract_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
         {
-            if (KeyEnterPressed)
+            //if ((string)dataGridViewContract.Rows[e.RowIndex].Cells["ColumnServiceNumb"].Value == ""
+            //    || (string)dataGridViewContract.Rows[e.RowIndex].Cells["ColumnServiceNumb"].Value == "")
+            //    e.Cancel = true;
+        }
+
+        private void DataGridViewContract_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (NeedNextColumns)
             {
                 NextColumn();               // переходим на следующую ячейку справа
-                KeyEnterPressed = false;
+                NeedNextColumns = false;
             }
 
             #region if DEBUG
@@ -112,24 +130,6 @@ namespace Clients
             PrintDebugInfo("CellEndEdit", e.ColumnIndex, e.RowIndex, "\n{e.Cell.Value}\t{e.Cell.State}");
 #endif
             #endregion
-        }
-
-        // используется для определения текущей ячейки
-        private void dataGridViewContract_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
-        {
-            if (e.Cell.State == DataGridViewElementStates.Selected)     // выбор новой ячейки
-            {
-                EditingCell.X = e.Cell.ColumnIndex; // Фиксируем координаты редактируемой ячейки
-                EditingCell.Y = e.Cell.RowIndex;    //
-            }
-
-        #region if DEBUG
-#if DEBUG
-            Point cc = dataGridViewContract.CurrentCellAddress;
-
-            PrintDebugInfo("CellStateChanged", cc.X, cc.Y, "\n{e.Cell.Value}\n{cc.ToString()}\t{e.Cell.State}");
-#endif
-        #endregion
         }
 
         //------------------------------------------------------------------------------------------------------- 
@@ -158,18 +158,22 @@ namespace Clients
         #endregion
         }
 
-        private void dataGridViewContract_KeyDown(object sender, KeyEventArgs e)
+        private void DataGridViewContract_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            switch (e.KeyCode)
             {
-                KeyEnterPressed = true;  // сообщаем NextColumn(), что нажата Enter
+                case Keys.Enter:
+                case Keys.Tab:
+                    NextColumn();       // делаем активной колонку справа
 
-                NextColumn();           // делаем активной колонку справа
+                    e.Handled = true;   // сообщаем, что нажатие Enter обработано
+                    break;
 
-                e.Handled = true;   // сообщаем, что нажатие Enter обработано
+                case Keys.Delete:
+                    break;
             }
 
-        #region if DEBUG
+            #region if DEBUG
 #if DEBUG
             Point cc = dataGridViewContract.CurrentCellAddress;
 
@@ -191,6 +195,18 @@ namespace Clients
         }
 
 
+        // используется для определения текущей ячейки
+        private void DataGridViewContract_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
+        {
+            #region if DEBUG
+#if DEBUG
+            Point cc = dataGridViewContract.CurrentCellAddress;
+
+            PrintDebugInfo("CellStateChanged", cc.X, cc.Y, "\n{e.Cell.Value}\n{cc.ToString()}\t{e.Cell.State}");
+#endif
+            #endregion
+        }
+
         private void DataGridViewContract_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             PrintDebugInfo("CellClick", e.ColumnIndex, e.RowIndex);
@@ -206,22 +222,22 @@ namespace Clients
             PrintDebugInfo("CellBeginEdit", e.ColumnIndex, e.RowIndex);
         }
 
-        private void dataGridViewContract_CellLeave(object sender, DataGridViewCellEventArgs e)
+        private void DataGridViewContract_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
             PrintDebugInfo("CellLeave", e.ColumnIndex, e.RowIndex);
         }
 
-        private void dataGridViewContract_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DataGridViewContract_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             PrintDebugInfo("CellValueChanged", e.ColumnIndex, e.RowIndex);
         }
 
-        private void dataGridViewContract_CellValidated(object sender, DataGridViewCellEventArgs e)
+        private void DataGridViewContract_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
             PrintDebugInfo("CellValidated", e.ColumnIndex, e.RowIndex);
         }
 
-        private void dataGridViewContract_KeyPress(object sender, KeyPressEventArgs e)
+        private void DataGridViewContract_KeyPress(object sender, KeyPressEventArgs e)
         {
             Point cc = dataGridViewContract.CurrentCellAddress;
 
@@ -240,7 +256,7 @@ namespace Clients
         //-------------------------------------------------------------------------------------------------------
         #region EditingControlShowing, EditingControl_PreviewKeyDown, EditingControl_KeyDown 
 
-        private void dataGridViewContract_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        private void DataGridViewContract_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
 
             // определяем тип редактируемого столбца и перехватыаем нажатие Enter
@@ -291,14 +307,15 @@ namespace Clients
 
         private void DataGridViewEditingControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
             {
                 e.IsInputKey = true;        // разрешаем событие KeyDown для управляющих клавиш
-                KeyEnterPressed = true;
+                                            // из ControlTextBox вызов KeyDown при (KeyCode == Keys.Enter) не происходит
+
+                NeedNextColumns = true;     // необходимо перейти в следующую колонку
 
                 // завершаем редактирование ячейки
-                // (Без этого не работает вызов события DataGridViewEditingControl_KeyDown
-                // там происходит вызов NextColumn()
+                // в EndEdit() происходит вызов NextColumn()
                 dataGridViewContract.EndEdit();
             }
         }
