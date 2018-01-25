@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControlClients = new System.Windows.Forms.TabControl();
             this.tabPageClients = new System.Windows.Forms.TabPage();
             this.labelListContractsTotals = new System.Windows.Forms.Label();
@@ -257,36 +257,21 @@
             this.ColumnServiceSumm});
             this.dataGridViewContract.Location = new System.Drawing.Point(6, 71);
             this.dataGridViewContract.Name = "dataGridViewContract";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewContract.RowTemplate.Height = 28;
             this.dataGridViewContract.Size = new System.Drawing.Size(1225, 481);
             this.dataGridViewContract.StandardTab = true;
             this.dataGridViewContract.TabIndex = 1;
-            this.dataGridViewContract.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DataGridViewContract_CellBeginEdit);
-            this.dataGridViewContract.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellClick);
-            this.dataGridViewContract.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellEndEdit);
-            this.dataGridViewContract.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellEnter);
-            this.dataGridViewContract.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellLeave);
-            this.dataGridViewContract.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.DataGridViewContract_CellStateChanged);
-            this.dataGridViewContract.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellValidated);
-            this.dataGridViewContract.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewContract_CellValueChanged);
-            this.dataGridViewContract.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.DataGridViewContract_DefaultValuesNeeded);
-            this.dataGridViewContract.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.DataGridViewContract_EditingControlShowing);
-            this.dataGridViewContract.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.DataGridViewContract_RowsRemoved);
-            this.dataGridViewContract.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.DataGridViewContract_RowValidating);
-            this.dataGridViewContract.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridViewContract_KeyDown);
-            this.dataGridViewContract.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DataGridViewContract_KeyPress);
-            this.dataGridViewContract.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.DataGridViewContract_PreviewKeyDown);
             // 
             // ColumnNameService
             // 

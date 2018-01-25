@@ -24,7 +24,7 @@ namespace Clients
 
             InitComboBoxClients();
 
-            InitComboBoxColumns();
+            InitDataGridViewContract();
         }
     }
 }
