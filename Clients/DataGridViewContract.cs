@@ -18,12 +18,9 @@ namespace Clients
 
     public partial class Clients : Form
     {
-
+        // Переменные для редактирования ComboBoxCell
         private string cbCellValue;                 // Значение введённой строки в ComboBoxCell
-        private Point cbCellPoint;                  // Координаты редактируемой ячейки ComboBoxCell
         private bool cbNeedFill = false;            // Флаг, указывающий на необходимость зафиксировать введённое значение в ячейке
-        private bool isComboBox = false;
-        private object formattedValue;
 
         // переменные для реализации ввода с перемещением по строке
         private bool NeedBackStyle = false;         // флаг, указывающий на необходимость возврата стиля
@@ -181,7 +178,6 @@ namespace Clients
 
         private void DataGridViewContract_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            return;
             // Завершаем редактирование ComboBoxCell с вводом нового значения
             if (cbNeedFill)
             {
@@ -196,46 +192,18 @@ namespace Clients
             #endregion
         }
 
-        private void EditComboBoxCell(Object f)
-        {
-            var FormattedValue = f;
-
-            Point p = dataGridViewContract.CurrentCellAddress;
-
-            var cbCell = dataGridViewContract[p.X, p.Y] as DataGridViewComboBoxCell;
-
-            if (cbCell?.Items.Contains(FormattedValue) == false)
-            {
-                cbCell.Items.Add(FormattedValue);        // Добавляем новый пункт
-                cbCellValue = FormattedValue.ToString(); // Новое значение в ComboBoxCell
-                cbNeedFill = true;           // необходимо добавить пункт в ComboBoxCell
-            }
-        }
-
         // 
         private void dataGridViewContract_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            return;
-            if (formattedValue != null)
-                EditComboBoxCell(formattedValue);
-            else
-                EditComboBoxCell(e.FormattedValue);
+            // Если эта ячейка DataGridViewComboBoxColumn, добавляем новое значение в список
 
-
-
-            //if (e.ColumnIndex == dataGridViewContract.Columns["ColumnNameService"].Index
-            //    || e.ColumnIndex == dataGridViewContract.Columns["ColumnNameDevice"].Index
-            //    || e.ColumnIndex == dataGridViewContract.Columns["ColumnSubdivision"].Index)
-            //{
-            //    var cbCell = dataGridViewContract[e.ColumnIndex, e.RowIndex] as DataGridViewComboBoxCell;
-
-            //    if (cbCell?.Items.Contains(e.FormattedValue) == false)
-            //    {
-            //        cbCell.Items.Add(e.FormattedValue);        // ???
-            //        cbCellValue = e.FormattedValue.ToString(); // Новое значение в ComboBoxCell
-            //        cbNeedFill = true;           // необходимо добавить пункт в ComboBoxCell
-            //    }
-            //}
+            if (dataGridViewContract.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn ComboBoxColumn
+                && !ComboBoxColumn.Items.Contains(e.FormattedValue))
+            {
+                cbCellValue = e.FormattedValue.ToString();  // Новое значение в ComboBoxCell
+                cbNeedFill = true;                          // необходимо добавить пункт в ComboBoxCell
+                ComboBoxColumn.Items.Add(cbCellValue);      // Добавляем новое значение в список ComboBoxColum
+            }
             #region if DEBUG
 #if DEBUG
             PrintDebugInfo("CellValidating", e.ColumnIndex, e.RowIndex, $"\n{e.FormattedValue}");
@@ -332,16 +300,13 @@ namespace Clients
         {
             // определяем тип редактируемого столбца и перехватыаем нажатие Enter
 
-            var dtb = e.Control as DataGridViewTextBoxEditingControl;
 
-            if (dtb != null)
+            if (e.Control is DataGridViewTextBoxEditingControl dtb)
             {
                 // добавляем события PreviewKeyDown - включаем вызов события KeyDown
                 // KyeDown - указываем что событие обработано (нажатие Enter)
                 dtb.PreviewKeyDown -= DataGridViewTextBoxEditingControl_PreviewKeyDown; // удаляем, если есть
                 dtb.PreviewKeyDown += DataGridViewTextBoxEditingControl_PreviewKeyDown; // добавляем
-
-                isComboBox = false;
 
                 // с данным элементом, событие KeyDown вызывается только после вызова EndEdit()
                 dtb.KeyDown -= DataGridViewEditingControl_KeyDown; // удаляем, если есть
@@ -350,9 +315,8 @@ namespace Clients
                 return;
             }
 
-            var dcb = e.Control as DataGridViewComboBoxEditingControl;
 
-            if (dcb != null)
+            if (e.Control is DataGridViewComboBoxEditingControl dcb)
             {
                 // добавляем события PreviewKeyDown - включаем вызов события KeyDown
                 // KyeDown - указываем что событие обработано(нажатие Enter)
@@ -363,8 +327,7 @@ namespace Clients
                 dcb.KeyDown += DataGridViewEditingControl_KeyDown; // добавляем
 
                 // включаем для ComboBoxCell стиль с редактированием текста и добавлением нового пункта
-                //dcb.DropDownStyle = ComboBoxStyle.DropDown;
-                //isComboBox = true;
+                dcb.DropDownStyle = ComboBoxStyle.DropDown;
 
                 return;
             }
@@ -382,11 +345,6 @@ namespace Clients
                     e.IsInputKey = true;        // разрешаем событие KeyDown для управляющих клавиш
                     break;
             }
-        
-            return;
-            formattedValue = dataGridViewContract.CurrentCell.EditedFormattedValue;
-
-            dataGridViewContract.EndEdit();
         }
 
         //------------------------ для TextBox --------------------------
@@ -398,29 +356,6 @@ namespace Clients
                                             // из ControlTextBox? событие KeyDown вызывается только после вызова EndEdit()
 
                 dataGridViewContract.EndEdit(); // Завершаем редактирование. После этого произойдёт вызов KeyDown
-
-                return;
-                // если ячейка этого типа завершаем редактирование ячейки
-                // в EndEdit() происходит вызов NextColumn()
-                // ячейка DataGridViewComboBoxCell обрабатывается в KeyDown
-
-                if (isComboBox)
-                    formattedValue = dataGridViewContract.CurrentCell.EditedFormattedValue;
-                else
-                    formattedValue = null;
-
-                if (sender is DataGridViewComboBoxCell)
-                {
-                    Object f = dataGridViewContract.CurrentCell.EditedFormattedValue;
-                }
-
-                if (sender is DataGridViewComboBoxEditingControl)
-                {
-                    Object f = dataGridViewContract.CurrentCell.EditedFormattedValue;
-                }
-
-
-
             }
         }
 
@@ -431,12 +366,6 @@ namespace Clients
                 e.Handled = true;
 
                 NextColumn();
-
-                //PrintDebugInfo("EditingControl_KeyDown", currentCell.X, currentCell.Y, $"\n{e.KeyCode.ToString()}");
-
-                return;
-                formattedValue = dataGridViewContract.CurrentCell.FormattedValue;
-
             }
 
             #region if DEBUG
