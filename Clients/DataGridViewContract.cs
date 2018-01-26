@@ -74,6 +74,12 @@ namespace Clients
 
             dataGridViewContract.TopLeftHeaderCell.Value = "№";
 
+            ColumnSubdivision.DisplayIndex = 0;
+            ColumnNameDevice.DisplayIndex = 1;
+            ColumnNameService.DisplayIndex = 2;
+            ColumnServiceNumb.DisplayIndex = 3;
+            ColumnServiceSumm.DisplayIndex = 4;
+
         }
 
         //------------------------------------------------------------------------------------
@@ -104,6 +110,7 @@ namespace Clients
             // Значения по умолчанию для новых ячеек, содержащих TextBox
             e.Row.Cells["ColumnServiceNumb"].Value = "";
             e.Row.Cells["ColumnServiceSumm"].Value = "";
+
         }
 
         // при удалении строки, переписываем изначения заголовков строк, начиная со следующей, после удалённой
@@ -114,19 +121,21 @@ namespace Clients
 
 
         //----------------------------------------------------------------------------------------
-        //                      Переходит на следующую ячейку в строке.
+        //            Переходит на следующую ячейку в строке с учётом DisplayIndex
         //----------------------------------------------------------------------------------------
         private void NextColumn()
         {
             Point currentCell = dataGridViewContract.CurrentCellAddress; // адрес редактируемой ячейки
 
-            // проверяем, последняя ли колонка
-            if (currentCell.X >= dataGridViewContract.ColumnCount - 1)
-            {
-                currentCell.X = 0;      // если да, переходим в первую колонку
-                currentCell.Y++;        // следующей строки
+            var currentColumn = dataGridViewContract.Columns[currentCell.X];
 
-                if (currentCell.Y == dataGridViewContract.RowCount && !dataGridViewContract.IsCurrentRowDirty)
+            if (dataGridViewContract.Columns.GetNextColumn(currentColumn, DataGridViewElementStates.Displayed,
+                                                            DataGridViewElementStates.None) == null)
+            {
+                // это последняя колонка и переходим в первую в следующей строке
+
+                // проверяем, есть ли следующая строка
+                if (currentCell.Y + 1 == dataGridViewContract.RowCount && !dataGridViewContract.IsCurrentRowDirty)
                 {
                     // нельзя покидать строку, если не создана новая
                     // и текущая прошла проверку на правильность значений
@@ -139,10 +148,10 @@ namespace Clients
 
                 // делаем цвет выделенной ячейки равным цвету невыделенной ячейки
                 // Это сделает незаметным переход в следующую
-                dataGridViewContract.DefaultCellStyle.SelectionBackColor 
+                dataGridViewContract.DefaultCellStyle.SelectionBackColor
                                         = dataGridViewContract.DefaultCellStyle.BackColor;
 
-                dataGridViewContract.DefaultCellStyle.SelectionForeColor 
+                dataGridViewContract.DefaultCellStyle.SelectionForeColor
                                         = dataGridViewContract.DefaultCellStyle.ForeColor;
 
                 SendKeys.Send("{DOWN}");    // эмулируем нажатие клавиши "Down" - уходим из этой строки в следующую
@@ -151,10 +160,9 @@ namespace Clients
                 NeedBackStyle = true;       // Сообщаем, что нужно вернуть сохранённые цвета выделенной ячейки
             }
             else
-            {
-                currentCell.X++;             // иначе, переходим в следующую колонку
+            {   // иначе, переходим в следующую ячейку справа(в соответствии с DisplayIndex)
+
                 SendKeys.Send("{RIGHT}");   // эмулируем нажатие клавиши "Right" - уходим из этой ячейки в следующую
-                                            // Важно! При изменении клавиши перехода, изменить обработку в PreviewKeyDown и KeyDown
             }
 
             #region if DEBUG
@@ -197,12 +205,14 @@ namespace Clients
         {
             // Если эта ячейка DataGridViewComboBoxColumn, добавляем новое значение в список
 
-            if (dataGridViewContract.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn ComboBoxColumn
-                && !ComboBoxColumn.Items.Contains(e.FormattedValue))
+            if (dataGridViewContract.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn ComboBoxColumn    // это ComboBox
+                && !ComboBoxColumn.Items.Contains(e.FormattedValue)                                         // этой строки ещё нет
+                && e.FormattedValue.ToString().Trim() != "")                                                // строка не пустая
             {
                 cbCellValue = e.FormattedValue.ToString();  // Новое значение в ComboBoxCell
                 cbNeedFill = true;                          // необходимо добавить пункт в ComboBoxCell
                 ComboBoxColumn.Items.Add(cbCellValue);      // Добавляем новое значение в список ComboBoxColum
+//                dataGridViewContract[e.ColumnIndex, e.RowIndex].Value = cbCellValue;
             }
             #region if DEBUG
 #if DEBUG
