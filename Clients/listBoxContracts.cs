@@ -12,7 +12,7 @@ namespace Clients
         //
         //      Выбор элемента listBoxContracts
         //
-        private void listBoxContracts_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBoxContracts_SelectedIndexChanged(object sender, EventArgs e)
         {
             int i = listBoxContracts.SelectedIndex;
 

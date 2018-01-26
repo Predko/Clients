@@ -218,7 +218,7 @@
             this.listBoxContracts.Name = "listBoxContracts";
             this.listBoxContracts.Size = new System.Drawing.Size(454, 326);
             this.listBoxContracts.TabIndex = 1;
-            this.listBoxContracts.SelectedIndexChanged += new System.EventHandler(this.listBoxContracts_SelectedIndexChanged);
+            this.listBoxContracts.SelectedIndexChanged += new System.EventHandler(this.ListBoxContracts_SelectedIndexChanged);
             // 
             // comboBoxClients
             // 
@@ -242,6 +242,7 @@
             this.tabPageContractEdit.TabIndex = 1;
             this.tabPageContractEdit.Text = "Договор";
             this.tabPageContractEdit.UseVisualStyleBackColor = true;
+            this.tabPageContractEdit.Enter += new System.EventHandler(this.TabPageContractEdit_Enter);
             // 
             // dataGridViewContract
             // 

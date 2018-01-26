@@ -146,7 +146,7 @@ namespace Clients
         {
             clients.Clear();
  
-            #region CultureInfo
+            #region CultureInfo setting
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
 
             ci = (CultureInfo)ci.Clone();
@@ -176,7 +176,7 @@ namespace Clients
                     //
                     //
 
-                    client.contracts.Add(new Contract(id, dt, number, summ));
+                    client.contracts.Add(new Contract(client, dt, number, summ));
                 }
                 clients.Add(client);
             }

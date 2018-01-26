@@ -24,7 +24,10 @@ namespace Clients
 
             InitComboBoxClients();
 
+            InitTabPageContractEdit();
+
             InitDataGridViewContract();
         }
+
     }
 }

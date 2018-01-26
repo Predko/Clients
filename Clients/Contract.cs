@@ -27,7 +27,7 @@ namespace Clients
 
         public readonly List<Service> services;             // Список оказанных услуг
 
-        public int IdClient;                                // Для совместимости со старой базой данных.
+        public Client Client { get; set; }                  // ссылка на владельца договора
 
 
         public Contract()
@@ -41,10 +41,9 @@ namespace Clients
 
         // этот конструктор нужен для совместимости со старой базой данных,
         // в которой нет списка услуг и есть только общая сумма
-        public Contract(int idclient, DateTime dt, int numb, decimal summ)
+        public Contract(Client client, DateTime dt, int numb, decimal summ)
         {
-            this.IdClient = idclient;
-
+            this.Client = client;
             this.Id = lastId++;
             this.Dt = dt;
             this.Numb = numb;
