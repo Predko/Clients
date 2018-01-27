@@ -9,6 +9,9 @@ namespace Clients
 {
     public partial class Clients : Form
     {
+        private Client currentClient = null;      // текущий клиент
+
+
         private void InitComboBoxClients()
         {
             clients.ListClientsChanged += ChangeComboBoxClients;
@@ -19,12 +22,12 @@ namespace Clients
         //
         private void ComboBoxClients_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Client cl = (Client)((ComboBox)sender).SelectedItem;
+            currentClient = (Client)((ComboBox)sender).SelectedItem;
 
             // заполняем listBoxContracts текущим списком договоров
             listBoxContracts.BeginUpdate();
 
-            SetClientContracts(cl);
+            SetClientContracts(currentClient);
 
             listBoxContracts.EndUpdate();
         }

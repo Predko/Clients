@@ -14,6 +14,12 @@ using static System.Console;
 
 namespace Clients
 {
+    enum TabPageIndex
+    {
+        Clients,
+        ContractEdit
+    }
+
     public partial class Clients : Form
     {
         public readonly ListClients clients = new ListClients();
@@ -24,10 +30,11 @@ namespace Clients
 
             InitComboBoxClients();
 
+            InitDataGridViewContract();
+
             InitTabPageContractEdit();
 
-            InitDataGridViewContract();
+            InitTabControlClients();
         }
-
     }
 }

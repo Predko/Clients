@@ -12,20 +12,23 @@ namespace Clients
 
 
 
+        //---------------------------------------------
+        // инициализация вкладки "Договор"
+        // 
         private void InitTabPageContractEdit()
         {
-
+            tabPageContractEdit.Enter += TabPageContractEdit_Enter;
         }
 
-
-
-
-
-
-
+        //---------------------------------------------
+        // Заполняем вкладку информацией о выбранном договоре
+        //
         private void TabPageContractEdit_Enter(object sender, EventArgs e)
         {
-            
+            labelClientName.Text = currentClient.name;  // Название клиента
+
+
+
         }
     }
 }

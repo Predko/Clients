@@ -46,6 +46,7 @@
             this.listBoxContracts = new System.Windows.Forms.ListBox();
             this.comboBoxClients = new System.Windows.Forms.ComboBox();
             this.tabPageContractEdit = new System.Windows.Forms.TabPage();
+            this.labelClientName = new System.Windows.Forms.Label();
             this.dataGridViewContract = new System.Windows.Forms.DataGridView();
             this.ColumnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.ColumnNameDevice = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -77,7 +78,7 @@
             this.tabControlClients.Location = new System.Drawing.Point(0, 0);
             this.tabControlClients.Name = "tabControlClients";
             this.tabControlClients.SelectedIndex = 0;
-            this.tabControlClients.Size = new System.Drawing.Size(1245, 594);
+            this.tabControlClients.Size = new System.Drawing.Size(1245, 709);
             this.tabControlClients.TabIndex = 2;
             // 
             // tabPageClients
@@ -100,7 +101,7 @@
             this.tabPageClients.Margin = new System.Windows.Forms.Padding(5);
             this.tabPageClients.Name = "tabPageClients";
             this.tabPageClients.Padding = new System.Windows.Forms.Padding(5);
-            this.tabPageClients.Size = new System.Drawing.Size(1237, 558);
+            this.tabPageClients.Size = new System.Drawing.Size(1237, 673);
             this.tabPageClients.TabIndex = 0;
             this.tabPageClients.Text = "Клиенты";
             this.tabPageClients.UseVisualStyleBackColor = true;
@@ -233,16 +234,25 @@
             // 
             // tabPageContractEdit
             // 
+            this.tabPageContractEdit.Controls.Add(this.labelClientName);
             this.tabPageContractEdit.Controls.Add(this.dataGridViewContract);
             this.tabPageContractEdit.Controls.Add(this.comboBoxTypeContract);
             this.tabPageContractEdit.Location = new System.Drawing.Point(4, 32);
             this.tabPageContractEdit.Name = "tabPageContractEdit";
             this.tabPageContractEdit.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageContractEdit.Size = new System.Drawing.Size(1237, 558);
+            this.tabPageContractEdit.Size = new System.Drawing.Size(1237, 673);
             this.tabPageContractEdit.TabIndex = 1;
             this.tabPageContractEdit.Text = "Договор";
             this.tabPageContractEdit.UseVisualStyleBackColor = true;
-            this.tabPageContractEdit.Enter += new System.EventHandler(this.TabPageContractEdit_Enter);
+            // 
+            // labelClientName
+            // 
+            this.labelClientName.AutoSize = true;
+            this.labelClientName.Location = new System.Drawing.Point(7, 7);
+            this.labelClientName.Name = "labelClientName";
+            this.labelClientName.Size = new System.Drawing.Size(186, 23);
+            this.labelClientName.TabIndex = 2;
+            this.labelClientName.Text = "Название клиента";
             // 
             // dataGridViewContract
             // 
@@ -256,7 +266,7 @@
             this.ColumnSubdivision,
             this.ColumnServiceNumb,
             this.ColumnServiceSumm});
-            this.dataGridViewContract.Location = new System.Drawing.Point(6, 71);
+            this.dataGridViewContract.Location = new System.Drawing.Point(6, 151);
             this.dataGridViewContract.Name = "dataGridViewContract";
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -270,7 +280,7 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
             this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewContract.RowTemplate.Height = 28;
-            this.dataGridViewContract.Size = new System.Drawing.Size(1225, 481);
+            this.dataGridViewContract.Size = new System.Drawing.Size(1225, 516);
             this.dataGridViewContract.StandardTab = true;
             this.dataGridViewContract.TabIndex = 1;
             // 
@@ -322,7 +332,7 @@
             this.comboBoxTypeContract.Items.AddRange(new object[] {
             "Договор №",
             "Акт выполненных работ №"});
-            this.comboBoxTypeContract.Location = new System.Drawing.Point(368, 25);
+            this.comboBoxTypeContract.Location = new System.Drawing.Point(367, 114);
             this.comboBoxTypeContract.Name = "comboBoxTypeContract";
             this.comboBoxTypeContract.Size = new System.Drawing.Size(418, 31);
             this.comboBoxTypeContract.TabIndex = 0;
@@ -374,7 +384,7 @@
             this.PanelTabs.Dock = System.Windows.Forms.DockStyle.Left;
             this.PanelTabs.Location = new System.Drawing.Point(5, 38);
             this.PanelTabs.Name = "PanelTabs";
-            this.PanelTabs.Size = new System.Drawing.Size(1245, 594);
+            this.PanelTabs.Size = new System.Drawing.Size(1245, 709);
             this.PanelTabs.TabIndex = 4;
             // 
             // richTextBoxDebug
@@ -382,7 +392,7 @@
             this.richTextBoxDebug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxDebug.Location = new System.Drawing.Point(1250, 38);
             this.richTextBoxDebug.Name = "richTextBoxDebug";
-            this.richTextBoxDebug.Size = new System.Drawing.Size(491, 594);
+            this.richTextBoxDebug.Size = new System.Drawing.Size(491, 709);
             this.richTextBoxDebug.TabIndex = 5;
             this.richTextBoxDebug.Text = "";
             // 
@@ -391,7 +401,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1746, 637);
+            this.ClientSize = new System.Drawing.Size(1746, 752);
             this.Controls.Add(this.richTextBoxDebug);
             this.Controls.Add(this.PanelTabs);
             this.Controls.Add(this.menuStripMain);
@@ -404,6 +414,7 @@
             this.tabPageClients.ResumeLayout(false);
             this.tabPageClients.PerformLayout();
             this.tabPageContractEdit.ResumeLayout(false);
+            this.tabPageContractEdit.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewContract)).EndInit();
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
@@ -445,6 +456,7 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn ColumnSubdivision;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceNumb;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceSumm;
+        private System.Windows.Forms.Label labelClientName;
     }
 }
 
