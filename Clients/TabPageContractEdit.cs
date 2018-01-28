@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 using System.Threading.Tasks;
 
 namespace Clients
@@ -25,10 +26,15 @@ namespace Clients
         //
         private void TabPageContractEdit_Enter(object sender, EventArgs e)
         {
-            labelClientName.Text = currentClient.name;  // Название клиента
+            labelClientName.Text = CurrentClient.name;  // Название клиента
 
+            Contract contract = (Contract)listBoxContracts.SelectedItem;
 
+            comboBoxTypeContract.Items[0] = String.Format($"Договор № {contract.Numb} от {contract.Dt:d}");
 
+            comboBoxTypeContract.Items[1] = String.Format($"Акт приёмки сдачи работ № {contract.Numb} от {contract.Dt:d}");
+
+            comboBoxTypeContract.SelectedIndex = (int)contract.Type;
         }
     }
 }

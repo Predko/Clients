@@ -9,29 +9,48 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-        private Client currentClient = null;      // текущий клиент
+        private Client _currentClient = null;
 
+        private Client CurrentClient        // выбранный клиент
+        {
+            get
+            {
+                return _currentClient;
+            }
+            set
+            {
+                _currentClient = value;
+            }
+        }
 
+        //-------------------------------------------------------------
+        //      Инициализация comboBoxClients
+        //
         private void InitComboBoxClients()
         {
             clients.ListClientsChanged += ChangeComboBoxClients;
         }
 
-        //
+        //-------------------------------------------------------------
         //      Выбор элемента comboBoxClients
         //
         private void ComboBoxClients_SelectedIndexChanged(object sender, EventArgs e)
         {
-            currentClient = (Client)((ComboBox)sender).SelectedItem;
+            CurrentClient = (Client)((ComboBox)sender).SelectedItem;
 
             // заполняем listBoxContracts текущим списком договоров
             listBoxContracts.BeginUpdate();
 
-            SetClientContracts(currentClient);
+            SetClientContracts(CurrentClient);
 
             listBoxContracts.EndUpdate();
         }
 
+        //---------------------------------------------------------------
+        // Событие по изменению списка клиентов:
+        // - добавление нового
+        // - очистка списка
+        // - установка по индексу
         public void ChangeComboBoxClients(Object sender, ChangedListClientsEventArgs e)
         {
             switch (e.change)

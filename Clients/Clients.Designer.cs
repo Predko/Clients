@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControlClients = new System.Windows.Forms.TabControl();
             this.tabPageClients = new System.Windows.Forms.TabPage();
             this.labelListContractsTotals = new System.Windows.Forms.Label();
@@ -234,16 +234,17 @@
             // 
             // tabPageContractEdit
             // 
+            this.tabPageContractEdit.BackColor = System.Drawing.Color.Transparent;
             this.tabPageContractEdit.Controls.Add(this.labelClientName);
             this.tabPageContractEdit.Controls.Add(this.dataGridViewContract);
             this.tabPageContractEdit.Controls.Add(this.comboBoxTypeContract);
+            this.tabPageContractEdit.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPageContractEdit.Location = new System.Drawing.Point(4, 32);
             this.tabPageContractEdit.Name = "tabPageContractEdit";
             this.tabPageContractEdit.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageContractEdit.Size = new System.Drawing.Size(1237, 673);
             this.tabPageContractEdit.TabIndex = 1;
             this.tabPageContractEdit.Text = "Договор";
-            this.tabPageContractEdit.UseVisualStyleBackColor = true;
             // 
             // labelClientName
             // 
@@ -268,17 +269,17 @@
             this.ColumnServiceSumm});
             this.dataGridViewContract.Location = new System.Drawing.Point(6, 151);
             this.dataGridViewContract.Name = "dataGridViewContract";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridViewContract.RowTemplate.Height = 28;
             this.dataGridViewContract.Size = new System.Drawing.Size(1225, 516);
             this.dataGridViewContract.StandardTab = true;

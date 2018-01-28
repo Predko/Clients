@@ -48,7 +48,11 @@ namespace Clients
             //
             labelListContractsTotals.Text = String.Format($"Договоров: {cl.contracts.Count,-5}  на сумму: {Summ:C}");
 
-            String numb = (cl.contracts.Count != 0) ? cl.contracts[0].Numb.ToString() : "";
+            listBoxContracts.SelectedIndex = 0;
+
+            Contract contract = (Contract)listBoxContracts.SelectedItem;
+
+            String numb = (contract != null) ? contract.Numb.ToString() : "";
 
             labelContract.Text = String.Format($"Договор № {numb}");
         }

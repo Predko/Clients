@@ -14,12 +14,11 @@ namespace Clients
             tabControlClients.Selecting += TabControlClients_Selecting;
         }
 
-
         private void TabControlClients_Selecting(object sender, TabControlCancelEventArgs e)
         {
             if(e.TabPage.Name == "tabPageContractEdit") // если выбрана вкладка "Договор" 
             {
-                if (currentClient == null)  // если текущий клиент не зашружен/выбран, не разрешаем открытие вкладки
+                if (CurrentClient == null)  // если текущий клиент не загружен/выбран, не разрешаем открытие вкладки
                 {
                     e.Cancel = true;
                     return;

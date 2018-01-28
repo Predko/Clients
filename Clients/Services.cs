@@ -6,8 +6,8 @@ using System.Text;
 namespace Clients
 {
     // Стоимость услуги с датой изменения цены
-    #region class Price
-    public class Price
+    #region struct Price
+    public struct Price
     {
         private static int lastId = 1;      // последний не использованный идентификатор.
                                                 // инкрементируется при создании объекта
@@ -26,8 +26,8 @@ namespace Clients
     #endregion
 
     // услуга(работа)
-    #region class NameWork
-    public class NameWork
+    #region struct NameWork
+    public struct NameWork
     {
         private static int lastId = 1;          // последний не использованный идентификатор.
                                                     // инкрементируется при создании объекта
@@ -44,8 +44,8 @@ namespace Clients
     #endregion
 
     // подразделение, для которого выполнена работа
-    #region class Subdivision
-    public class Subdivision
+    #region struct Subdivision
+    public struct Subdivision
     {
         private static int lastId = 1;      // последний не использованный идентификатор.
                                                 // инкрементируется при создании объекта
@@ -61,8 +61,8 @@ namespace Clients
     #endregion
 
     // Название устройства
-    #region class NameDevice
-    public class NameDevice
+    #region struct NameDevice
+    public struct NameDevice
     {
         private static int lastId = 1;      // последний не использованный идентификатор.
                                                 // инкрементируется при создании объекта
@@ -101,6 +101,9 @@ namespace Clients
             this.Number = number;
             Value = value;
         }
+
+        // клонируем Service
+        public Service Clone() => new Service(Nw, Nd, Sd, Number, Value);
     }
     #endregion
 

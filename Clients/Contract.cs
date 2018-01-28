@@ -8,9 +8,17 @@ using System.Windows.Forms;
 
 namespace Clients
 {
+    public enum TypeContract
+    {
+        Contract,
+        СWC         // Сompleted Works Certificate - акт выполненных работ
+    }
+    
+    
     // Договор с клиентом.
     // Включает идентификатор, дату, номер, сумму
     // и список оказанных по данному договору услуг
+    // а также ссылку на владельца договора
     // Номер договора устанавливается при создании экземпляра
     // Нумерация начинается с 1 с начала года
     public class Contract
@@ -25,6 +33,8 @@ namespace Clients
         public decimal Summ { get; set; }                   // Сумма по договору. 
                                                             // Вычисляется из сумм всех оказанных услуг
 
+        public TypeContract Type { get; set; }              // тип договора
+
         public readonly List<Service> services;             // Список оказанных услуг
 
         public Client Client { get; set; }                  // ссылка на владельца договора
@@ -36,18 +46,20 @@ namespace Clients
             this.Dt = DateTime.Now;
             this.Numb = IncNumb();
             this.Summ = 0;
+            Type = TypeContract.Contract;
             services = new List<Service>();
         }
 
         // этот конструктор нужен для совместимости со старой базой данных,
         // в которой нет списка услуг и есть только общая сумма
-        public Contract(Client client, DateTime dt, int numb, decimal summ)
+        public Contract(Client client, DateTime dt, int numb, decimal summ, TypeContract type = TypeContract.Contract)
         {
             this.Client = client;
             this.Id = lastId++;
             this.Dt = dt;
             this.Numb = numb;
             this.Summ = summ;
+            this.Type = type;
             services = new List<Service>();
         }
 
@@ -89,6 +101,17 @@ namespace Clients
                 Summ -= services[i].Value.Summ;            // уменьшаем сумму договора на стоимость этой услуги
                 services.RemoveAt(i);                       // удаляем
             }
+        }
+        
+        // клонируем Contract
+        public Contract Clone()
+        {
+            Contract contract = new Contract(Client, Dt, Numb, Summ, Type);
+
+            foreach(Service service in this.services)
+                contract.services.Add(service.Clone());
+
+            return contract;
         }
     }
 }
