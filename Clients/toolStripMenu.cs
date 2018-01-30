@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Data;
 
 namespace Clients
 {
@@ -76,16 +77,33 @@ namespace Clients
                 int x2 = GetIndexFromString(pa[2].Value);
                 int y2 = int.Parse(pa[3].Value);
 
-                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[2];
+                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[1];
                 ExcelApp.Visible = true;
 
-                for(int j = y1; j <= y2; j++)
+                // Создаём таблицу для хранения записей из xls файла
+                DataTable dt = new DataTable("dtContract");
+
+                // добавляем колонки в таблицу
+                for (int i = x1; i != x2 + 1; i++)
+                    dt.Columns.Add(i.ToString());
+
+                // текущая строка таблицы
+                DataRow dr;
+
+                for (int j = y1; j <= y2; j++)
+                {
+                    dr = dt.Rows.Add();
+
                     for (int i = x1; i <= x2; i++)
                     {
-                        ((Excel.Range)xlWorkSheet.Cells[j, i]).Value2 = (i * j).ToString();
+                        string s = ((Excel.Range)xlWorkSheet.Cells[j, i]).Value2?.ToString();
+
+                        dr.SetField<string>(i - 1, s);
                     }
+                }
 
 
+                xlWorkBook.Close();
                 //.Select(s => int.Parse(s)).ToArray();
                 //int[] i = reg.Split(printArea).Select(s => int.Parse(s)).ToArray();
 
@@ -103,6 +121,12 @@ namespace Clients
             }
 
             return index;
+        }
+
+
+        private void ToolStripMenuItemReadXlsOLEDB_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
