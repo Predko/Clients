@@ -10,6 +10,7 @@ namespace Clients
 {
     public partial class Clients : Form
     {
+        DataTable dtFile_xls;
 
         private void ToolStripMenuItemExit_Click(object sender, EventArgs e)
         {
@@ -42,72 +43,100 @@ namespace Clients
         // Чтение данных о договоре из файла xls
         private void ToolStripMenuItemRead_xls_Click(object sender, EventArgs e)
         {
-            Excel.Application ExcelApp;
-            Excel.Workbook xlWorkBook;
-            Excel.Worksheet xlWorkSheet;
-
-
             OpenFileDialog fd = new OpenFileDialog();
             fd.Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx|All files (*.*)|*.*";
             fd.FilterIndex = 0;
 
             if (fd.ShowDialog() == DialogResult.OK)
             {
-                ExcelApp = new Excel.Application();
-
-                xlWorkBook = ExcelApp.Workbooks.Open(fd.FileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                                                                  Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                                                                  Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                                                                  Type.Missing, Type.Missing);
-
-                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[1];
-
-                string printArea = xlWorkSheet.PageSetup.PrintArea;
-
-                Regex reg = new Regex(@"\b\w+\b");
-
-                var pa = reg.Matches(printArea);
-
-                if (pa.Count != 4)
-                    return;         // должно быть 4 значения: (x1,y1,x2,y2)
-
-                int x1 = GetIndexFromString(pa[0].Value);
-                int y1 = int.Parse(pa[1].Value);
-
-                int x2 = GetIndexFromString(pa[2].Value);
-                int y2 = int.Parse(pa[3].Value);
-
-                xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[1];
-                ExcelApp.Visible = true;
-
-                // Создаём таблицу для хранения записей из xls файла
-                DataTable dt = new DataTable("dtContract");
-
-                // добавляем колонки в таблицу
-                for (int i = x1; i != x2 + 1; i++)
-                    dt.Columns.Add(i.ToString());
-
-                // текущая строка таблицы
-                DataRow dr;
-
-                for (int j = y1; j <= y2; j++)
-                {
-                    dr = dt.Rows.Add();
-
-                    for (int i = x1; i <= x2; i++)
-                    {
-                        string s = ((Excel.Range)xlWorkSheet.Cells[j, i]).Value2?.ToString();
-
-                        dr.SetField<string>(i - 1, s);
-                    }
-                }
-
-
-                xlWorkBook.Close();
-                //.Select(s => int.Parse(s)).ToArray();
-                //int[] i = reg.Split(printArea).Select(s => int.Parse(s)).ToArray();
-
+                dtFile_xls = GetDataFrom_xls(fd.FileName);
+                if (dtFile_xls == null)     // Ошибка - таблица не заполнена
+                    return;
             }
+
+            ShowDataTable();
+        }
+
+        private void ShowDataTable()
+        {
+            BindingSource bindingDataTable = new BindingSource();
+
+            FormShowDataTable fs = new FormShowDataTable();
+
+            fs.dataGridViewFile_xls.DataSource = bindingDataTable;
+
+            fs.dataGridViewFile_xls.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader);
+
+            bindingDataTable.DataSource = dtFile_xls;
+
+            fs.Show();
+        }
+
+
+
+        public DataTable GetDataFrom_xls(string filename)
+        {
+            Excel.Application ExcelApp;
+            Excel.Workbook xlWorkBook;
+            Excel.Worksheet xlWorkSheet;
+
+            ExcelApp = new Excel.Application();
+
+            xlWorkBook = ExcelApp.Workbooks.Open(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                                                              Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                                                              Type.Missing, Type.Missing, Type.Missing, Type.Missing,
+                                                              Type.Missing, Type.Missing);
+
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[1];
+
+            string printArea = xlWorkSheet.PageSetup.PrintArea;
+
+            Regex reg = new Regex(@"\b\w+\b");
+
+            var pa = reg.Matches(printArea);
+
+            if (pa.Count != 4)
+            {
+                MessageBox.Show("Ошибка распознавания области печати");
+
+                return null;         // должно быть 4 значения: (x1,y1,x2,y2)
+            }
+
+            int x1 = GetIndexFromString(pa[0].Value);
+            int y1 = int.Parse(pa[1].Value);
+
+            int x2 = GetIndexFromString(pa[2].Value);
+            int y2 = int.Parse(pa[3].Value);
+
+            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[1];
+            ExcelApp.Visible = true;
+
+            // Создаём таблицу для хранения записей из xls файла
+            DataTable dt = new DataTable("dtContract");
+
+            // добавляем колонки в таблицу
+            for (int i = x1; i != x2 + 1; i++)
+                dt.Columns.Add(i.ToString());
+
+            // текущая строка таблицы
+            DataRow dr;
+
+            for (int j = y1; j <= y2; j++)
+            {
+                dr = dt.Rows.Add();
+
+                for (int i = x1; i <= x2; i++)
+                {
+                    string s = ((Excel.Range)xlWorkSheet.Cells[j, i]).Value2?.ToString();
+
+                    dr.SetField<string>(i - 1, s);
+                }
+            }
+
+
+            xlWorkBook.Close();
+
+            return dt;
         }
 
         private int GetIndexFromString(string s)

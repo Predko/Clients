@@ -17,22 +17,40 @@ namespace Clients
 {
     public class Client
     {
-        public int id;
-        public string name;
+        private static int lastId = 1;      // последний не использованный идентификатор.
+
+        public int Id;                      // идентификатор записи
+        public string Name;                 // Название организации
+        public string SettlementAccount;    // Расчётный счёт
+        public string City;                 // Населённый пункт
+        public string Address;              // Адрес
 
         public Contracts contracts = new Contracts(); // список договоров с данным клиентом
 
 
 
-        public Client(string name, int id)
+        public Client()
         {
-            this.id = id;
-            this.name = name;
+            this.Id = lastId++;
+
+            this.Name = String.Empty;
+            this.SettlementAccount = String.Empty;
+            this.City = String.Empty;
+            this.Address = String.Empty;
+        }
+
+        public Client(string Name, int Id, string SettlementAccount = "", string City = "", string Address = "")
+        {
+            this.Id = Id;
+            this.Name = Name;
+            this.SettlementAccount = SettlementAccount;
+            this.City = City;
+            this.Address = Address;
         }
 
         public override string ToString()
         {
-            return String.Format($"{id,5} {name}");
+            return String.Format($"{this.Name}");
         }
 
     }

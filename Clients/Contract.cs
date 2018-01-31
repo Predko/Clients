@@ -25,13 +25,17 @@ namespace Clients
     {
         private static int lastYear = DateTime.Now.Year;    // год в последнем договоре с номером lastNumb
         private static int lastId = 1;                      // последний не использованный идентификатор.
-                                                                // инкрементируется при создании объекта
+                                                            // инкрементируется при создании объекта
         private static int lastNumb = 1;                    // номер последнего договора.
+
+        public bool Signed;                                 // договор подписан и возвращён = true. Иначе - false
         public int Id { get; set; }                         // Идентификатор договора
         public DateTime Dt { get; set; }                    // дата договора(устанавливается на текущую)
         public int Numb { get; set; }                       // Номер договора
         public decimal Summ { get; set; }                   // Сумма по договору. 
                                                             // Вычисляется из сумм всех оказанных услуг
+
+        public string FileName;                             // имя файла договора
 
         public TypeContract Type { get; set; }              // тип договора
 
@@ -42,24 +46,30 @@ namespace Clients
 
         public Contract()
         {
+            this.Signed = false;
             this.Id = lastId++;
             this.Dt = DateTime.Now;
             this.Numb = IncNumb();
             this.Summ = 0;
+            this.FileName = String.Empty;
             Type = TypeContract.Contract;
             services = new List<Service>();
         }
 
         // этот конструктор нужен для совместимости со старой базой данных,
         // в которой нет списка услуг и есть только общая сумма
-        public Contract(Client client, DateTime dt, int numb, decimal summ, TypeContract type = TypeContract.Contract)
+        public Contract(Client client, int Id, DateTime dt, int numb, decimal summ, bool signed = false, 
+                                    string FileName = "", TypeContract type = TypeContract.Contract)
         {
             this.Client = client;
-            this.Id = lastId++;
+            this.Id = Id;
             this.Dt = dt;
             this.Numb = numb;
             this.Summ = summ;
+            this.Signed = signed;
+            this.FileName = FileName;
             this.Type = type;
+
             services = new List<Service>();
         }
 
@@ -106,7 +116,7 @@ namespace Clients
         // клонируем Contract
         public Contract Clone()
         {
-            Contract contract = new Contract(Client, Dt, Numb, Summ, Type);
+            Contract contract = new Contract(this.Client, this.Id, this.Dt, this.Numb, this.Summ, this.Signed, this.FileName, this.Type);
 
             foreach(Service service in this.services)
                 contract.services.Add(service.Clone());

@@ -44,39 +44,45 @@ namespace Clients
                     new XDeclaration("1.0", "utf-8", "yes"),
                         new XElement(ns + "Clients",
                         clients.Select(c => new XElement("Client",
-                            new XElement("Id", c.id),
-                            new XElement("Name", c.name),
-                            new XElement("Contracts", new XAttribute("Count", c.contracts.Count),
-                                                            c.contracts.Select(t =>
-                                                                new XElement("Contract",
-                                                                new XElement("Number", t.Numb),
-                                                                new XElement("Date", t.Dt.ToString("d")),
-                                                                new XElement("Summ", t.Summ),
+                            new XElement("Id", c.Id),
+                            new XElement("Name", c.Name),
+                            new XElement("SettlementAccount", c.SettlementAccount),
+                            new XElement("City", c.City),
+                            new XElement("Address", c.Address),
+                            new XElement("Contracts", 
+                                new XAttribute("Count", c.contracts.Count),
+                                c.contracts.Select(t =>
+                                new XElement("Contract",
+                                    new XElement("Id", t.Id),
+                                    new XElement("Date", t.Dt.ToString("d")),
+                                    new XElement("Number", t.Numb),
+                                    new XElement("Summ", t.Summ),
+                                    new XElement("Signed", t.Signed),
+                                    new XElement("FileName", t.FileName),
+                                    new XElement("Services", 
+                                        t.services.Select(s => 
+                                            new XElement("Service",
+                                                new XElement("Id",s.Id),
+                                                new XElement("Number", s.Number),
 
-                                                                new XElement("Services", 
-                                                                    t.services.Select(s => 
-                                                                        new XElement("Service",
-                                                                        new XElement("Id",s.Id),
-                                                                        new XElement("Number", s.Number),
+                                                new XElement("Value",
+                                                    new XElement("Id", s.Value.Id),
+                                                    new XElement("Summ", s.Value.Summ),
+                                                    new XElement("Date", s.Value.Date.ToString("d"))),
 
-                                                                        new XElement("Value",
-                                                                            new XElement("Id", s.Value.Id),
-                                                                            new XElement("Summ", s.Value.Summ),
-                                                                            new XElement("Date", s.Value.Date.ToString("d"))),
+                                                new XElement("NameWork", 
+                                                    new XElement("Id",s.Nw.Id),
+                                                    new XElement("Name", s.Nw.Name)),
 
-                                                                        new XElement("NameWork", 
-                                                                           new XElement("Id",s.Nw.Id),
-                                                                           new XElement("Name", s.Nw.Name)),
+                                                new XElement("NameDevice",
+                                                    new XElement("Id", s.Nd.Id),
+                                                    new XElement("Name", s.Nd.Name)),
 
-                                                                        new XElement("NameDevice",
-                                                                           new XElement("Id", s.Nd.Id),
-                                                                           new XElement("Name", s.Nd.Name)),
-
-                                                                        new XElement("Subdivision",
-                                                                           new XElement("Id", s.Sd.Id),
-                                                                           new XElement("Name", s.Sd.Name))
-                                                                    )
-                                                            ))
+                                                new XElement("Subdivision",
+                                                    new XElement("Id", s.Sd.Id),
+                                                    new XElement("Name", s.Sd.Name))
+                                                        )
+                                                ))
                                         ))
                                 )))));
 
@@ -160,24 +166,61 @@ namespace Clients
             foreach (XElement xe in xClients.Element("Clients").Elements("Client"))
             {// 
                 int id = int.Parse(xe.Element("Id").Value);
-                string name = xe.Element("Name").Value;
+                string name = xe.Element("ClientName").Value;
+                string settlementAccount = xe.Element("SettlementAccount")?.Value;
+                string city = xe.Element("City")?.Value;
+                string address = xe.Element("Address")?.Value;
 
-                Client client = new Client(name, id);
+                Client client = new Client(name, id, settlementAccount, city, address);
 
-                foreach (XElement element in xe.Element("Contracts").Elements())
+                string svalue;
+
+                IEnumerable <XElement> xelement = xe.Element("Contracts")?.Elements();
+                if(xelement != null)
                 {
-                    DateTime dt = DateTime.Parse(element.Element("Date").Value);
-                    decimal summ = decimal.Parse(element.Element("Summ").Value);
+                    foreach (XElement element in xelement)
+                    {
+                        id = int.Parse(element.Element("IdContract").Value);
 
-                    int number = (int)double.Parse(element.Element("Number").Value);
+                        svalue = element.Element("DateContract")?.Value;
+                        DateTime dt;
 
-                    //
-                    //  Здесь загрузить Services
-                    //
-                    //
+                        try
+                        {
+                            dt = DateTime.Parse(svalue);
+                        }
+                        catch
+                        {
+                            dt = DateTime.MinValue;
+                        }
 
-                    client.contracts.Add(new Contract(client, dt, number, summ));
+                        svalue = element.Element("Number")?.Value;
+                        int number = (int)double.Parse(svalue ?? "0");
+
+                        svalue = element.Element("Summ")?.Value;
+                        decimal summ = decimal.Parse(svalue ?? "0");
+
+                        bool signed = (int.Parse(element.Element("Signed").Value) == 1) ? true : false;
+
+                        string filename = element.Element("FileName")?.Value;
+
+                        TypeContract tc;
+                        if (filename == null)
+                            tc = TypeContract.Contract;
+                        else
+                            tc = (filename.Contains("Договор")) 
+                                                    ? TypeContract.Contract     // Договор
+                                                    : TypeContract.СWC;         // Акт приёмки сдачи работ
+
+                        //
+                        //  Здесь загрузить Services
+                        //
+                        //
+
+                        client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
+                    } // end foreach
                 }
+
                 clients.Add(client);
             }
         }

@@ -21,7 +21,7 @@ namespace Clients
 
             Contract c = (Contract)listBoxContracts.SelectedItem;
 
-            labelContract.Text = String.Format($"Договор № {c.Numb}");
+            WriteLabelContractInfo(c);
         }
 
         // Заполняет listBoxContracts списком договоров
@@ -52,9 +52,17 @@ namespace Clients
 
             Contract contract = (Contract)listBoxContracts.SelectedItem;
 
+            WriteLabelContractInfo(contract);
+        }
+
+        private void WriteLabelContractInfo(Contract contract)
+        {
+            labelFileName.Text = contract.FileName ?? "Файл отсутствует";
+
             String numb = (contract != null) ? contract.Numb.ToString() : "";
 
             labelContract.Text = String.Format($"Договор № {numb}");
+
         }
 
         public void ChangeContracts(Object sender, ChangedContractsEventArgs e)

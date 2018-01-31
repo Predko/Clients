@@ -26,7 +26,7 @@ namespace Clients
         //
         private void TabPageContractEdit_Enter(object sender, EventArgs e)
         {
-            labelClientName.Text = CurrentClient.name;  // Название клиента
+            labelClientName.Text = CurrentClient.Name;  // Название клиента
 
             Contract contract = (Contract)listBoxContracts.SelectedItem;
 
