@@ -19,9 +19,9 @@ namespace Clients
             if (i == -1)
                 return;
 
-            Contract c = (Contract)listBoxContracts.SelectedItem;
+            CurrentContract = (Contract)listBoxContracts.SelectedItem;
 
-            WriteLabelContractInfo(c);
+            WriteLabelContractInfo();
         }
 
         // Заполняет listBoxContracts списком договоров
@@ -33,14 +33,15 @@ namespace Clients
 
             decimal Summ = 0;
 
-            DateTime d = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US"));
+            DateTime d = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US")); // дата деноминации
  
             // заполняем listBoxContracts списком договоров и подсчитываем общую сумму
             listBoxContracts.Items.Clear();
 
             foreach (Contract c in cl.contracts)
             {
-                listBoxContracts.Items.Add(c);
+                SortedInsertItem(listBoxContracts, c);  // Добавляем без нарушения сортировки списка
+
                 Summ += (c.Dt >= d) ? c.Summ
                                     : c.Summ / 10000; // denomination after 07/01/2016
             }
@@ -48,21 +49,51 @@ namespace Clients
             //
             labelListContractsTotals.Text = String.Format($"Договоров: {cl.contracts.Count,-5}  на сумму: {Summ:C}");
 
-            listBoxContracts.SelectedIndex = 0;
+            if (cl.contracts.Count != 0)
+            {
+                listBoxContracts.SelectedIndex = 0;
 
-            Contract contract = (Contract)listBoxContracts.SelectedItem;
+                CurrentContract = (Contract)listBoxContracts.SelectedItem;
+            }
+            else
+                CurrentContract = null;
 
-            WriteLabelContractInfo(contract);
+            WriteLabelContractInfo();
+
         }
 
-        private void WriteLabelContractInfo(Contract contract)
+        // Вставка нового элемента без нарушения сортировки списка
+        private void SortedInsertItem(ListBox lb, Contract ct)
         {
-            labelFileName.Text = contract.FileName ?? "Файл отсутствует";
+            if (lb.Items.Count != 0)
+            {
+                for (int i = 0; i < lb.Items.Count; i++)
+                {
+                    Contract c = (Contract)lb.Items[i];
 
-            String numb = (contract != null) ? contract.Numb.ToString() : "";
+                    int res = c.CompareTo(ct);
+
+                    if (res == 0)
+                        return;     // такой элемент есть. Ничего не делаем
+
+                    if (res > 0)
+                    {
+                        lb.Items.Insert(i, ct); // найден элемент с большим весом, вставляем новый до него
+                        return;
+                    }
+                }
+            }
+
+            lb.Items.Add(ct);   // добавляем, если первый или если не найден больший чем данный
+        }
+
+        private void WriteLabelContractInfo()
+        {
+            labelFileName.Text = CurrentContract?.FileName ?? "Файл отсутствует";
+
+            String numb = CurrentContract?.Numb.ToString() ?? "";
 
             labelContract.Text = String.Format($"Договор № {numb}");
-
         }
 
         public void ChangeContracts(Object sender, ChangedContractsEventArgs e)

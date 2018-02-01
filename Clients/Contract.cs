@@ -21,7 +21,7 @@ namespace Clients
     // а также ссылку на владельца договора
     // Номер договора устанавливается при создании экземпляра
     // Нумерация начинается с 1 с начала года
-    public class Contract
+    public class Contract: IComparable<Contract>
     {
         private static int lastYear = DateTime.Now.Year;    // год в последнем договоре с номером lastNumb
         private static int lastId = 1;                      // последний не использованный идентификатор.
@@ -122,6 +122,18 @@ namespace Clients
                 contract.services.Add(service.Clone());
 
             return contract;
+        }
+
+        public int CompareTo(Contract other)
+        {
+            int c = Dt.CompareTo(other.Dt);
+            if (c < 0)
+                return -1;
+
+            if (c > 0)
+                return 1;
+
+            return Numb - other.Numb;
         }
     }
 }

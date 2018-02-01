@@ -10,9 +10,6 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-
-
-
         //---------------------------------------------
         // инициализация вкладки "Договор"
         // 
@@ -28,13 +25,14 @@ namespace Clients
         {
             labelClientName.Text = CurrentClient.Name;  // Название клиента
 
-            Contract contract = (Contract)listBoxContracts.SelectedItem;
+            if (CurrentContract != null)
+            {
+                comboBoxTypeContract.Items[0] = String.Format($"Договор № {CurrentContract.Numb} от {CurrentContract.Dt:d}");
 
-            comboBoxTypeContract.Items[0] = String.Format($"Договор № {contract.Numb} от {contract.Dt:d}");
+                comboBoxTypeContract.Items[1] = String.Format($"Акт приёмки сдачи работ № {CurrentContract.Numb} от {CurrentContract.Dt:d}");
 
-            comboBoxTypeContract.Items[1] = String.Format($"Акт приёмки сдачи работ № {contract.Numb} от {contract.Dt:d}");
-
-            comboBoxTypeContract.SelectedIndex = (int)contract.Type;
+                comboBoxTypeContract.SelectedIndex = (int)CurrentContract.Type;
+            }
         }
     }
 }

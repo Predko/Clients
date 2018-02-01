@@ -80,7 +80,7 @@ namespace Clients
 
     // Оказанная услуга/выполненная работа
     #region class Service
-    public class Service
+    public class Service: IComparable<Service>
     {
         private static int lastId = 0;      // последний не использованный идентификатор.
                                                 // инкрементируется при создании объекта
@@ -104,6 +104,11 @@ namespace Clients
 
         // клонируем Service
         public Service Clone() => new Service(Nw, Nd, Sd, Number, Value);
+
+        public int CompareTo(Service other)
+        {
+            return this.Id.CompareTo(other.Id);
+        }
     }
     #endregion
 

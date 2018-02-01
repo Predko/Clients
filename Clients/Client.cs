@@ -15,7 +15,7 @@ using System.Data;
 
 namespace Clients
 {
-    public class Client
+    public class Client: IComparable<Client>
     {
         private static int lastId = 1;      // последний не использованный идентификатор.
 
@@ -46,6 +46,11 @@ namespace Clients
             this.SettlementAccount = SettlementAccount;
             this.City = City;
             this.Address = Address;
+        }
+
+        public int CompareTo(Client other)
+        {
+            return this.Name.CompareTo(other.Name);
         }
 
         public override string ToString()

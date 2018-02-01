@@ -21,8 +21,12 @@ namespace Clients
                 if (CurrentClient == null)  // если текущий клиент не загружен/выбран, не разрешаем открытие вкладки
                 {
                     e.Cancel = true;
-                    return;
                 }
+                else
+                    if(CurrentContract == null) // если текущий договор отсутствует, не разрешаем открытие вкладки
+                    {
+                        e.Cancel = true;
+                    }
             }
         }
     }

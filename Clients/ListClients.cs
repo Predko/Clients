@@ -41,7 +41,12 @@ namespace Clients
         // добавления нового клиента в список
         public void Add(Client client)
         {
-            clients.Add(client);
+            int resBS = clients.BinarySearch(client);
+
+            if (resBS < 0)
+                clients.Insert(~resBS, client);     // Вставляем новый элемент не нарушая сортировку
+            else
+                return;                             // такой элемент есть, ничего не делаем
 
             ChangedEventArgs.change = Change.Add;
             ChangedEventArgs.client = client;
@@ -61,6 +66,15 @@ namespace Clients
                 ChangedEventArgs.client = value;
                 ChangedEventArgs.index = i;
                 OnChangeListClients(ChangedEventArgs);
+            }
+        }
+
+        public void Sort()
+        {
+            clients.Sort();
+            foreach(Client c in clients)
+            {
+                c.contracts.Sort();
             }
         }
 

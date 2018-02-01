@@ -11,7 +11,7 @@ namespace Clients
     {
         private Client _currentClient = null;
 
-        private Client CurrentClient        // выбранный клиент
+        private Client CurrentClient        // Текущий клиент
         {
             get
             {
@@ -22,6 +22,8 @@ namespace Clients
                 _currentClient = value;
             }
         }
+
+        private Contract CurrentContract { get; set; } // Текущий договор
 
         //-------------------------------------------------------------
         //      Инициализация comboBoxClients
@@ -55,8 +57,8 @@ namespace Clients
         {
             switch (e.change)
             {
-                case Change.Add:                            // добавляем элемент в список
-                    comboBoxClients.Items.Add(e.client);
+                case Change.Add:                            // добавляем элемент в список не нарушая сортировки
+                    SortedInsertItem(comboBoxClients, e.client);
                     break;
 
                 case Change.Clear:                          // очищаем список
@@ -67,6 +69,31 @@ namespace Clients
                     comboBoxClients.Items[e.index] = e.client;
                     break;
             }
+        }
+
+        // Вставка нового элемента без нарушения сортировки списка
+        private void SortedInsertItem(ComboBox cb, Client cl)
+        {
+            if (cb.Items.Count != 0)
+            {
+                for (int i = 0; i < cb.Items.Count; i++)
+                {
+                    Client c = (Client)cb.Items[i];
+
+                    int res = c.Name.CompareTo(cl.Name);
+
+                    if (res == 0)
+                        return;     // такой элемент есть. Ничего не делаем
+
+                    if (res > 0)
+                    {
+                        cb.Items.Insert(i, cl); // найден элемент с большим весом, вставляем новый до него
+                        return;
+                    }
+                }
+            }
+
+            cb.Items.Add(cl);   // добавляем, если первый или если не найден больший чем данный
         }
     }
 }

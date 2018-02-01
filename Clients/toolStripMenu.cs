@@ -12,25 +12,82 @@ namespace Clients
     {
         DataTable dtFile_xls;
 
+        // Выход из программы
         private void ToolStripMenuItemExit_Click(object sender, EventArgs e)
         {
             System.Windows.Forms.Application.Exit();
         }
 
+        // Сохранить данные в файле xml
+        private void ToolStripMenuItemSaveXml_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFile = new SaveFileDialog
+            {
+                Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*",
+                FilterIndex = 0,
+                RestoreDirectory = true
+            };
+
+            if (saveFile.ShowDialog() == DialogResult.OK)
+            {
+                ClientsXml xml = new ClientsXml(clients);   // Создаём xml документ из списка клиентов
+
+                xml.SaveXml(saveFile.FileName);             // Сохраняем его в файл saveFile.FileName
+            }
+        }
+
+        // Загрузить данные из xml файла собственного формата
         private void ToolStripMenuItemLoad_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*",
+                FilterIndex = 0,
+                RestoreDirectory = true
+            };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                // Открываем и загружаем файл данных со списком клиентов и сонтрактов(xml)
+                // Открываем и загружаем файл данных со списком клиентов и контрактов(xml)
                 ClientsXml clientsXml = new ClientsXml(openFileDialog.FileName);
 
                 if (clientsXml.Load_Ok)
                 {
                     comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
 
+                    // Заполняем список клиентов с одновременным заполнением ComboBox(через событие в ListClients)
+                    // Заполнение происходит без нарушения сортировки
                     clientsXml.XmlToClientsAndContracts(clients);
+
+                    // Выбираем первого клиента в списке и заполняем список договоров ListBoxContracts
+                    SetClientContracts(clients[0]);
+                    comboBoxClients.SelectedIndex = 0;
+
+                    comboBoxClients.EndUpdate();               // обновляем содержимое ComboBox, отображающего clients
+                }
+            }
+        }
+
+        // Загрузить данные из файла xml полученного в результате импорта из базы данных MS Access
+        private void LoadXmlAccessToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*",
+                FilterIndex = 0,
+                RestoreDirectory = true
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Открываем и загружаем файл данных со списком клиентов и контрактов(xml)
+                ClientsXml clientsXml = new ClientsXml(openFileDialog.FileName);
+
+                if (clientsXml.Load_Ok)
+                {
+                    comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
+
+                    clientsXml.AccessXmlToClients(clients);
                     SetClientContracts(clients[0]);
 
                     comboBoxClients.SelectedIndex = 0;
@@ -40,7 +97,7 @@ namespace Clients
             }
         }
 
-        // Чтение данных о договоре из файла xls
+        // Чтение данных о договоре из файла xls и вывод в новой форме в DataGridView с помощью Interop
         private void ToolStripMenuItemRead_xls_Click(object sender, EventArgs e)
         {
             OpenFileDialog fd = new OpenFileDialog();
@@ -52,11 +109,12 @@ namespace Clients
                 dtFile_xls = GetDataFrom_xls(fd.FileName);
                 if (dtFile_xls == null)     // Ошибка - таблица не заполнена
                     return;
-            }
 
-            ShowDataTable();
+                ShowDataTable();
+            }
         }
 
+        // Вывод данных в форме FormShowDataTable в DataGridView
         private void ShowDataTable()
         {
             BindingSource bindingDataTable = new BindingSource();
@@ -73,7 +131,7 @@ namespace Clients
         }
 
 
-
+        // Чтение данных из xls файла договора(акта приёмки/сдачи работ)
         public DataTable GetDataFrom_xls(string filename)
         {
             Excel.Application ExcelApp;
@@ -139,6 +197,8 @@ namespace Clients
             return dt;
         }
 
+
+        // Преобразует буквенный индекс(из xls) в цифровой
         private int GetIndexFromString(string s)
         {
             int index = 0;
@@ -152,7 +212,7 @@ namespace Clients
             return index;
         }
 
-
+        // Чтение данных о договоре из файла xls и вывод в новой форме в DataGridView с помощью OLEDB
         private void ToolStripMenuItemReadXlsOLEDB_Click(object sender, EventArgs e)
         {
 

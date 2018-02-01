@@ -74,6 +74,13 @@ namespace Clients
             }
         }
 
+        public void Sort()
+        {
+            contracts.Sort();
+            foreach(Contract c in contracts)
+                c.services.Sort();
+        }
+
         private void OnChangedContracts(ChangedContractsEventArgs e)
         {
             if (ChangedContracts == null)
