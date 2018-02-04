@@ -12,6 +12,19 @@ namespace Clients
     {
         DataTable dtFile_xls;
 
+
+
+        // Инициализация меню
+        private void InitToolStripMenu()
+        {
+            this.toolStripMenuItemSaveXml.Click += new System.EventHandler(this.ToolStripMenuItemSaveXml_Click);
+            this.toolStripMenuItemLoad.Click += new System.EventHandler(this.ToolStripMenuItemLoad_Click);
+            this.toolStripMenuItemLoadXmlAccess.Click += new System.EventHandler(this.ToolStripMenuItemLoadXmlAccess_Click);
+            this.toolStripMenuItemReadXlsOLEDB.Click += new System.EventHandler(this.ToolStripMenuItemReadXlsOLEDB_Click);
+            this.toolStripMenuItemRead_xls.Click += new System.EventHandler(this.ToolStripMenuItemRead_xls_Click);
+            this.toolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click);
+        }
+
         // Выход из программы
         private void ToolStripMenuItemExit_Click(object sender, EventArgs e)
         {
@@ -69,7 +82,7 @@ namespace Clients
         }
 
         // Загрузить данные из файла xml полученного в результате импорта из базы данных MS Access
-        private void LoadXmlAccessToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemLoadXmlAccess_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -100,18 +113,19 @@ namespace Clients
         // Чтение данных о договоре из файла xls и вывод в новой форме в DataGridView с помощью Interop
         private void ToolStripMenuItemRead_xls_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fd = new OpenFileDialog();
-            fd.Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx|All files (*.*)|*.*";
-            fd.FilterIndex = 0;
+            dtFile_xls = GetDataTableFromFile_xls(ModeGetData.Interop); // Читаем xls с помощью Interop
 
-            if (fd.ShowDialog() == DialogResult.OK)
-            {
-                dtFile_xls = GetDataFrom_xls(fd.FileName);
-                if (dtFile_xls == null)     // Ошибка - таблица не заполнена
-                    return;
-
+            if (dtFile_xls != null)
                 ShowDataTable();
-            }
+        }
+
+        // Чтение данных о договоре из файла xls и вывод в новой форме в DataGridView с помощью OLEDB
+        private void ToolStripMenuItemReadXlsOLEDB_Click(object sender, EventArgs e)
+        {
+            dtFile_xls = GetDataTableFromFile_xls(ModeGetData.OLEDB); // читаем с помощью OLEDB
+
+            if (dtFile_xls != null)
+                ShowDataTable();
         }
 
         // Вывод данных в форме FormShowDataTable в DataGridView
@@ -130,92 +144,21 @@ namespace Clients
             fs.Show();
         }
 
-
-        // Чтение данных из xls файла договора(акта приёмки/сдачи работ)
-        public DataTable GetDataFrom_xls(string filename)
+        // Выбираем файл и заполняем таблицу DataTable
+        private DataTable GetDataTableFromFile_xls(ModeGetData mode)
         {
-            Excel.Application ExcelApp;
-            Excel.Workbook xlWorkBook;
-            Excel.Worksheet xlWorkSheet;
+            OpenFileDialog fd = new OpenFileDialog();
+            fd.Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx|All files (*.*)|*.*";
+            fd.FilterIndex = 0;
 
-            ExcelApp = new Excel.Application();
-
-            xlWorkBook = ExcelApp.Workbooks.Open(filename, Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                                                              Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                                                              Type.Missing, Type.Missing, Type.Missing, Type.Missing,
-                                                              Type.Missing, Type.Missing);
-
-            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[1];
-
-            string printArea = xlWorkSheet.PageSetup.PrintArea;
-
-            Regex reg = new Regex(@"\b\w+\b");
-
-            var pa = reg.Matches(printArea);
-
-            if (pa.Count != 4)
+            if (fd.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("Ошибка распознавания области печати");
-
-                return null;         // должно быть 4 значения: (x1,y1,x2,y2)
+                GetContractInfoFromXls xls = new GetContractInfoFromXls(fd.FileName, mode); // чтение файла и заполнение DataTable
+                                                                                            // из области печати
+                return xls.Dt;
             }
 
-            int x1 = GetIndexFromString(pa[0].Value);
-            int y1 = int.Parse(pa[1].Value);
-
-            int x2 = GetIndexFromString(pa[2].Value);
-            int y2 = int.Parse(pa[3].Value);
-
-            xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets[1];
-            ExcelApp.Visible = true;
-
-            // Создаём таблицу для хранения записей из xls файла
-            DataTable dt = new DataTable("dtContract");
-
-            // добавляем колонки в таблицу
-            for (int i = x1; i != x2 + 1; i++)
-                dt.Columns.Add(i.ToString());
-
-            // текущая строка таблицы
-            DataRow dr;
-
-            for (int j = y1; j <= y2; j++)
-            {
-                dr = dt.Rows.Add();
-
-                for (int i = x1; i <= x2; i++)
-                {
-                    string s = ((Excel.Range)xlWorkSheet.Cells[j, i]).Value2?.ToString();
-
-                    dr.SetField<string>(i - 1, s);
-                }
-            }
-
-
-            xlWorkBook.Close();
-
-            return dt;
-        }
-
-
-        // Преобразует буквенный индекс(из xls) в цифровой
-        private int GetIndexFromString(string s)
-        {
-            int index = 0;
-
-            int l = s.Length;
-            for (int i = l - 1; i >=0; i--)
-            {
-                index += (s[i] - 'A' + 1) * (int)Math.Pow(26, l - i - 1);
-            }
-
-            return index;
-        }
-
-        // Чтение данных о договоре из файла xls и вывод в новой форме в DataGridView с помощью OLEDB
-        private void ToolStripMenuItemReadXlsOLEDB_Click(object sender, EventArgs e)
-        {
-
+            return null;    // Ошибка - таблица не заполнена
         }
     }
 }

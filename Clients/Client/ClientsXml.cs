@@ -8,6 +8,7 @@ using System.IO;
 using System.Globalization;
 using System.Threading;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 
 namespace Clients
@@ -205,7 +206,20 @@ namespace Clients
 
                         bool signed = bool.Parse(element.Element("Signed").Value);
 
-                        string filename = element.Element("FileName")?.Value;
+                        Regex regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
+
+                        string filename;
+                        
+                        filename = regex.Replace(element.Element("FileName")?.Value, 
+                                                (m) => {
+                                                    if (m.Value == @"..\")
+                                                        return @"\";
+                                                    if (m.Value == "../")
+                                                        return @"\";
+                                                    if (m.Value == "%20")
+                                                        return " ";
+                                                    return @"\";
+                                                });
 
                         TypeContract tc;
                         if (filename == null)

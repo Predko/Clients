@@ -9,6 +9,35 @@ namespace Clients
 {
     public partial class Clients: Form
     {
+        public event EventHandler ChangeCurrentContract;    // событие, вызываемое при изменении текущего контракта
+
+        public Contract CurrentContract // Текущий договор
+        {
+            get => _currentContract;
+            set
+            {
+                _currentContract = value;
+                OnChangeCurrentContractInfo(EventArgs.Empty); // обрабатываем подключённые события после изменения текущего договора
+            }
+        }
+
+//
+//------------------------------------  Методы -----------------------------------------
+//
+        private void InitListBoxContracts()
+        {
+            this.listBoxContracts.SelectedIndexChanged += new System.EventHandler(this.ListBoxContracts_SelectedIndexChanged);
+
+            // при изменении текущего договора выводить информацию о нём
+            ChangeCurrentContract += (o, e) => WriteLabelContractInfo();
+        }
+
+        // обрабатываем подключённые события после изменения текущего договора
+        private void OnChangeCurrentContractInfo(EventArgs eventArgs)
+        {
+            ChangeCurrentContract?.Invoke(this, eventArgs);
+        }
+
         //
         //      Выбор элемента listBoxContracts
         //
@@ -20,8 +49,6 @@ namespace Clients
                 return;
 
             CurrentContract = (Contract)listBoxContracts.SelectedItem;
-
-            WriteLabelContractInfo();
         }
 
         // Заполняет listBoxContracts списком договоров
@@ -46,20 +73,14 @@ namespace Clients
                                     : c.Summ / 10000; // denomination after 07/01/2016
             }
 
-            //
+            // Выводим информацию о количестве и общей сумме договоров
             labelListContractsTotals.Text = String.Format($"Договоров: {cl.contracts.Count,-5}  на сумму: {Summ:C}");
 
-            if (cl.contracts.Count != 0)
-            {
-                listBoxContracts.SelectedIndex = 0;
-
-                CurrentContract = (Contract)listBoxContracts.SelectedItem;
-            }
-            else
+            // если список договоров пуст, устанавливаем текущий в null
+            if (cl.contracts.Count == 0)
                 CurrentContract = null;
-
-            WriteLabelContractInfo();
-
+            else // иначе выбираем первый в списке listBoxContracts
+                listBoxContracts.SelectedIndex = 0;
         }
 
         // Вставка нового элемента без нарушения сортировки списка
@@ -87,13 +108,14 @@ namespace Clients
             lb.Items.Add(ct);   // добавляем, если первый или если не найден больший чем данный
         }
 
+        // Выводит информацию о договоре на основную форму и заголовок tabPageContractEdit
         private void WriteLabelContractInfo()
         {
             labelFileName.Text = CurrentContract?.FileName ?? "Файл отсутствует";
 
             String numb = CurrentContract?.Numb.ToString() ?? "";
 
-            labelContract.Text = String.Format($"Договор № {numb}");
+            labelContract.Text = tabPageContractEdit.Text = $"Договор № {numb}";
         }
 
         public void ChangeContracts(Object sender, ChangedContractsEventArgs e)

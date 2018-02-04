@@ -28,7 +28,11 @@ namespace Clients
         {
             InitializeComponent();
 
+            InitToolStripMenu();
+
             InitComboBoxClients();
+
+            InitListBoxContracts();
 
             InitDataGridViewContract();
 

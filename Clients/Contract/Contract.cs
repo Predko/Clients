@@ -11,7 +11,8 @@ namespace Clients
     public enum TypeContract
     {
         Contract,
-        СWC         // Сompleted Works Certificate - акт выполненных работ
+        СWC,         // Сompleted Works Certificate - акт выполненных работ
+        None
     }
     
     
@@ -39,7 +40,7 @@ namespace Clients
 
         public TypeContract Type { get; set; }              // тип договора
 
-        public readonly List<Service> services;             // Список оказанных услуг
+        public List<Service> services;                      // Список оказанных услуг
 
         public Client Client { get; set; }                  // ссылка на владельца договора
 

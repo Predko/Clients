@@ -25,7 +25,7 @@ namespace Clients
         private readonly List<Client> clients = new List<Client>();  // список клиентов
 
         public event EventHandler<ChangedListClientsEventArgs> ListClientsChanged;       // событие для обработки(отображения) изменений
-        private ChangedListClientsEventArgs ChangedEventArgs = new ChangedListClientsEventArgs();
+        private readonly ChangedListClientsEventArgs ChangedEventArgs = new ChangedListClientsEventArgs();
 
         // очистка списка
         public void Clear()

@@ -13,7 +13,7 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -46,13 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComboBoxClients.cs">
+    <Compile Include="Client\ComboBoxClients.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Contracts.cs" />
-    <Compile Include="DataGridViewContract.cs">
+    <Compile Include="Contract\Contracts.cs" />
+    <Compile Include="Contract\DataGridViewContract.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Contract\GetListServicesFromDT.cs" />
+    <Compile Include="Getxls\GetContractInfoFromXls.cs" />
     <Compile Include="Debug.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,26 +64,26 @@
     <Compile Include="FormShowDataTable.Designer.cs">
       <DependentUpon>FormShowDataTable.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListBoxContracts.cs">
+    <Compile Include="Contract\ListBoxContracts.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ListClients.cs" />
-    <Compile Include="Services.cs" />
+    <Compile Include="Client\ListClients.cs" />
+    <Compile Include="Service\Services.cs" />
     <Compile Include="Clients.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Clients.Designer.cs">
       <DependentUpon>Clients.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClientsXml.cs" />
-    <Compile Include="Client.cs" />
-    <Compile Include="Contract.cs" />
+    <Compile Include="Client\ClientsXml.cs" />
+    <Compile Include="Client\Client.cs" />
+    <Compile Include="Contract\Contract.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="tabControlClients.cs">
+    <Compile Include="Client\tabControlClients.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TabPageContractEdit.cs">
+    <Compile Include="Contract\TabPageContractEdit.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ToolStripMenu.cs">

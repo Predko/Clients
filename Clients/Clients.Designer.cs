@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControlClients = new System.Windows.Forms.TabControl();
             this.tabPageClients = new System.Windows.Forms.TabPage();
             this.labelFileName = new System.Windows.Forms.Label();
@@ -47,6 +47,7 @@
             this.listBoxContracts = new System.Windows.Forms.ListBox();
             this.comboBoxClients = new System.Windows.Forms.ComboBox();
             this.tabPageContractEdit = new System.Windows.Forms.TabPage();
+            this.buttonLoadContractFrom_xls = new System.Windows.Forms.Button();
             this.labelClientName = new System.Windows.Forms.Label();
             this.dataGridViewContract = new System.Windows.Forms.DataGridView();
             this.ColumnNameService = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -59,9 +60,9 @@
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveXml = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemLoad = new System.Windows.Forms.ToolStripMenuItem();
-            this.LoadXmlAccessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemRead_xls = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItemReadXlsOLEDB = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemLoadXmlAccess = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemRead_xls = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemReadXlsOLEDB = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.PanelTabs = new System.Windows.Forms.Panel();
             this.richTextBoxDebug = new System.Windows.Forms.RichTextBox();
@@ -161,7 +162,7 @@
             // 
             // buttonEditClient
             // 
-            this.buttonEditClient.Location = new System.Drawing.Point(325, 2);
+            this.buttonEditClient.Location = new System.Drawing.Point(317, 7);
             this.buttonEditClient.Name = "buttonEditClient";
             this.buttonEditClient.Size = new System.Drawing.Size(182, 38);
             this.buttonEditClient.TabIndex = 9;
@@ -170,7 +171,7 @@
             // 
             // buttonNewClient
             // 
-            this.buttonNewClient.Location = new System.Drawing.Point(141, 2);
+            this.buttonNewClient.Location = new System.Drawing.Point(134, 7);
             this.buttonNewClient.Name = "buttonNewClient";
             this.buttonNewClient.Size = new System.Drawing.Size(166, 38);
             this.buttonNewClient.TabIndex = 8;
@@ -233,7 +234,6 @@
             this.listBoxContracts.Name = "listBoxContracts";
             this.listBoxContracts.Size = new System.Drawing.Size(454, 326);
             this.listBoxContracts.TabIndex = 1;
-            this.listBoxContracts.SelectedIndexChanged += new System.EventHandler(this.ListBoxContracts_SelectedIndexChanged);
             // 
             // comboBoxClients
             // 
@@ -244,11 +244,11 @@
             this.comboBoxClients.Name = "comboBoxClients";
             this.comboBoxClients.Size = new System.Drawing.Size(1217, 31);
             this.comboBoxClients.TabIndex = 0;
-            this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClients_SelectedIndexChanged);
             // 
             // tabPageContractEdit
             // 
             this.tabPageContractEdit.BackColor = System.Drawing.Color.Transparent;
+            this.tabPageContractEdit.Controls.Add(this.buttonLoadContractFrom_xls);
             this.tabPageContractEdit.Controls.Add(this.labelClientName);
             this.tabPageContractEdit.Controls.Add(this.dataGridViewContract);
             this.tabPageContractEdit.Controls.Add(this.comboBoxTypeContract);
@@ -259,6 +259,18 @@
             this.tabPageContractEdit.Size = new System.Drawing.Size(1237, 673);
             this.tabPageContractEdit.TabIndex = 1;
             this.tabPageContractEdit.Text = "Договор";
+            // 
+            // buttonLoadContractFrom_xls
+            // 
+            this.buttonLoadContractFrom_xls.AutoSize = true;
+            this.buttonLoadContractFrom_xls.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.buttonLoadContractFrom_xls.Location = new System.Drawing.Point(6, 43);
+            this.buttonLoadContractFrom_xls.Name = "buttonLoadContractFrom_xls";
+            this.buttonLoadContractFrom_xls.Size = new System.Drawing.Size(218, 33);
+            this.buttonLoadContractFrom_xls.TabIndex = 3;
+            this.buttonLoadContractFrom_xls.Text = "Загрузить из файла";
+            this.buttonLoadContractFrom_xls.UseVisualStyleBackColor = true;
+            this.buttonLoadContractFrom_xls.Click += new System.EventHandler(this.ButtonLoadContractFrom_xls_Click);
             // 
             // labelClientName
             // 
@@ -283,17 +295,17 @@
             this.ColumnServiceSumm});
             this.dataGridViewContract.Location = new System.Drawing.Point(6, 151);
             this.dataGridViewContract.Name = "dataGridViewContract";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewContract.RowTemplate.Height = 28;
             this.dataGridViewContract.Size = new System.Drawing.Size(1225, 516);
             this.dataGridViewContract.StandardTab = true;
@@ -368,9 +380,9 @@
             this.toolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemSaveXml,
             this.toolStripMenuItemLoad,
-            this.LoadXmlAccessToolStripMenuItem,
-            this.ToolStripMenuItemRead_xls,
-            this.ToolStripMenuItemReadXlsOLEDB,
+            this.toolStripMenuItemLoadXmlAccess,
+            this.toolStripMenuItemRead_xls,
+            this.toolStripMenuItemReadXlsOLEDB,
             this.toolStripMenuItemExit});
             this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
             this.toolStripMenuItemFile.Size = new System.Drawing.Size(65, 29);
@@ -381,42 +393,36 @@
             this.toolStripMenuItemSaveXml.Name = "toolStripMenuItemSaveXml";
             this.toolStripMenuItemSaveXml.Size = new System.Drawing.Size(295, 30);
             this.toolStripMenuItemSaveXml.Text = "Сохранить xml";
-            this.toolStripMenuItemSaveXml.Click += new System.EventHandler(this.ToolStripMenuItemSaveXml_Click);
             // 
             // toolStripMenuItemLoad
             // 
             this.toolStripMenuItemLoad.Name = "toolStripMenuItemLoad";
             this.toolStripMenuItemLoad.Size = new System.Drawing.Size(295, 30);
             this.toolStripMenuItemLoad.Text = "Загрузить xml(мой)";
-            this.toolStripMenuItemLoad.Click += new System.EventHandler(this.ToolStripMenuItemLoad_Click);
             // 
-            // LoadXmlAccessToolStripMenuItem
+            // ToolStripMenuItemLoadXmlAccess
             // 
-            this.LoadXmlAccessToolStripMenuItem.Name = "LoadXmlAccessToolStripMenuItem";
-            this.LoadXmlAccessToolStripMenuItem.Size = new System.Drawing.Size(295, 30);
-            this.LoadXmlAccessToolStripMenuItem.Text = "Загрузить xml(Access)";
-            this.LoadXmlAccessToolStripMenuItem.Click += new System.EventHandler(this.LoadXmlAccessToolStripMenuItem_Click);
+            this.toolStripMenuItemLoadXmlAccess.Name = "ToolStripMenuItemLoadXmlAccess";
+            this.toolStripMenuItemLoadXmlAccess.Size = new System.Drawing.Size(295, 30);
+            this.toolStripMenuItemLoadXmlAccess.Text = "Загрузить xml(Access)";
             // 
             // ToolStripMenuItemRead_xls
             // 
-            this.ToolStripMenuItemRead_xls.Name = "ToolStripMenuItemRead_xls";
-            this.ToolStripMenuItemRead_xls.Size = new System.Drawing.Size(295, 30);
-            this.ToolStripMenuItemRead_xls.Text = "Читать .xls через Interop";
-            this.ToolStripMenuItemRead_xls.Click += new System.EventHandler(this.ToolStripMenuItemRead_xls_Click);
+            this.toolStripMenuItemRead_xls.Name = "ToolStripMenuItemRead_xls";
+            this.toolStripMenuItemRead_xls.Size = new System.Drawing.Size(295, 30);
+            this.toolStripMenuItemRead_xls.Text = "Читать .xls через Interop";
             // 
             // ToolStripMenuItemReadXlsOLEDB
             // 
-            this.ToolStripMenuItemReadXlsOLEDB.Name = "ToolStripMenuItemReadXlsOLEDB";
-            this.ToolStripMenuItemReadXlsOLEDB.Size = new System.Drawing.Size(295, 30);
-            this.ToolStripMenuItemReadXlsOLEDB.Text = "Читать .xls через OLEDB";
-            this.ToolStripMenuItemReadXlsOLEDB.Click += new System.EventHandler(this.ToolStripMenuItemReadXlsOLEDB_Click);
+            this.toolStripMenuItemReadXlsOLEDB.Name = "ToolStripMenuItemReadXlsOLEDB";
+            this.toolStripMenuItemReadXlsOLEDB.Size = new System.Drawing.Size(295, 30);
+            this.toolStripMenuItemReadXlsOLEDB.Text = "Читать .xls через OLEDB";
             // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
             this.toolStripMenuItemExit.Size = new System.Drawing.Size(295, 30);
             this.toolStripMenuItemExit.Text = "Выход";
-            this.toolStripMenuItemExit.Click += new System.EventHandler(this.ToolStripMenuItemExit_Click);
             // 
             // PanelTabs
             // 
@@ -497,10 +503,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceNumb;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceSumm;
         private System.Windows.Forms.Label labelClientName;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemRead_xls;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemReadXlsOLEDB;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemRead_xls;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemReadXlsOLEDB;
         private System.Windows.Forms.Label labelFileName;
-        private System.Windows.Forms.ToolStripMenuItem LoadXmlAccessToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemLoadXmlAccess;
+        private System.Windows.Forms.Button buttonLoadContractFrom_xls;
     }
 }
 

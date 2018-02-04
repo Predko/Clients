@@ -10,6 +10,7 @@ namespace Clients
     public partial class Clients : Form
     {
         private Client _currentClient = null;
+        private Contract _currentContract;
 
         private Client CurrentClient        // Текущий клиент
         {
@@ -23,13 +24,14 @@ namespace Clients
             }
         }
 
-        private Contract CurrentContract { get; set; } // Текущий договор
-
         //-------------------------------------------------------------
         //      Инициализация comboBoxClients
         //
         private void InitComboBoxClients()
         {
+            this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClients_SelectedIndexChanged);
+
+            // при изменении списка клиентов, вызывать это событие
             clients.ListClientsChanged += ChangeComboBoxClients;
         }
 
