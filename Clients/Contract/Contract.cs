@@ -14,8 +14,18 @@ namespace Clients
         СWC,         // Сompleted Works Certificate - акт выполненных работ
         None
     }
-    
-    
+
+    public class ChangingListServicesEventArgs: EventArgs
+    {
+        public Change type;
+        public Service service;
+        public int index;
+    }
+
+    public partial class Clients : Form
+    {
+    }
+
     // Договор с клиентом.
     // Включает идентификатор, дату, номер, сумму
     // и список оказанных по данному договору услуг
@@ -24,6 +34,10 @@ namespace Clients
     // Нумерация начинается с 1 с начала года
     public class Contract: IComparable<Contract>
     {
+        public static event EventHandler<ChangingListServicesEventArgs> ChangeServiceList;  // Событие, вызываемое при изменении списка услуг
+
+        public static ChangingListServicesEventArgs ChangingLSEventArgs = new ChangingListServicesEventArgs();
+
         private static int lastYear = DateTime.Now.Year;    // год в последнем договоре с номером lastNumb
         private static int lastId = 1;                      // последний не использованный идентификатор.
                                                             // инкрементируется при создании объекта
@@ -95,10 +109,22 @@ namespace Clients
             return String.Format($"{Dt,-12:d} {Numb,5} {Summ,20:c}");
         }
 
+
+        private void OnChangingListServices(ChangingListServicesEventArgs e)
+        {
+            ChangeServiceList?.Invoke(this, e);
+        }
+
         // добавить услугу
         public void AddService(Service sv)
         {
-            Summ += sv.Value.Summ;
+            Summ += sv.Value;
+
+            ChangingLSEventArgs.type = Change.Add;
+            ChangingLSEventArgs.service = sv;
+
+            OnChangingListServices(ChangingLSEventArgs);
+
             services.Add(sv);
         }
 
@@ -109,7 +135,14 @@ namespace Clients
 
             if (i != -1)                                    // если найдена
             {
-                Summ -= services[i].Value.Summ;            // уменьшаем сумму договора на стоимость этой услуги
+                Summ -= services[i].Value;            // уменьшаем сумму договора на стоимость этой услуги
+
+                ChangingLSEventArgs.type = Change.Del;
+                ChangingLSEventArgs.index = i;
+                ChangingLSEventArgs.service = services[i];
+
+                OnChangingListServices(ChangingLSEventArgs);
+
                 services.RemoveAt(i);                       // удаляем
             }
         }

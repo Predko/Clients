@@ -7,7 +7,7 @@ using System.Text;
 namespace Clients
 {
     // перечисление вариантов изменения списка - добавить, очистить, установить по индексу
-    public enum Change { Add, Clear, Set }
+    public enum Change { Add, Del, Clear, Set }
 
     // класс аргумента события изменения списка
     public class ChangedListClientsEventArgs : EventArgs

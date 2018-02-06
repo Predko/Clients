@@ -46,48 +46,65 @@ namespace Clients
             return new XDocument(
                     new XDeclaration("1.0", "utf-8", "yes"),
                         new XElement(ns + "Clients",
-                        clients.Select(c => new XElement("Client",
-                            new XElement("ClientId", c.Id),
+
+                            new XElement("CommonData",
+
+                                new XElement("ListNameWorks",
+                                    NameWork.NWlist.Select((n, idx) =>
+                                    new XElement("NameWork",
+                                        new XElement("Id", idx),
+                                        new XElement("Name", n)))),
+
+                                new XElement("ListNameDevices",
+                                    NameDevice.NDlist.Select((n, idx) =>
+                                    new XElement("NameDevice",
+                                        new XElement("Id", idx),
+                                        new XElement("Name", n)))),
+
+                                new XElement("ListSubdivision",
+                                    Subdivision.Sdlist.Select((n, idx) =>
+                                    new XElement("Subdivision",
+                                        new XElement("Id", idx),
+                                        new XElement("Name", n))))
+                            ),
+
+                            clients.Select(c => new XElement("Client",
+                            new XAttribute("ClientId", c.Id),
                             new XElement("ClientName", c.Name),
                             new XElement("SettlementAccount", c.SettlementAccount),
                             new XElement("City", c.City),
                             new XElement("Address", c.Address),
-                            new XElement("Contracts", 
+                            new XElement("Contracts",
                                 new XAttribute("Count", c.contracts.Count),
                                 c.contracts.Select(t =>
                                 new XElement("Contract",
-                                    new XElement("ContractId", t.Id),
+                                    new XAttribute("ContractId", t.Id),
                                     new XElement("DateContract", t.Dt.ToString("d")),
                                     new XElement("Number", t.Numb),
                                     new XElement("Summ", t.Summ),
                                     new XElement("Signed", t.Signed),
                                     new XElement("FileName", t.FileName),
-                                    new XElement("Services", 
-                                        t.services.Select(s => 
+                                    new XElement("Services",
+                                        t.services.Select(s =>
                                             new XElement("Service",
-                                                new XElement("Id",s.Id),
-                                                new XElement("Number", s.Number),
+                                                new XAttribute("Id",s.Id),
 
-                                                new XElement("Value",
-                                                    new XElement("Id", s.Value.Id),
-                                                    new XElement("Summ", s.Value.Summ),
-                                                    new XElement("Date", s.Value.Date.ToString("d"))),
-
-                                                new XElement("NameWork", 
-                                                    new XElement("Id",s.Nw.Id),
-                                                    new XElement("Name", s.Nw.Name)),
+                                                new XElement("NameWork",
+                                                    new XAttribute("Id",s.Nw.Id)),
 
                                                 new XElement("NameDevice",
-                                                    new XElement("Id", s.Nd.Id),
-                                                    new XElement("Name", s.Nd.Name)),
+                                                    new XAttribute("Id", s.Nd.Id)),
 
                                                 new XElement("Subdivision",
-                                                    new XElement("Id", s.Sd.Id),
-                                                    new XElement("Name", s.Sd.Name))
+                                                    new XAttribute("Id", s.Sd.Id)),
+
+                                                new XElement("Number", s.Number),
+
+                                                new XElement("Value", s.Value))
                                                         )
                                                 ))
                                         ))
-                                )))));
+                                ))));
 
         }
 
@@ -208,9 +225,7 @@ namespace Clients
 
                         Regex regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
 
-                        string filename;
-                        
-                        filename = regex.Replace(element.Element("FileName")?.Value, 
+                        string filename = regex.Replace(element.Element("FileName")?.Value, 
                                                 (m) => {
                                                     if (m.Value == @"..\")
                                                         return @"\";
@@ -223,11 +238,15 @@ namespace Clients
 
                         TypeContract tc;
                         if (filename == null)
+                        {
                             tc = TypeContract.Contract;
+                        }
                         else
+                        {
                             tc = (filename.Contains("Договор"))
-                                                    ? TypeContract.Contract     // Договор
-                                                    : TypeContract.СWC;         // Акт приёмки сдачи работ
+                                                   ? TypeContract.Contract     // Договор
+                                                   : TypeContract.СWC;         // Акт приёмки сдачи работ
+                        }
 
                         //
                         //  Здесь загрузить Services

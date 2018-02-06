@@ -5,74 +5,121 @@ using System.Text;
 
 namespace Clients
 {
-    // Стоимость услуги с датой изменения цены
-    #region struct Price
-    public struct Price
-    {
-        private static int lastId = 1;      // последний не использованный идентификатор.
-                                                // инкрементируется при создании объекта
-        public int Id { get; set;}          // идентификатор цены
-        public decimal Summ { get; set;}    // стоимость работы
-        public DateTime Date { get; set;}   // дата изменения цены
+    //// Стоимость услуги с датой изменения цены
+    //#region struct Price
+    //public struct Price
+    //{
+    //    private static int lastId = 1;      // последний не использованный идентификатор.
+    //                                            // инкрементируется при создании объекта
+    //    public int Id { get; set;}          // идентификатор цены
+    //    public decimal Summ { get; set;}    // стоимость работы
+    //    public DateTime Date { get; set;}   // дата изменения цены
 
-        public Price(decimal price, DateTime date)
-        {
-            this.Id = lastId++;
-            this.Summ = price;
-            this.Date = date;
-        }
-    }
+    //    public Price(decimal price, DateTime date)
+    //    {
+    //        this.Id = lastId++;
+    //        this.Summ = price;
+    //        this.Date = date;
+    //    }
+    //}
 
-    #endregion
+    //#endregion
 
     // услуга(работа)
-    #region struct NameWork
-    public struct NameWork
+    #region class NameWork
+    public class NameWork
     {
-        private static int lastId = 1;          // последний не использованный идентификатор.
-                                                    // инкрементируется при создании объекта
-        public int Id { get; set; }             // идентификатор работы
+        public static List<string> NWlist = new List<string>();      // список всех видов услуг
 
-        public string Name { get; set; }        // название выполненной работы, например: "Заправка картриджа"
+        public int Id { get; set; }             // идентификатор услуги
+
+        public string Name                      // название выполненной работы, например: "Заправка картриджа"
+        {
+            get =>  NWlist[Id];
+            set
+            {
+                int id;
+                if ((id = NWlist.IndexOf(value)) != -1)
+                {
+                    Id = id;
+                }
+                else
+                {
+                    Id = NWlist.Count;
+                    NWlist.Add(value);
+                }
+            }
+        }
 
         public NameWork(string name)
         {
-            this.Id = lastId++;
-            this.Name = name;
+            Name = name;
         }
     }
     #endregion
 
     // подразделение, для которого выполнена работа
-    #region struct Subdivision
-    public struct Subdivision
+    #region class Subdivision
+    public class Subdivision
     {
-        private static int lastId = 1;      // последний не использованный идентификатор.
-                                                // инкрементируется при создании объекта
+        public static List<string> Sdlist = new List<string>();      // список всех подразделений
+
         public int Id { get; set; }         // идентификатор подразделения
-        public string Name { get; set; }    // название подразделения, например "к. 410"
-                                            // (сокращение от кабинет 410)
+
+        public string Name                      // название подразделения, например "к. 410"
+        {                                       // (сокращение от кабинет 410)
+            get => Sdlist[Id];
+            set
+            {
+                int id;
+                if ((id = Sdlist.IndexOf(value)) != -1)
+                {
+                    Id = id;
+                }
+                else
+                {
+                    Id = Sdlist.Count;
+                    Sdlist.Add(value);
+                }
+            }
+        }
+
         public Subdivision(string name)
         {
-            this.Id = lastId++;
-            this.Name = name;
+            Name = name;
         }
     }
     #endregion
 
     // Название устройства
-    #region struct NameDevice
-    public struct NameDevice
+    #region class NameDevice
+    public class NameDevice
     {
-        private static int lastId = 1;      // последний не использованный идентификатор.
-                                                // инкрементируется при создании объекта
-        public int Id { get; set; }         // идентификатор устройства
-        public string Name { get; set; }    // название (например, "Canon 725")
+        public static List<string> NDlist = new List<string>();     // Список всех обслуживаемых устройств
 
-        public NameDevice(int id, string name)
+        public int Id { get; set; }         // идентификатор устройства
+
+        public string Name                      // название (например, "Canon 725")
         {
-            this.Id = lastId++;
-            this.Name = name;
+            get => NDlist[Id];
+            set
+            {
+                int id;
+                if ((id = NDlist.IndexOf(value)) != -1)
+                {
+                    Id = id;
+                }
+                else
+                {
+                    Id = NDlist.Count;
+                    NDlist.Add(value);
+                }
+            }
+        }
+
+        public NameDevice(string name)
+        {
+            Name = name;
         }
     }
     #endregion
@@ -89,16 +136,27 @@ namespace Clients
         public NameWork Nw { get; set; }    // услуга/работа - "Заправка картриджа"
         public NameDevice Nd { get; set; }  // устройство    - "Canon 725"
         public Subdivision Sd { get; set; } // подразделение - "(к. 410)"
-        public Price Value { get; set; }      // стоимость услуги
+        public decimal Value { get; set; }      // стоимость услуги
 
-        public Service(NameWork nw, NameDevice nd, Subdivision sd, int number, Price value)
+        public Service(NameWork nw, NameDevice nd, Subdivision sd, int number, decimal value)
         {
             Id = lastId++;
 
-            this.Nw = nw;
-            this.Nd = nd;
-            this.Sd = sd;
-            this.Number = number;
+            Nw = nw;
+            Nd = nd;
+            Sd = sd;
+            Number = number;
+            Value = value;
+        }
+
+        public Service(string nw, string nd, string sd, int number, decimal value)
+        {
+            Id = lastId++;
+
+            Nw = new NameWork(nw);
+            Nd = new NameDevice(nd);
+            Sd = new Subdivision(sd);
+            Number = number;
             Value = value;
         }
 
@@ -107,7 +165,7 @@ namespace Clients
 
         public int CompareTo(Service other)
         {
-            return this.Id.CompareTo(other.Id);
+            return Id.CompareTo(other.Id);
         }
     }
     #endregion

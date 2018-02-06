@@ -16,6 +16,13 @@ namespace Clients
     //                          dataGridViewContract
     //------------------------------------------------------------------------
 
+    // список колонок:
+    //  "ColumnNameService"
+    //  "ColumnNameDevice"
+    //  "ColumnSubdivision"
+    //  "ColumnServiceNumb"
+    //  "ColumnServiceSumm"
+
     public partial class Clients : Form
     {
         // Переменные для редактирования ComboBoxCell
@@ -41,12 +48,16 @@ namespace Clients
 
             dataGridViewContract.DefaultValuesNeeded += DataGridViewContract_DefaultValuesNeeded;
             dataGridViewContract.RowsRemoved += DataGridViewContract_RowsRemoved;
+            dataGridViewContract.RowsAdded += DataGridViewContract_RowsAdded;
             dataGridViewContract.RowValidating += DataGridViewContract_RowValidating;
 
             dataGridViewContract.EditingControlShowing += DataGridViewContract_EditingControlShowing;
 
             dataGridViewContract.KeyDown += DataGridViewContract_KeyDown;
             dataGridViewContract.PreviewKeyDown += DataGridViewContract_PreviewKeyDown;
+
+            dataGridViewContract.Enter += DataGridViewContract_Enter;
+            dataGridViewContract.Leave += DataGridViewContract_Leave;
 
             InitDebugInfoEvent();
 
@@ -72,6 +83,11 @@ namespace Clients
             ColumnSubdivision.Items.AddRange(csd);
             dataGridViewContract["ColumnSubdivision", 0].Value = csd[0];
 
+            dataGridViewContract["ColumnServiceNumb",0].Value = 0;
+            dataGridViewContract["ColumnServiceSumm",0].Value = (decimal)0;     // стоимость
+
+            dataGridViewContract["ColumnIdService", 0].Value = -1;
+
             dataGridViewContract.TopLeftHeaderCell.Value = "№";
 
             ColumnSubdivision.DisplayIndex = 0;
@@ -80,6 +96,49 @@ namespace Clients
             ColumnServiceNumb.DisplayIndex = 3;
             ColumnServiceSumm.DisplayIndex = 4;
 
+        }
+
+        private void ChangeServiceList_Event(object o, ChangingListServicesEventArgs e)
+        {
+            switch (e.type)
+            {
+                case Change.Add:
+
+                    DataGridViewRow row = new DataGridViewRow();
+
+                    row.Cells["ColumnNameService"].Value = e.service.Nw.Name;
+                    row.Cells["ColumnNameDevice"].Value = e.service.Nd.Name;
+                    row.Cells["ColumnSubdivision"].Value = e.service.Sd.Name;
+                    row.Cells["ColumnServiceNumb"].Value = e.service.Number;
+                    row.Cells["ColumnServiceSumm"].Value = e.service.Value;     // стоимость
+                    row.Cells["ColumnIdService"].Value = e.service.Id;
+
+                    dataGridViewContract.Rows.Add(row);
+                    break;
+
+                case Change.Del:
+
+                    int id;
+
+                    row = null;
+                    foreach (DataGridViewRow r in dataGridViewContract.Rows)
+                    {
+                        id = (int)r.Cells["ColumnIdService"].Value;
+//                        int.TryParse(r.Cells["ColumnIdService"].Value.ToString(), out id);
+                        if (id == e.service.Id)
+                        {
+                            row = r;
+                            break;
+                        }
+                    }
+
+                    if(row != null)
+                        dataGridViewContract.Rows.Remove(row);
+
+                    break;
+                case Change.Clear:
+                    break;
+            }
         }
 
         //------------------------------------------------------------------------------------
@@ -96,6 +155,18 @@ namespace Clients
             dataGridViewContract.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
         }
 
+        private void DataGridViewContract_Enter(object sender, EventArgs e)
+        {
+            Contract.ChangeServiceList -= ChangeServiceList_Event; // удаляем событие(на всякий случай.))
+
+            // добавляем событие вызываемое при изменении списка услуг в текущем контракте
+            Contract.ChangeServiceList += ChangeServiceList_Event;
+        }
+
+        private void DataGridViewContract_Leave(object sender, EventArgs e)
+        {
+            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие
+        }
 
         private void DataGridViewContract_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
@@ -108,17 +179,52 @@ namespace Clients
             e.Row.Cells["ColumnSubdivision"].Value = ColumnSubdivision.Items[0];
 
             // Значения по умолчанию для новых ячеек, содержащих TextBox
-            e.Row.Cells["ColumnServiceNumb"].Value = "";
-            e.Row.Cells["ColumnServiceSumm"].Value = "";
-
+            e.Row.Cells["ColumnServiceNumb"].Value = 0;
+            e.Row.Cells["ColumnServiceSumm"].Value = (decimal)0;
+            e.Row.Cells["ColumnIdService"].Value = -1;
         }
 
         // при удалении строки, переписываем изначения заголовков строк, начиная со следующей, после удалённой
         private void DataGridViewContract_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             SetRowsHeaderValue(e.RowIndex);
+
+            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие для предотвращения рекурсивного вызова
+            for (int i = 0; i != e.RowCount; i++)
+            {
+                // находим услугу, соответствующую удаляемой строке
+                Service sv = CurrentContract.services
+                    .First(s => s.Id == (int)dataGridViewContract.Rows[e.RowIndex + i].Cells["ColumnIdService"].Value);
+
+                //                    .First(s => s.Id == int.Parse(dataGridViewContract.Rows[e.RowIndex].Cells["ColumnIdService"].Value.ToString()));
+
+                if (sv != null)
+                    CurrentContract.services.Remove(sv); // Если найдена, удаляем из списка услуг
+            }
+            Contract.ChangeServiceList += ChangeServiceList_Event;       // подключаем событие
         }
 
+        private void DataGridViewContract_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            SetRowsHeaderValue(e.RowIndex);
+
+            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие для предотвращения рекурсивного вызова
+
+            for (int i = 0; i != e.RowCount; i++)
+            {
+                DataGridViewRow dr = dataGridViewContract.Rows[e.RowIndex + i];
+
+                Service sv = new Service(dr.Cells["ColumnNameService"].Value.ToString(),
+                                         dr.Cells["ColumnNameDevice"].Value.ToString(),
+                                         dr.Cells["ColumnSubdivision"].Value.ToString(),
+                                         (int)dr.Cells["ColumnServiceNumb"].Value,
+                                         (decimal)dr.Cells["ColumnServiceSumm"].Value);
+
+                CurrentContract.services.Add(sv);
+            }
+
+            Contract.ChangeServiceList += ChangeServiceList_Event;
+        }
 
         //----------------------------------------------------------------------------------------
         //            Переходит на следующую ячейку в строке с учётом DisplayIndex

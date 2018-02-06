@@ -40,7 +40,7 @@ namespace Clients
 
         private void ButtonLoadContractFrom_xls_Click(object sender, EventArgs e)
         {
-            string filename = CurrentContract.FileName;
+            string filename = @"H:\Документы" + CurrentContract.FileName;
 
             while (!File.Exists(filename))
             {
