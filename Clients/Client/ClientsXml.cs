@@ -10,7 +10,6 @@ using System.Threading;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 
-
 namespace Clients
 {
     public class ClientsXml
@@ -50,33 +49,58 @@ namespace Clients
                             new XElement("CommonData",
 
                                 new XElement("ListNameWorks",
-                                    NameWork.NWlist.Select((n, idx) =>
+                                    Clients.AllNameWorks.Select(n =>
                                     new XElement("NameWork",
-                                        new XElement("Id", idx),
-                                        new XElement("Name", n)))),
+                                        new XAttribute("Id", n.Key),
+                                        new XElement("Name", n.Value)))),
 
                                 new XElement("ListNameDevices",
-                                    NameDevice.NDlist.Select((n, idx) =>
+                                    Clients.AllNameDevices.Select(n =>
                                     new XElement("NameDevice",
-                                        new XElement("Id", idx),
-                                        new XElement("Name", n)))),
+                                        new XAttribute("Id", n.Key),
+                                        new XElement("Name", n.Value)))),
 
-                                new XElement("ListSubdivision",
-                                    Subdivision.Sdlist.Select((n, idx) =>
+                                new XElement("ListSubdivisions",
+                                    Clients.AllSubdivisions.Select(n =>
                                     new XElement("Subdivision",
-                                        new XElement("Id", idx),
-                                        new XElement("Name", n))))
+                                        new XAttribute("Id", n.Key),
+                                        new XElement("Name", n.Value)))),
+
+                                new XElement("ListAddInfo",
+                                    Clients.AllAddInfo.Select(n =>
+                                    new XElement("AddInfo",
+                                        new XAttribute("Id", n.Key),
+                                        new XElement("InfoString", n.Value)))),
+
+                                new XElement("ListServices",
+                                    Clients.AllServices.Select(n =>
+                                    new XElement("Service",
+                                        new XAttribute("Id", n.Key),
+
+                                        new XElement("NameWork",
+                                        new XAttribute("Id", n.Value.Nw.Id)),
+
+                                        new XElement("NameDevice",
+                                        new XAttribute("Id", n.Value.Nd.Id)),
+
+                                        new XElement("Subdivision",
+                                        new XAttribute("Id", n.Value.Sd.Id)),
+
+                                        new XElement("Number", n.Value.Number),
+
+                                        new XElement("Value", n.Value.Value)
+                                        )))
                             ),
 
                             clients.Select(c => new XElement("Client",
-                            new XAttribute("ClientId", c.Id),
-                            new XElement("ClientName", c.Name),
-                            new XElement("SettlementAccount", c.SettlementAccount),
-                            new XElement("City", c.City),
-                            new XElement("Address", c.Address),
+                            new XAttribute("ClientId", c.Key),
+                            new XElement("ClientName", c.Value.Name),
+                            new XElement("SettlementAccount", c.Value.SettlementAccount),
+                            new XElement("City", c.Value.City),
+                            new XElement("Address", c.Value.Address),
                             new XElement("Contracts",
-                                new XAttribute("Count", c.contracts.Count),
-                                c.contracts.Select(t =>
+                                new XAttribute("Count", c.Value.contracts.Count),
+                                c.Value.contracts.Select(t =>
                                 new XElement("Contract",
                                     new XAttribute("ContractId", t.Id),
                                     new XElement("DateContract", t.Dt.ToString("d")),
@@ -87,24 +111,11 @@ namespace Clients
                                     new XElement("Services",
                                         t.services.Select(s =>
                                             new XElement("Service",
-                                                new XAttribute("Id",s.Id),
-
-                                                new XElement("NameWork",
-                                                    new XAttribute("Id",s.Nw.Id)),
-
-                                                new XElement("NameDevice",
-                                                    new XAttribute("Id", s.Nd.Id)),
-
-                                                new XElement("Subdivision",
-                                                    new XAttribute("Id", s.Sd.Id)),
-
-                                                new XElement("Number", s.Number),
-
-                                                new XElement("Value", s.Value))
-                                                        )
+                                                new XAttribute("Id", Clients.AllServices[s].Id))
                                                 ))
                                         ))
-                                ))));
+                                    )))
+                                ));
 
         }
 
@@ -184,26 +195,63 @@ namespace Clients
             Thread.CurrentThread.CurrentCulture = ci;
             #endregion
 
+            XElement xelm = xClients.Element("Clients").Element("CommonData");
+
+            // загружаем общие данные, если они есть
+            if (xelm != null)
+            {
+                // Загружаем списки наименований услуг, названий устройств, названий подразделений
+                ReadListFromXml(Clients.AllNameWorks, xelm.Element("ListNameWorks")?.Elements());
+
+                ReadListFromXml(Clients.AllNameDevices, xelm.Element("ListNameDevices")?.Elements());
+
+                ReadListFromXml(Clients.AllSubdivisions, xelm.Element("ListSubdivisions")?.Elements());
+
+                ReadListFromXml(Clients.AllAddInfo, xelm.Element("ListAddInfo")?.Elements());
+
+                // Загружаем список всех услуг
+                IEnumerable<XElement> xelement = xelm.Element("ListServices")?.Elements();
+
+                if (xelement != null)
+                {
+                    Clients.AllServices.Clear();
+                    foreach (XElement element in xelement)
+                    {
+                        var xe = element.Element("Service");
+
+                        var sv = new Service(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)],
+                                             Clients.AllNameDevices[int.Parse(xe.Element("NameDevice").Attribute("Id").Value)],
+                                             Clients.AllSubdivisions[int.Parse(xe.Element("Subdivision").Attribute("Id").Value)],
+                                             int.Parse(xe.Element("Number").Value),
+                                             decimal.Parse(xe.Element("Value").Value),
+                                             int.Parse(xe.Attribute("Id").Value),
+                                             Clients.AllAddInfo[int.Parse(xe.Element("AddInfo").Attribute("Id").Value)]);
+
+                        sv.Add();
+                    }
+                }
+            }
+
+            // Загружаем список клиентов
             foreach (XElement xe in xClients.Element("Clients").Elements("Client"))
-            {// 
-                int id = int.Parse(xe.Element("ClientId").Value);
+            {
+                int id = int.Parse(xe.Attribute("ClientId").Value);
                 string name = xe.Element("ClientName").Value;
                 string settlementAccount = xe.Element("SettlementAccount")?.Value;
                 string city = xe.Element("City")?.Value;
                 string address = xe.Element("Address")?.Value;
 
-                Client client = new Client(name, id, settlementAccount, city, address);
+                var client = new Client(name, id, settlementAccount, city, address);
 
-                string svalue;
-
+                // загружаем список договоров данного клиента
                 IEnumerable<XElement> xelement = xe.Element("Contracts")?.Elements();
                 if (xelement != null)
                 {
                     foreach (XElement element in xelement)
                     {
-                        id = int.Parse(element.Element("ContractId").Value);
+                        id = int.Parse(element.Attribute("ContractId").Value);
 
-                        svalue = element.Element("DateContract")?.Value;
+                        string svalue = element.Element("DateContract")?.Value;
                         DateTime dt;
 
                         try
@@ -225,7 +273,7 @@ namespace Clients
 
                         Regex regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
 
-                        string filename = regex.Replace(element.Element("FileName")?.Value, 
+                        svalue = regex.Replace(element.Element("FileName")?.Value, 
                                                 (m) => {
                                                     if (m.Value == @"..\")
                                                         return @"\";
@@ -237,13 +285,13 @@ namespace Clients
                                                 });
 
                         TypeContract tc;
-                        if (filename == null)
+                        if (svalue == null)
                         {
                             tc = TypeContract.Contract;
                         }
                         else
                         {
-                            tc = (filename.Contains("Договор"))
+                            tc = (svalue.Contains("Договор"))
                                                    ? TypeContract.Contract     // Договор
                                                    : TypeContract.СWC;         // Акт приёмки сдачи работ
                         }
@@ -251,14 +299,39 @@ namespace Clients
                         //
                         //  Здесь загрузить Services
                         //
-                        //
+                        Contract ctr = new Contract(client, id, dt, number, summ, signed, svalue, tc);
 
-                        client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
+                        IEnumerable<XElement> ServicesElements = xe.Element("Services")?.Elements();
+
+                        if (ServicesElements != null)
+                        {
+                            foreach (XElement servelem in ServicesElements)
+                            {
+                                ctr.services.Add(int.Parse(servelem.Attribute("Id").Value));
+                            }
+                        }
+
+                        client.contracts.Add(new Contract(client, id, dt, number, summ, signed, svalue, tc));
                     } // end foreach
                 }
 
                 clients.Add(client);
             }
+        }
+
+        private bool ReadListFromXml(SortedList<int, string> sl, IEnumerable<XElement> xelement)
+        {
+            if (xelement != null)
+            {
+                sl.Clear();
+                foreach (XElement element in xelement)
+                {
+                    sl.Add(int.Parse(element.Attribute("Id").Value), element.Element("Name").Value);
+                }
+                return true;
+            }
+            else
+                return false;
         }
 
         // Загрузка списка клиентов и контрактов из xml документа сформированного MS Access
@@ -309,7 +382,20 @@ namespace Clients
 
                         bool signed = (int.Parse(element.Element("Signed").Value) == 1);
 
-                        string filename = GetFileName(element.Element("FileName")?.Value);
+                        string sfn = GetFileName(element.Element("FileName")?.Value);
+
+                        Regex regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
+
+                        string filename = regex.Replace(sfn,
+                                                (m) => {
+                                                    if (m.Value == @"..\")
+                                                        return @"\";
+                                                    if (m.Value == "../")
+                                                        return @"\";
+                                                    if (m.Value == "%20")
+                                                        return " ";
+                                                    return @"\";
+                                                });
 
                         TypeContract tc;
                         if (filename == null)

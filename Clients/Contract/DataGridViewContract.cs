@@ -83,6 +83,11 @@ namespace Clients
             ColumnSubdivision.Items.AddRange(csd);
             dataGridViewContract["ColumnSubdivision", 0].Value = csd[0];
 
+            string[] cai = { "фотовал", "доз.нож", "чист.нож", ",без.запр", "вал зар.", "магн.вал" };
+
+            ColumnAddInfo.Items.AddRange(cai);
+            dataGridViewContract["ColumnAddInfo", 0].Value = cai[0];
+
             dataGridViewContract["ColumnServiceNumb",0].Value = 0;
             dataGridViewContract["ColumnServiceSumm",0].Value = (decimal)0;     // стоимость
 
@@ -104,7 +109,7 @@ namespace Clients
             {
                 case Change.Add:
 
-                    DataGridViewRow row = new DataGridViewRow();
+                    var row = new DataGridViewRow();
 
                     row.Cells["ColumnNameService"].Value = e.service.Nw.Name;
                     row.Cells["ColumnNameDevice"].Value = e.service.Nd.Name;
@@ -112,6 +117,7 @@ namespace Clients
                     row.Cells["ColumnServiceNumb"].Value = e.service.Number;
                     row.Cells["ColumnServiceSumm"].Value = e.service.Value;     // стоимость
                     row.Cells["ColumnIdService"].Value = e.service.Id;
+                    row.Cells["ColumnAddInfo"].Value = e.service.Ai.InfoString;
 
                     dataGridViewContract.Rows.Add(row);
                     break;
@@ -177,6 +183,7 @@ namespace Clients
             e.Row.Cells["ColumnNameService"].Value = ColumnNameService.Items[0];
             e.Row.Cells["ColumnNameDevice"].Value = ColumnNameDevice.Items[0];
             e.Row.Cells["ColumnSubdivision"].Value = ColumnSubdivision.Items[0];
+            e.Row.Cells["ColumnAddInfo"].Value = ColumnAddInfo.Items[0];
 
             // Значения по умолчанию для новых ячеек, содержащих TextBox
             e.Row.Cells["ColumnServiceNumb"].Value = 0;
@@ -193,13 +200,10 @@ namespace Clients
             for (int i = 0; i != e.RowCount; i++)
             {
                 // находим услугу, соответствующую удаляемой строке
-                Service sv = CurrentContract.services
-                    .First(s => s.Id == (int)dataGridViewContract.Rows[e.RowIndex + i].Cells["ColumnIdService"].Value);
-
-                //                    .First(s => s.Id == int.Parse(dataGridViewContract.Rows[e.RowIndex].Cells["ColumnIdService"].Value.ToString()));
+                Service sv = Clients.AllServices[(int)dataGridViewContract.Rows[e.RowIndex + i].Cells["ColumnIdService"].Value];
 
                 if (sv != null)
-                    CurrentContract.services.Remove(sv); // Если найдена, удаляем из списка услуг
+                    CurrentContract.DelService(sv); // Если найдена, удаляем из списка услуг
             }
             Contract.ChangeServiceList += ChangeServiceList_Event;       // подключаем событие
         }
@@ -214,13 +218,15 @@ namespace Clients
             {
                 DataGridViewRow dr = dataGridViewContract.Rows[e.RowIndex + i];
 
-                Service sv = new Service(dr.Cells["ColumnNameService"].Value.ToString(),
-                                         dr.Cells["ColumnNameDevice"].Value.ToString(),
-                                         dr.Cells["ColumnSubdivision"].Value.ToString(),
+                var sv = new Service(dr.Cells["ColumnNameService"].Value?.ToString(),
+                                         dr.Cells["ColumnNameDevice"].Value?.ToString(),
+                                         dr.Cells["ColumnSubdivision"].Value?.ToString(),
                                          (int)dr.Cells["ColumnServiceNumb"].Value,
-                                         (decimal)dr.Cells["ColumnServiceSumm"].Value);
+                                         (decimal)dr.Cells["ColumnServiceSumm"].Value,
+                                         (int)dr.Cells["ColumnIdService"].Value,
+                                         dr.Cells["ColumnAddInfo"].Value?.ToString());
 
-                CurrentContract.services.Add(sv);
+                CurrentContract.AddService(sv);
             }
 
             Contract.ChangeServiceList += ChangeServiceList_Event;

@@ -20,9 +20,9 @@ namespace Clients
     // Класс-обёртка списка клиентов
     // предназначен для отображения списка в комбобоксе при изменении
     // Вместо binding...
-    public class ListClients:IEnumerable<Client>
+    public class ListClients:IEnumerable<KeyValuePair<int, Client>>
     {
-        private readonly List<Client> clients = new List<Client>();  // список клиентов
+        private static readonly SortedList<int, Client> clients = new SortedList<int, Client>();  // Список всех клиентов
 
         public event EventHandler<ChangedListClientsEventArgs> ListClientsChanged;       // событие для обработки(отображения) изменений
         private readonly ChangedListClientsEventArgs ChangedEventArgs = new ChangedListClientsEventArgs();
@@ -38,43 +38,51 @@ namespace Clients
 
         public int Count { get => clients.Count; }
 
-        // добавления нового клиента в список
-        public void Add(Client client)
+        // добавления клиента в список. Если добавляем нового, isNewClient устанавливаем в true
+        public void Add(Client client, bool isNewClient = false)
         {
-            int resBS = clients.BinarySearch(client);
-
-            if (resBS < 0)
-                clients.Insert(~resBS, client);     // Вставляем новый элемент не нарушая сортировку
-            else
+            if (clients.ContainsValue(client))
                 return;                             // такой элемент есть, ничего не делаем
+
+            if (isNewClient)    // Если добавляется новый клиент,
+            {
+                int id = clients.Count; ;
+                while (clients.ContainsKey(id)) // ищем свободный идентификатор
+                    id++;
+
+                client.Id = id;
+            }
+
+            if (clients.ContainsKey(client.Id))
+            {
+                // Ошибка - повтор идентификатора клиента
+                // заносим ошибку в log-файл
+                return;    // Ничего не делаем
+            }
+
+            clients.Add(client.Id, client);
 
             ChangedEventArgs.change = Change.Add;
             ChangedEventArgs.client = client;
             OnChangeListClients(ChangedEventArgs);
         }
 
+        // Первый клиент в списке
+        public Client First() => clients.First().Value;
 
-        // индексатор(установка значения по индексу - Set)
-        public Client this[int i]
+        // индексатор(получение/установка(замена данных клиента) значения по Id клиента)
+        public Client this[int id]
         {
-            get { return clients[i]; }
+            get { return clients[id]; }
             set
             {
-                clients[i] = value;
+                value.Id = id;          // Соблюдаем соответствие Id ключу в списке
+                clients[id] = value;
 
                 ChangedEventArgs.change = Change.Set;
                 ChangedEventArgs.client = value;
-                ChangedEventArgs.index = i;
+                ChangedEventArgs.index = id;
                 OnChangeListClients(ChangedEventArgs);
-            }
-        }
-
-        public void Sort()
-        {
-            clients.Sort();
-            foreach(Client c in clients)
-            {
-                c.contracts.Sort();
             }
         }
 
@@ -85,7 +93,7 @@ namespace Clients
         }
 
 
-        public IEnumerator<Client> GetEnumerator() => ((IEnumerable<Client>)clients).GetEnumerator();
+        public IEnumerator<KeyValuePair<int, Client>> GetEnumerator() => ((IEnumerable<KeyValuePair<int, Client>>)clients).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

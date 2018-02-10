@@ -17,9 +17,7 @@ namespace Clients
 {
     public class Client: IComparable<Client>
     {
-        private static int lastId = 1;      // последний не использованный идентификатор.
-
-        public int Id;                      // идентификатор записи
+        public int Id;                      // идентификатор клиента
         public string Name;                 // Название организации
         public string SettlementAccount;    // Расчётный счёт
         public string City;                 // Населённый пункт
@@ -29,9 +27,9 @@ namespace Clients
 
 
 
-        public Client()
+        public Client(int id = -1)
         {
-            this.Id = lastId++;
+            this.Id = id;
 
             this.Name = String.Empty;
             this.SettlementAccount = String.Empty;
@@ -55,10 +53,7 @@ namespace Clients
 
         public override string ToString()
         {
-            return String.Format($"{this.Name}");
+            return String.Format(this.Name);
         }
-
     }
-
-
 }

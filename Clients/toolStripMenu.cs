@@ -73,7 +73,7 @@ namespace Clients
                     clientsXml.XmlToClientsAndContracts(clients);
 
                     // Выбираем первого клиента в списке и заполняем список договоров ListBoxContracts
-                    SetClientContracts(clients[0]);
+                    SetClientContracts(clients.First());
                     comboBoxClients.SelectedIndex = 0;
 
                     comboBoxClients.EndUpdate();               // обновляем содержимое ComboBox, отображающего clients
@@ -100,8 +100,10 @@ namespace Clients
                 {
                     comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
 
+                    // Заполняем список клиентов с одновременным заполнением ComboBox(через событие в ListClients)
+                    // Заполнение происходит без нарушения сортировки
                     clientsXml.AccessXmlToClients(clients);
-                    SetClientContracts(clients[0]);
+                    SetClientContracts(clients.First());
 
                     comboBoxClients.SelectedIndex = 0;
 

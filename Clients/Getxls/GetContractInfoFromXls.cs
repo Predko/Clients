@@ -67,10 +67,12 @@ namespace Clients
 
                 OleDbDataAdapter ada = new OleDbDataAdapter(sql, ConnectionString);
 
+                DataTable dt = new DataTable();
                 DataSet set = new DataSet();
 
-                ada.Fill(set);
+                ada.Fill(dt);
 
+                set.Tables.Add(dt);
                 return set.Tables[0];
             }
         }

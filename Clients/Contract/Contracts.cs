@@ -2,32 +2,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Windows.Forms;
 
 namespace Clients
 {
-    // аргумент события для ChangedContracts
+
+    public partial class Clients : Form
+    {
+        // Здесь хранится список всех договоров, всех клиентов
+        public static readonly SortedList<int, Contract> AllContracts = new SortedList<int, Contract>();
+    }
+
+    // Класс аргумента события для ChangedContracts
     public class ChangedContractsEventArgs: EventArgs
     {
         public Change change;       // Add, Clear, Set
         public Contract contract;   // Изменяемый/добавляемый Contract
         public int index;           // индекс в списке
     }
-    
-    // Класс - список контрактов
 
+    // Класс - список контрактов
+    // перечисление работает со списком договоров данного клиента - contracts
     public class Contracts:IEnumerable<Contract>
     {
-        private readonly List<Contract> contracts = new List<Contract>();
-
-        private static ChangedContractsEventArgs eventArgs = new ChangedContractsEventArgs();
+        private static readonly ChangedContractsEventArgs eventArgs = new ChangedContractsEventArgs();
         public static event EventHandler<ChangedContractsEventArgs> ChangedContracts;
+
+        private SortedList<int, Contract> _contracts => Clients.AllContracts;
+        private static int LastUnusedKey { get; set; } = 0;
+
+
+        // Здесь хранится список Id(ключей из списка _contracts) всех договоров данного клиента
+        private readonly List<int> contracts = new List<int>();
 
         public  int Count { get => contracts.Count;}
 
-        public void Add(Contract contract)
+        public void Add(Contract contract, bool isNewContract = false)
         {
-            contracts.Add(contract);
+            if (isNewContract) // это новый договор?
+            {   // да.
+                // присваиваем Id последний не использованный ключ в списке 
+                contract.Id = LastUnusedKey++;
+            }
+
+            _contracts.Add(contract.Id, contract);  // в общий список
+            contracts.Add(contract.Id);             // в список ключей договоров данного клиента
 
             if (ChangedContracts != null)
             {
@@ -38,9 +57,26 @@ namespace Clients
             }
         }
 
+        public void Remove(Contract contract)
+        {
+            _contracts.Remove(contract.Id);     // появляется неиспользованный Id.
+            contracts.Remove(contract.Id);      // В дальнейшем можно создать список неиспользованных Id и использовать их
+
+            if (ChangedContracts != null)
+            {
+                eventArgs.change = Change.Del;
+                eventArgs.contract = contract;
+
+                OnChangedContracts(eventArgs);
+            }
+        }
+
         public void Clear()
         {
-            contracts.Clear();
+            contracts.Select(c => _contracts.Remove(c)); // удаляем все договоры из списка в общем списке договоров всех клиентов
+            LastUnusedKey = 0;  // использованных ключей нет
+
+            contracts.Clear(); // удаляем список ключей договоров
 
             if (ChangedContracts != null)
             {
@@ -50,18 +86,15 @@ namespace Clients
             }
         }
 
+        // Индексатор списка. Получает индекс в списке договоров текущего клиента - contracts
+        // Возвращает/присваивает договор из общего списка всех договоров: _contracts => Clients.AllContracts;
         public Contract this[int index]
         {
-            get
-            {
-                if (index < 0 && index >= contracts.Count)
-                    throw new IndexOutOfRangeException("Индекс за пределами списка Contracts");
-                return contracts[index];
-            }
+            get => _contracts[contracts[index]];
 
-            set
+            set     // замена договора(редактирование)
             {
-                contracts[index] = value;
+                _contracts[contracts[index]] = value;
 
                 if (ChangedContracts != null)
                 {
@@ -74,11 +107,15 @@ namespace Clients
             }
         }
 
+        // Сортировка списка договоров данного клиента - contracts
         public void Sort()
         {
-            contracts.Sort();
-            foreach(Contract c in contracts)
-                c.services.Sort();
+            contracts.Sort((id1, id2) => _contracts[id1].CompareTo(_contracts[id2]));
+
+            foreach (int id in contracts)
+            {
+                _contracts[id].services.Sort();
+            }
         }
 
         private void OnChangedContracts(ChangedContractsEventArgs e)
@@ -94,12 +131,12 @@ namespace Clients
     // класс итератора
         private class Enumerator : IEnumerator<Contract>
         {
-            private Contracts ListContracts;
+            private readonly Contracts ListContracts;
             private int currentIndex = -1;
 
-            public Enumerator(Contracts c)
+            public Enumerator(Contracts list)
             {
-                ListContracts = c;
+                ListContracts = list;
             }
 
 

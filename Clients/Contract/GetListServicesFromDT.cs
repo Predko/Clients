@@ -8,11 +8,14 @@ using System.Globalization;
 
 namespace Clients
 {
+    // Класс предназначен для извлечения списка услуг из таблицы DataTable
+    // Таблица заполнена из существующих файлов договоров в формате xls
     public class GetListServicesFromDT
     {
         public readonly Contract contract;
         private readonly DataTable dt;
-        private int rowcount;
+        private readonly int rowcount;
+        private bool EndListService = false;    // Список услуг прочитан полностью
 
         public GetListServicesFromDT(DataTable dt, Contract contract)
         {
@@ -25,33 +28,30 @@ namespace Clients
         public bool GetListServices()
         {
             int i;
-
+            
+            // Ищем и извлекаем тип договора и номер
             for (i = 0; i != rowcount; i++)
             {
-                if(GetTypeContractAndEtc(dt.Rows[i]))   // Ищем и извлекаем тип договора и номер
+                if(GetTypeContractAndEtc(dt.Rows[i]))
                     break;
             }
 
             int NameOfServiceCol = -1,
                 SummCol = -1;
 
+            // Определяем номера колонок списка услуг. Начинаем с последней проверенной строки
             for (++i; i < rowcount; i++)
             {
-                // Извлекаем номера колонок списка услуг. Начинаем с последней проверенной строки
                 if (GetNumbColContractServices(dt.Rows[i], out NameOfServiceCol, out SummCol))
                     break;
             }
 
+            // Извлекаем и заполняем список услуг
             for (++i; i < rowcount; i++)
             {
-                // Извлекаем список услуг
-                List<Service> ls = GetContractListServices(i, NameOfServiceCol, SummCol);
-
-                if (ls != null)
-                {
-                    contract.services = ls;
-                    return true;
-                }
+                GetContractListServices(i, NameOfServiceCol, SummCol);
+                if (EndListService)
+                    break;
             }
 
             return true;
@@ -91,16 +91,16 @@ namespace Clients
                 }
             }
 
-            if (i == count && tc == TypeContract.None)
+            if (i >= count && tc == TypeContract.None)
                 return false;       // в этой строке нет искомых подстрок
 
             contract.Type = tc;
 
             // Ищем номер договора. Продолжаем со следующей колонки
             bool isNumb = false;
-            while (++i < count)
+            while (i < count)
             {
-                s = dr.ItemArray[i].ToString();
+                s = dr.ItemArray[i++].ToString();
 
                 if (s?.Length == 0)
                 {
@@ -152,28 +152,36 @@ namespace Clients
             return true;
         }
 
- 
-        private List<Service> GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
+        // Заполняем список услуг
+        private void GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
         {
-            // Заполняем список услуг
-
-            List<Service> services = new List<Service>();
-
             Service sr;
+
+            contract.Summ = 0; // обнуляем общую сумму услуг договора
 
             while ((sr = GetContractServices(dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
             {
-                services.Add(sr);
+                contract.AddService(sr); // добавляем услугу в список услуг договора
             }
+        }
 
-            return services;
+        [Flags]
+        private enum Flags : byte
+        {
+            None = 0,
+            isNumber = 1,
+            isSubdivision = 2,
+            isAddInfo = 4
         }
 
         // Извлекаем список услуг из найденных колонок
         // Типичные строки:
         //  "Заправка картриджа Canon 737 (13824)"
+        //  "Восстановление картриджа Canon 737 (2 к.) (13855)(доз.нож, без з.)"
         //  "Восстановление картриджа Canon 737 (13855)(доз.нож, без з.)"
-        //  "Ремонт картриджа Canon 703 (13775) (2 к.)"
+        //  "Ремонт картриджа Canon 703 (13775) "
+        //  "Ремонт картриджа Canon 703  "
+        //  "Ремонт картриджа Canon 703 (фотовал) "
 
         private Service GetContractServices(DataRow dr, int NameOfServiceCol, int SummCol)
         {
@@ -185,15 +193,23 @@ namespace Clients
 
             string s = dr.ItemArray[NameOfServiceCol].ToString();
 
-            if (s?.Length == 0)    // Пустая строка.  Список услуг завершён
+            if (s.Length == 0
+                || s.Contains("Итог")
+                || s.Contains("итог"))    // Итоговая строка.  Список услуг завершён
+            {
+                EndListService = true;
                 return null;
+            }
 
-            string[] res = s.Split(new char[]{ '(', ')'}, StringSplitOptions.RemoveEmptyEntries);
+            string[] res = s.Split(new char[] { '(', ')' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(rs => rs.Trim())
+                            .Where(rs => rs != "")
+                            .ToArray();
 
             // выделяем два последних слова из первой строки
             // Это название устройства
 
-            s = res[0].Trim();
+            s = res[0];
 
             int numbWS = 2; // количество пробелов которое необходимо найти
             int index;
@@ -209,37 +225,52 @@ namespace Clients
 
             string named = s.Substring(index, s.Length - index).Trim(); // название устройства
 
-            string subdiv;
+            string subdiv = "";     //
+                                    // для инициализации нельзя использовать null. Это приводит к удалению текущего id
+            string addInfo = "";    //
 
-            int numb = -1;
+            int numb = 0;
 
-            if (res.Length >= 2)
+            Flags flag = Flags.None;
+
+            // Извлекаем из строки номер(порядковый) услуги, название подразделения и дополнительную информацию о услуге
+            for (int idx = 1; idx < res.Length; idx++)
             {
-                subdiv = res[1].Trim();
-
-                if (!int.TryParse(subdiv, out numb)) // возможно это номер заправки?
+                if(!(flag.HasFlag(Flags.isNumber)) && int.TryParse(res[idx], out numb))
                 {
-                    // Нет. Считаем, что это название подразделения
-                    // следующий есть и является номером?
-                    if (!(res.Length == 3 && int.TryParse(res[2], out numb)))
-                        numb = -1; // не номер или его нет
+                    flag |= Flags.isNumber;  // это номер услуги
                 }
                 else
-                if (res.Length == 3)
+                if (!(flag.HasFlag(Flags.isAddInfo)) && IsAddInfo(res[idx]))
                 {
-                    subdiv = res[2].Trim();
+                    addInfo = res[idx];
+                    flag |= Flags.isAddInfo; // Это дополнительная информация о услуге
                 }
                 else
-                    subdiv = null;
-            }
-            else
-            {
-                subdiv = null;
+                if(!flag.HasFlag(Flags.isSubdivision))
+                {
+                    subdiv = res[idx]; // Это название подразделения
+                    flag |= Flags.isSubdivision;
+                }
             }
 
             CultureInfo culture = new CultureInfo("ru-RU");
 
-            return new Service(namew, named, subdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat));
+            return new Service(namew, named, subdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat), -1, addInfo);
+        }
+
+        private bool IsAddInfo(string s)
+        {
+            // подстроки, присутвующие в доп. информации
+            string[] sa = { "ф/", "Ф/", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/", "Вал", "вал", "Маг", "маг", "Т/", "т/", "без","Терм", "терм"};
+
+            foreach(string str in sa)
+            {
+                if (s.Contains(str))
+                    return true;
+            }
+
+            return false;
         }
 
         // Ищет колонку в DateRow dr, со строкой isS, начиная с колонки startcol, count колонок

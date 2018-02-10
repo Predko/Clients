@@ -39,8 +39,7 @@ namespace Clients
         public static ChangingListServicesEventArgs ChangingLSEventArgs = new ChangingListServicesEventArgs();
 
         private static int lastYear = DateTime.Now.Year;    // год в последнем договоре с номером lastNumb
-        private static int lastId = 1;                      // последний не использованный идентификатор.
-                                                            // инкрементируется при создании объекта
+
         private static int lastNumb = 1;                    // номер последнего договора.
 
         public bool Signed;                                 // договор подписан и возвращён = true. Иначе - false
@@ -54,25 +53,23 @@ namespace Clients
 
         public TypeContract Type { get; set; }              // тип договора
 
-        public List<Service> services;                      // Список оказанных услуг
+        public List<int> services;                          // Список идентификаторов(ключей) оказанных услуг в данном договоре
 
         public Client Client { get; set; }                  // ссылка на владельца договора
 
 
-        public Contract()
+        public Contract(int id = -1)            // Id получаем от родителя
         {
             this.Signed = false;
-            this.Id = lastId++;
+            this.Id = id;
             this.Dt = DateTime.Now;
             this.Numb = IncNumb();
             this.Summ = 0;
             this.FileName = String.Empty;
             Type = TypeContract.Contract;
-            services = new List<Service>();
+            services = new List<int>();
         }
 
-        // этот конструктор нужен для совместимости со старой базой данных,
-        // в которой нет списка услуг и есть только общая сумма
         public Contract(Client client, int Id, DateTime dt, int numb, decimal summ, bool signed = false, 
                                     string FileName = "", TypeContract type = TypeContract.Contract)
         {
@@ -85,7 +82,7 @@ namespace Clients
             this.FileName = FileName;
             this.Type = type;
 
-            services = new List<Service>();
+            services = new List<int>();
         }
 
 
@@ -125,49 +122,46 @@ namespace Clients
 
             OnChangingListServices(ChangingLSEventArgs);
 
-            services.Add(sv);
+            sv.Add();   // добавляем услугу в общий список всех услуг
+                        
+            services.Add(sv.Id); // добавляем Id услуги в список услуг данного договора
         }
 
         // удалить услугу
-        public void DelService(int id)
+        public void DelService(Service sv)
         {
-            int i = services.FindIndex(s => s.Id == id);    // находим индекс данной услуги
-
-            if (i != -1)                                    // если найдена
+            if (sv.Id != -1)        // если такая услуга есть в списке
             {
-                Summ -= services[i].Value;            // уменьшаем сумму договора на стоимость этой услуги
+                Summ -= sv.Value;            // уменьшаем сумму договора на стоимость этой услуги
+
+                int index = services.IndexOf(sv.Id);
 
                 ChangingLSEventArgs.type = Change.Del;
-                ChangingLSEventArgs.index = i;
-                ChangingLSEventArgs.service = services[i];
+                ChangingLSEventArgs.index = index;
+                ChangingLSEventArgs.service = sv;
 
                 OnChangingListServices(ChangingLSEventArgs);
 
-                services.RemoveAt(i);                       // удаляем
+                services.RemoveAt(index);                 // удаляем
             }
         }
-        
-        // клонируем Contract
+
+        // клонируем Contract(неполная копия. Список услуг - ссылка)
         public Contract Clone()
         {
-            Contract contract = new Contract(this.Client, this.Id, this.Dt, this.Numb, this.Summ, this.Signed, this.FileName, this.Type);
-
-            foreach(Service service in this.services)
-                contract.services.Add(service.Clone());
-
-            return contract;
+            return new Contract(this.Client, this.Id, this.Dt, this.Numb, this.Summ, this.Signed, this.FileName, this.Type)
+            {
+                services = this.services
+            };
         }
 
         public int CompareTo(Contract other)
         {
             int c = Dt.CompareTo(other.Dt);
-            if (c < 0)
-                return -1;
+            if (c != 0)
+                return c;
 
-            if (c > 0)
-                return 1;
-
-            return Numb - other.Numb;
+            return Numb.CompareTo(other.Numb);
         }
     }
 }

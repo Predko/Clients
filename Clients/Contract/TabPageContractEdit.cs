@@ -38,13 +38,14 @@ namespace Clients
             }
         }
 
+        // Загружаем информациюоб услугах из файла договора .xls
         private void ButtonLoadContractFrom_xls_Click(object sender, EventArgs e)
         {
             string filename = @"H:\Документы" + CurrentContract.FileName;
 
-            while (!File.Exists(filename))
+            while (!File.Exists(filename))  // Если файл не существует, предлагаем ввести путь к файлу
             {
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                var fbd = new FolderBrowserDialog();
 
                 DialogResult res = fbd.ShowDialog();
                 switch (res)
@@ -59,12 +60,16 @@ namespace Clients
                 }
             }
 
-            GetContractInfoFromXls xls = new GetContractInfoFromXls(filename, ModeGetData.OLEDB);
+            // добавляем событие вызываемое при изменении списка услуг в текущем контракте
+            Contract.ChangeServiceList -= ChangeServiceList_Event;
+            Contract.ChangeServiceList += ChangeServiceList_Event;
+
+            var xls = new GetContractInfoFromXls(filename, ModeGetData.OLEDB);
 
             if (xls.Dt == null) // Не удалось загрузить информацию
                 return;
 
-            GetListServicesFromDT gls = new GetListServicesFromDT(xls.Dt, CurrentContract.Clone());
+            var gls = new GetListServicesFromDT(xls.Dt, CurrentContract.Clone());
 
             if (!gls.GetListServices())
             {
@@ -72,6 +77,9 @@ namespace Clients
             }
 
             CurrentContract.services = gls.contract.services;
+
+            // Удаляем событие вызываемое при изменении списка услуг в текущем контракте
+            Contract.ChangeServiceList -= ChangeServiceList_Event;
         }
     }
 }
