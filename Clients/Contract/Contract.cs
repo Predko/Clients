@@ -120,10 +120,10 @@ namespace Clients
             ChangingLSEventArgs.type = Change.Add;
             ChangingLSEventArgs.service = sv;
 
+            sv.Add();   // добавляем услугу в общий список всех услуг
+
             OnChangingListServices(ChangingLSEventArgs);
 
-            sv.Add();   // добавляем услугу в общий список всех услуг
-                        
             services.Add(sv.Id); // добавляем Id услуги в список услуг данного договора
         }
 

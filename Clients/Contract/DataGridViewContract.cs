@@ -68,22 +68,22 @@ namespace Clients
         // Инициализация ячеек, содержащих элемент ComboBoxColumn
         private void InitComboBoxColumns()
         {
-            string[] cns = { "Заправка картриджа", "Восстановление картриджа", "Прошивка чипа картриджа", "Ремонт узла закрепления принтера" };
+            string[] cns = { "", "Заправка картриджа", "Восстановление картриджа", "Прошивка чипа картриджа", "Ремонт узла закрепления принтера" };
 
             ColumnNameService.Items.AddRange(cns);
             dataGridViewContract["ColumnNameService", 0].Value = cns[0];
 
-            string[] cnd = { "Canon 725", "Canon 728", "Canon 737", "Hp 35a", "Hp 85a", "Hp 12a", "Hp 49a", "Hp 53a" };
+            string[] cnd = { "", "Canon 725", "Canon 728", "Canon 737", "Hp 35a", "Hp 85a", "Hp 12a", "Hp 49a", "Hp 53a", "HP 05a" };
 
             ColumnNameDevice.Items.AddRange(cnd);
             dataGridViewContract["ColumnNameDevice", 0].Value = cnd[0];
 
-            string[] csd = { "к.401", "к.402", "к.403", "к.405", "к.406", "к.407" };
+            string[] csd = { "", "к.401", "к.402", "к.403", "к.405", "к.406", "к.407" };
 
             ColumnSubdivision.Items.AddRange(csd);
             dataGridViewContract["ColumnSubdivision", 0].Value = csd[0];
 
-            string[] cai = { "фотовал", "доз.нож", "чист.нож", ",без.запр", "вал зар.", "магн.вал" };
+            string[] cai = { "", "фотовал", "доз.нож", "чист.нож", "без.запр", "вал зар.", "магн.вал" };
 
             ColumnAddInfo.Items.AddRange(cai);
             dataGridViewContract["ColumnAddInfo", 0].Value = cai[0];
@@ -97,9 +97,10 @@ namespace Clients
 
             ColumnSubdivision.DisplayIndex = 0;
             ColumnNameDevice.DisplayIndex = 1;
-            ColumnNameService.DisplayIndex = 2;
-            ColumnServiceNumb.DisplayIndex = 3;
-            ColumnServiceSumm.DisplayIndex = 4;
+            ColumnAddInfo.DisplayIndex = 2;
+            ColumnNameService.DisplayIndex = 3;
+            ColumnServiceNumb.DisplayIndex = 4;
+            ColumnServiceSumm.DisplayIndex = 5;
 
         }
 
@@ -109,17 +110,39 @@ namespace Clients
             {
                 case Change.Add:
 
-                    var row = new DataGridViewRow();
+                    DataGridViewRow row;
 
+                    if (dataGridViewContract.RowCount == 1 && (int)dataGridViewContract.Rows[0].Cells["ColumnIdService"].Value == -1)
+                    {
+                        row = dataGridViewContract.Rows[dataGridViewContract.RowCount-1];
+                    }
+                    else
+                    {
+                        row = dataGridViewContract.Rows[dataGridViewContract.Rows.Add()];
+                    }
+
+                    // Если в ComboBoxCell нет этих пунктов, добавляем их
+                    if (!ColumnNameService.Items.Contains(e.service.Nw.Name))
+                        ColumnNameService.Items.Add(e.service.Nw.Name);
                     row.Cells["ColumnNameService"].Value = e.service.Nw.Name;
+
+                    if (!ColumnNameDevice.Items.Contains(e.service.Nd.Name))
+                        ColumnNameDevice.Items.Add(e.service.Nd.Name);
                     row.Cells["ColumnNameDevice"].Value = e.service.Nd.Name;
+
+                    if (!ColumnSubdivision.Items.Contains(e.service.Sd.Name))
+                        ColumnSubdivision.Items.Add(e.service.Sd.Name);
                     row.Cells["ColumnSubdivision"].Value = e.service.Sd.Name;
+
+                    if (!ColumnAddInfo.Items.Contains(e.service.Ai.InfoString))
+                        ColumnAddInfo.Items.Add(e.service.Ai.InfoString);
+                    row.Cells["ColumnAddInfo"].Value = e.service.Ai.InfoString;
+
+                    // Заполяем остальные ячейки
                     row.Cells["ColumnServiceNumb"].Value = e.service.Number;
                     row.Cells["ColumnServiceSumm"].Value = e.service.Value;     // стоимость
                     row.Cells["ColumnIdService"].Value = e.service.Id;
-                    row.Cells["ColumnAddInfo"].Value = e.service.Ai.InfoString;
 
-                    dataGridViewContract.Rows.Add(row);
                     break;
 
                 case Change.Del:
@@ -218,15 +241,18 @@ namespace Clients
             {
                 DataGridViewRow dr = dataGridViewContract.Rows[e.RowIndex + i];
 
-                var sv = new Service(dr.Cells["ColumnNameService"].Value?.ToString(),
-                                         dr.Cells["ColumnNameDevice"].Value?.ToString(),
-                                         dr.Cells["ColumnSubdivision"].Value?.ToString(),
-                                         (int)dr.Cells["ColumnServiceNumb"].Value,
-                                         (decimal)dr.Cells["ColumnServiceSumm"].Value,
-                                         (int)dr.Cells["ColumnIdService"].Value,
-                                         dr.Cells["ColumnAddInfo"].Value?.ToString());
+                if(dr.Cells["ColumnIdService"].Value != null && int.Parse(dr.Cells["ColumnIdService"].Value.ToString()) != -1)
+                {
+                    var sv = new Service(dr.Cells["ColumnNameService"].Value.ToString(),
+                                             dr.Cells["ColumnNameDevice"].Value.ToString(),
+                                             dr.Cells["ColumnSubdivision"].Value.ToString(),
+                                             int.Parse(dr.Cells["ColumnServiceNumb"].Value.ToString()),
+                                             decimal.Parse(dr.Cells["ColumnServiceSumm"].Value.ToString()),
+                                             int.Parse(dr.Cells["ColumnIdService"].Value.ToString()),
+                                             dr.Cells["ColumnAddInfo"].Value.ToString());
 
-                CurrentContract.AddService(sv);
+                    CurrentContract.AddService(sv);
+                }
             }
 
             Contract.ChangeServiceList += ChangeServiceList_Event;
@@ -250,7 +276,7 @@ namespace Clients
                 if (currentCell.Y + 1 == dataGridViewContract.RowCount && !dataGridViewContract.IsCurrentRowDirty)
                 {
                     // нельзя покидать строку, если не создана новая
-                    // и текущая прошла проверку на правильность значений
+                    // и текущая не прошла проверку на правильность значений
                     return;
                 }
 
