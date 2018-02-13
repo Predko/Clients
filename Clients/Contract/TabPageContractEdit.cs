@@ -38,7 +38,7 @@ namespace Clients
             }
         }
 
-        // Загружаем информациюоб услугах из файла договора .xls
+        // Загружаем информацию об услугах из файла договора .xls
         private void ButtonLoadContractFrom_xls_Click(object sender, EventArgs e)
         {
             string filename = @"H:\Документы" + CurrentContract.FileName;

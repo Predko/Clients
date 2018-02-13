@@ -86,6 +86,9 @@ namespace Clients
                                         new XElement("Subdivision",
                                         new XAttribute("Id", n.Value.Sd.Id)),
 
+                                        new XElement("AddInfo",
+                                        new XAttribute("Id", n.Value.Ai.Id)),
+
                                         new XElement("Number", n.Value.Number),
 
                                         new XElement("Value", n.Value.Value)
@@ -207,17 +210,20 @@ namespace Clients
 
                 ReadListFromXml(Clients.AllSubdivisions, xelm.Element("ListSubdivisions")?.Elements());
 
-                ReadListFromXml(Clients.AllAddInfo, xelm.Element("ListAddInfo")?.Elements());
+                ReadListFromXml(Clients.AllAddInfo, xelm.Element("ListAddInfo")?.Elements(), "InfoString");
+
+                // выполняем необходимую обработку связанных данных
+                OnChangeServiceList();
 
                 // Загружаем список всех услуг
-                IEnumerable<XElement> xelement = xelm.Element("ListServices")?.Elements();
+                IEnumerable<XElement> xelements = xelm.Element("ListServices")?.Elements();
 
-                if (xelement != null)
+                if (xelements != null)
                 {
                     Clients.AllServices.Clear();
-                    foreach (XElement element in xelement)
+                    foreach (XElement xe in xelements)
                     {
-                        var xe = element.Element("Service");
+                        //var xe = element.Element("Service");
 
                         var sv = new Service(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)],
                                              Clients.AllNameDevices[int.Parse(xe.Element("NameDevice").Attribute("Id").Value)],
@@ -319,19 +325,26 @@ namespace Clients
             }
         }
 
-        private bool ReadListFromXml(SortedList<int, string> sl, IEnumerable<XElement> xelement)
+        private void OnChangeServiceList()
+        {
+            Clients.ChangedServiceList?.Invoke();
+        }
+
+        private bool ReadListFromXml(SortedList<int, string> sl, IEnumerable<XElement> xelement, string name = "Name")
         {
             if (xelement != null)
             {
                 sl.Clear();
                 foreach (XElement element in xelement)
                 {
-                    sl.Add(int.Parse(element.Attribute("Id").Value), element.Element("Name").Value);
+                    sl.Add(int.Parse(element.Attribute("Id").Value), element.Element(name).Value);
                 }
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
         // Загрузка списка клиентов и контрактов из xml документа сформированного MS Access

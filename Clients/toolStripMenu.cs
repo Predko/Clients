@@ -68,9 +68,13 @@ namespace Clients
                 {
                     comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
 
+                    ChangedServiceList = SetComboBoxColumns;    // обновляем содержимое колонок
+
                     // Заполняем список клиентов с одновременным заполнением ComboBox(через событие в ListClients)
                     // Заполнение происходит без нарушения сортировки
                     clientsXml.XmlToClientsAndContracts(clients);
+
+                    ChangedServiceList = null;
 
                     // Выбираем первого клиента в списке и заполняем список договоров ListBoxContracts
                     SetClientContracts(clients.First());

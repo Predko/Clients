@@ -116,6 +116,8 @@ namespace Clients
             String numb = CurrentContract?.Numb.ToString() ?? "";
 
             labelContract.Text = tabPageContractEdit.Text = $"Договор № {numb}";
+
+            ClearDataGridView();
         }
 
         public void ChangeContracts(Object sender, ChangedContractsEventArgs e)

@@ -10,8 +10,8 @@ namespace Clients
 {
     public enum TypeContract
     {
-        Contract,
-        СWC,         // Сompleted Works Certificate - акт выполненных работ
+        Contract = 0,
+        СWC = 1,         // Сompleted Works Certificate - акт выполненных работ
         None
     }
 

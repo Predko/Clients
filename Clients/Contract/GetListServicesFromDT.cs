@@ -8,6 +8,37 @@ using System.Globalization;
 
 namespace Clients
 {
+    public static partial class ExtensionMethods
+    {
+        public static bool Contains(this string s, string[] sa, int startindex = 0) // Поиск строки из массива строк, в строке s, начиная с startindex
+        {
+            // sa - подстроки, присутвующие в доп. информации
+
+            for(int i = startindex; i != s.Length; i++)
+            {
+                for (int j = 0; j != sa.Length; j++)
+                {
+                    bool isFound = true;
+                    for (int k = 0; k != sa[j].Length; k++)
+                    {
+                        if (s[i + k] != sa[j][k])
+                        {
+                            isFound = false;
+                            break;
+                        }
+                    }
+
+                    if (isFound)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+
     // Класс предназначен для извлечения списка услуг из таблицы DataTable
     // Таблица заполнена из существующих файлов договоров в формате xls
     public class GetListServicesFromDT
@@ -193,9 +224,9 @@ namespace Clients
 
             string s = dr.ItemArray[NameOfServiceCol].ToString();
 
-            if (s.Length == 0
-                || s.Contains("Итог")
-                || s.Contains("итог"))    // Итоговая строка.  Список услуг завершён
+            string[] sa = { "Итог", "итог" };
+
+            if (s.Length == 0 || s.Contains(sa))    // Итоговая строка.  Список услуг завершён
             {
                 EndListService = true;
                 return null;
@@ -212,18 +243,34 @@ namespace Clients
             s = res[0];
 
             int numbWS = 2; // количество пробелов которое необходимо найти
-            int index;
+            int index, idxStartWord = s.Length;
 
             for (index = s.Length - 1; index != 0 && numbWS != 0; index--)
             {
-                if (s[index] == ' ' && --numbWS == 0)
-                    break;
+                if (s[index] == ' ')
+                {
+                    // Проверяем выделенное слово на наличие ключевых подстрок, например "картридж".
+                    // Возможно, название устройства состоит из одного слова
+                    if (s.Contains(new string[] { "кар", "МФУ", "прин", "закре", "пода", "бума"}, index))
+                    {
+                        // это не название устройства
+                        index = idxStartWord; // указываем на индекс следующего слова
+                        break;
+                    }
+
+                    if (--numbWS == 0)
+                    {
+                        break;
+                    }
+                }
             }
 
 
-            string namew = s.Substring(0, index); // выполненная работа без названия устройства
+            string namew = s.Substring(0, index).Trim(); // выполненная работа без названия устройства
 
-            string named = s.Substring(index, s.Length - index).Trim(); // название устройства
+            string named = (index == s.Length)
+                                        ? ""
+                                        : s.Substring(index, s.Length - index).Trim(); // название устройства
 
             string subdiv = "";     //
                                     // для инициализации нельзя использовать null. Это приводит к удалению текущего id
@@ -234,14 +281,18 @@ namespace Clients
             Flags flag = Flags.None;
 
             // Извлекаем из строки номер(порядковый) услуги, название подразделения и дополнительную информацию о услуге
+
+            string[] addInfoArray = { "ф/", "Ф/", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/",
+                            "Вал", "вал", "Маг", "маг", "Т/", "т/", "без","Терм", "терм", "Замена", "замена"};
+
             for (int idx = 1; idx < res.Length; idx++)
             {
-                if(!(flag.HasFlag(Flags.isNumber)) && int.TryParse(res[idx], out numb))
+                if(!flag.HasFlag(Flags.isNumber) && int.TryParse(res[idx], out numb))
                 {
                     flag |= Flags.isNumber;  // это номер услуги
                 }
                 else
-                if (!(flag.HasFlag(Flags.isAddInfo)) && IsAddInfo(res[idx]))
+                if (!flag.HasFlag(Flags.isAddInfo) && res[idx].Contains(addInfoArray))
                 {
                     addInfo = res[idx];
                     flag |= Flags.isAddInfo; // Это дополнительная информация о услуге
@@ -257,20 +308,6 @@ namespace Clients
             CultureInfo culture = new CultureInfo("ru-RU");
 
             return new Service(namew, named, subdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat), -1, addInfo);
-        }
-
-        private bool IsAddInfo(string s)
-        {
-            // подстроки, присутвующие в доп. информации
-            string[] sa = { "ф/", "Ф/", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/", "Вал", "вал", "Маг", "маг", "Т/", "т/", "без","Терм", "терм"};
-
-            foreach(string str in sa)
-            {
-                if (s.Contains(str))
-                    return true;
-            }
-
-            return false;
         }
 
         // Ищет колонку в DateRow dr, со строкой isS, начиная с колонки startcol, count колонок

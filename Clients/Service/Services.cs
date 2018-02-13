@@ -18,6 +18,10 @@ namespace Clients
 
         public static SortedList<int, string> AllAddInfo = new SortedList<int, string>();   // Список всех видов дополнительной информации о услуге
 
+        public static Action<int> RemovedDgvRows;     // Метод, вызываемый при удалении строк в dataGridViewContract.
+
+        public static Action ChangedServiceList;     // Метод, вызываемый при изменении списков видов услуг, устройств, подразделений, доп. информации.
+
         public static int Compare(int t1, int t2)
         {
             int r = t1 - t2;
@@ -30,15 +34,25 @@ namespace Clients
             return 0;
         }
 
+        public void RemoveService(int id)
+        {
+            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие для предотвращения рекурсивного вызова
+            Service sv = Clients.AllServices[id];
+
+            if (sv != null)
+                CurrentContract.DelService(sv); // Если найдена, удаляем из списка услуг
+
+            Contract.ChangeServiceList += ChangeServiceList_Event;       // подключаем событие
+        }
     }
 
-    // услуга(работа)
-    // При создании экземпляра классов - NameWork,Subdivision,NameDevice
-    // свойство Name, добавляет имя к списку имён данных классов(наименование работ, подразделения, названия устройств),
-    // если его ещё нет в списке, и присваевает Id экземпляра, соответствующему ключу списка
-    // при попытке присвоить экземпляру имя = null, Имя удаляется из списка.
-    #region class NameWork
-    public class NameWork : IComparable<NameWork>
+// услуга(работа)
+// При создании экземпляра классов - NameWork,Subdivision,NameDevice
+// свойство Name, добавляет имя к списку имён данных классов(наименование работ, подразделения, названия устройств),
+// если его ещё нет в списке, и присваевает Id экземпляра, соответствующему ключу списка
+// при попытке присвоить экземпляру имя = null, Имя удаляется из списка.
+#region class NameWork
+public class NameWork : IComparable<NameWork>
     {
         public static SortedList<int, string> NWlist => Clients.AllNameWorks;      // список всех видов услуг
 
@@ -96,6 +110,8 @@ namespace Clients
 
         public int Id { get; set; }             // идентификатор подразделения
 
+        public int IdClient { get; set; }       // идентификатор клиента, которому принадлежит подразделение
+
         public string Name                      // название подразделения, например "к. 410"
         {                                       // (сокращение от кабинет 410)
             get => Sdlist[Id];
@@ -148,7 +164,7 @@ namespace Clients
 
         public int Id { get; set; }         // идентификатор устройства
 
-        public string Name                      // название (например, "Canon 725")
+        public string Name                  // название (например, "Canon 725")
         {
             get => NDlist[Id];
             set
