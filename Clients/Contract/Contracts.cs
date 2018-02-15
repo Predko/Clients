@@ -6,7 +6,6 @@ using System.Windows.Forms;
 
 namespace Clients
 {
-
     public partial class Clients : Form
     {
         // Здесь хранится список всех договоров, всех клиентов

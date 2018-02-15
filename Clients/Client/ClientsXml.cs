@@ -60,12 +60,6 @@ namespace Clients
                                         new XAttribute("Id", n.Key),
                                         new XElement("Name", n.Value)))),
 
-                                new XElement("ListSubdivisions",
-                                    Clients.AllSubdivisions.Select(n =>
-                                    new XElement("Subdivision",
-                                        new XAttribute("Id", n.Key),
-                                        new XElement("Name", n.Value)))),
-
                                 new XElement("ListAddInfo",
                                     Clients.AllAddInfo.Select(n =>
                                     new XElement("AddInfo",
@@ -84,7 +78,7 @@ namespace Clients
                                         new XAttribute("Id", n.Value.Nd.Id)),
 
                                         new XElement("Subdivision",
-                                        new XAttribute("Id", n.Value.Sd.Id)),
+                                        new XAttribute("Id", n.Value.Sd)),
 
                                         new XElement("AddInfo",
                                         new XAttribute("Id", n.Value.Ai.Id)),
@@ -101,6 +95,12 @@ namespace Clients
                             new XElement("SettlementAccount", c.Value.SettlementAccount),
                             new XElement("City", c.Value.City),
                             new XElement("Address", c.Value.Address),
+
+                            new XElement("Subdivisions",
+                                c.Value.Subdivisions.Select(sd =>
+                                new XElement("Name", sd.Value,
+                                    new XAttribute("Id", sd.Key)))),
+
                             new XElement("Contracts",
                                 new XAttribute("Count", c.Value.contracts.Count),
                                 c.Value.contracts.Select(t =>
@@ -186,6 +186,7 @@ namespace Clients
         public void XmlToClientsAndContracts(ListClients clients)
         {
             clients.Clear();
+            Clients.AllContracts.Clear();
 
             #region CultureInfo setting
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
@@ -208,8 +209,6 @@ namespace Clients
 
                 ReadListFromXml(Clients.AllNameDevices, xelm.Element("ListNameDevices")?.Elements());
 
-                ReadListFromXml(Clients.AllSubdivisions, xelm.Element("ListSubdivisions")?.Elements());
-
                 ReadListFromXml(Clients.AllAddInfo, xelm.Element("ListAddInfo")?.Elements(), "InfoString");
 
                 // выполняем необходимую обработку связанных данных
@@ -223,11 +222,9 @@ namespace Clients
                     Clients.AllServices.Clear();
                     foreach (XElement xe in xelements)
                     {
-                        //var xe = element.Element("Service");
-
                         var sv = new Service(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)],
                                              Clients.AllNameDevices[int.Parse(xe.Element("NameDevice").Attribute("Id").Value)],
-                                             Clients.AllSubdivisions[int.Parse(xe.Element("Subdivision").Attribute("Id").Value)],
+                                             int.Parse(xe.Element("Subdivision").Attribute("Id").Value),
                                              int.Parse(xe.Element("Number").Value),
                                              decimal.Parse(xe.Element("Value").Value),
                                              int.Parse(xe.Attribute("Id").Value),
@@ -249,8 +246,22 @@ namespace Clients
 
                 var client = new Client(name, id, settlementAccount, city, address);
 
+                // загружаем список подразделений данного клиента
+                IEnumerable<XElement> xelement = xe.Element("Subdivisions")?.Elements();
+                if (xelement != null)
+                {
+                    foreach (XElement element in xelement)
+                    {
+                        if(!client.Subdivisions.ContainsValue(element.Value))
+                        {
+                            client.Subdivisions.Add(int.Parse(element.Attribute("Id").Value),
+                                                   element.Value);
+                        }
+                    }
+                }
+
                 // загружаем список договоров данного клиента
-                IEnumerable<XElement> xelement = xe.Element("Contracts")?.Elements();
+                xelement = xe.Element("Contracts")?.Elements();
                 if (xelement != null)
                 {
                     foreach (XElement element in xelement)
@@ -277,7 +288,7 @@ namespace Clients
 
                         bool signed = bool.Parse(element.Element("Signed").Value);
 
-                        Regex regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
+                        var regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
 
                         svalue = regex.Replace(element.Element("FileName")?.Value, 
                                                 (m) => {
@@ -305,7 +316,7 @@ namespace Clients
                         //
                         //  Здесь загрузить Services
                         //
-                        Contract ctr = new Contract(client, id, dt, number, summ, signed, svalue, tc);
+                        var ctr = new Contract(client, id, dt, number, summ, signed, svalue, tc);
 
                         IEnumerable<XElement> ServicesElements = xe.Element("Services")?.Elements();
 
@@ -418,13 +429,8 @@ namespace Clients
                                                     ? TypeContract.Contract     // Договор
                                                     : TypeContract.СWC;         // Акт приёмки сдачи работ
 
-                        //
-                        //  Здесь загрузить Services
-                        //
-                        //
-
                         client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
-                    } // end foreach
+                    }
                 }
 
                 clients.Add(client);

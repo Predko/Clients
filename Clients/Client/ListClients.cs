@@ -2,12 +2,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Windows.Forms;
 
 namespace Clients
 {
-    // перечисление вариантов изменения списка - добавить, очистить, установить по индексу
-    public enum Change { Add, Del, Clear, Set }
+    public partial class Clients : Form
+    {
+        private Client _currentClient;
+
+        public event EventHandler ChangedCurrentClient_EventHandler;    // Событие, вызываемое после изменения текущего клиента
+
+        private Client CurrentClient        // Текущий клиент
+        {
+            get
+            {
+                return _currentClient;
+            }
+            set
+            {
+                if (_currentClient != value)
+                {
+                    _currentClient = value;
+
+                    OnChangeCurrentClient(EventArgs.Empty);
+                }
+            }
+        }
+
+        private void OnChangeCurrentClient(EventArgs args)
+        {
+            var temp = new EventHandler(ChangedCurrentClient_EventHandler);
+
+            temp?.Invoke(this, args);
+        }
+    }
+
+        // перечисление вариантов изменения списка - добавить, очистить, установить по индексу
+        public enum Change { Add, Del, Clear, Set }
 
     // класс аргумента события изменения списка
     public class ChangedListClientsEventArgs : EventArgs

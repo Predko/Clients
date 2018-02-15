@@ -9,15 +9,18 @@ namespace Clients
 {
     public partial class Clients: Form
     {
-        public event EventHandler ChangeCurrentContract;    // событие, вызываемое при изменении текущего контракта
+        public event EventHandler ChangeCurrentContract_EventHandler;    // событие, вызываемое при изменении текущего контракта
 
         public Contract CurrentContract // Текущий договор
         {
             get => _currentContract;
             set
             {
-                _currentContract = value;
-                OnChangeCurrentContractInfo(EventArgs.Empty); // обрабатываем подключённые события после изменения текущего договора
+                if(_currentContract != value)
+                {
+                    _currentContract = value;
+                    OnChangeCurrentContractInfo(EventArgs.Empty); // обрабатываем подключённые события после изменения текущего договора
+                }
             }
         }
 
@@ -26,16 +29,21 @@ namespace Clients
 //
         private void InitListBoxContracts()
         {
-            this.listBoxContracts.SelectedIndexChanged += new System.EventHandler(this.ListBoxContracts_SelectedIndexChanged);
+            listBoxContracts.SelectedIndexChanged += ListBoxContracts_SelectedIndexChanged;
 
             // при изменении текущего договора выводить информацию о нём
-            ChangeCurrentContract += (o, e) => WriteLabelContractInfo();
+            ChangeCurrentContract_EventHandler += (o, e) => WriteLabelContractInfo();
+
+            // при изменении текущего клиента, вызываем это событие и отображаем список договоров для него
+            ChangedCurrentClient_EventHandler += SetClientContracts;
         }
 
         // обрабатываем подключённые события после изменения текущего договора
         private void OnChangeCurrentContractInfo(EventArgs eventArgs)
         {
-            ChangeCurrentContract?.Invoke(this, eventArgs);
+            var temp = new EventHandler(ChangeCurrentContract_EventHandler);
+
+            temp?.Invoke(this, eventArgs);
         }
 
         //
@@ -53,10 +61,12 @@ namespace Clients
 
         // Заполняет listBoxContracts списком договоров
         // при выборе другого клиента
-        private void SetClientContracts(Client cl)
+        private void SetClientContracts(Object sender, EventArgs e)
         {
-            if (cl == null)
+            if (CurrentClient == null)
                 return;
+
+            listBoxContracts.BeginUpdate(); // Приостанавливаем обновление в listBox
 
             decimal Summ = 0;
 
@@ -65,7 +75,7 @@ namespace Clients
             // заполняем listBoxContracts списком договоров и подсчитываем общую сумму
             listBoxContracts.Items.Clear();
 
-            foreach (Contract c in cl.contracts)
+            foreach (Contract c in CurrentClient.contracts)
             {
                 SortedInsertItem(listBoxContracts, c);  // Добавляем без нарушения сортировки списка
 
@@ -74,13 +84,15 @@ namespace Clients
             }
 
             // Выводим информацию о количестве и общей сумме договоров
-            labelListContractsTotals.Text = String.Format($"Договоров: {cl.contracts.Count,-5}  на сумму: {Summ:C}");
+            labelListContractsTotals.Text = String.Format($"Договоров: {CurrentClient.contracts.Count,-5}  на сумму: {Summ:C}");
 
             // если список договоров пуст, устанавливаем текущий в null
-            if (cl.contracts.Count == 0)
+            if (CurrentClient.contracts.Count == 0)
                 CurrentContract = null;
             else // иначе выбираем первый в списке listBoxContracts
                 listBoxContracts.SelectedIndex = 0;
+
+            listBoxContracts.EndUpdate();   // обновляем список договоров в listBox
         }
 
         // Вставка нового элемента без нарушения сортировки списка
@@ -116,8 +128,6 @@ namespace Clients
             String numb = CurrentContract?.Numb.ToString() ?? "";
 
             labelContract.Text = tabPageContractEdit.Text = $"Договор № {numb}";
-
-            ClearDataGridView();
         }
 
         public void ChangeContracts(Object sender, ChangedContractsEventArgs e)

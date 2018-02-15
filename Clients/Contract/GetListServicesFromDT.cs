@@ -21,11 +21,11 @@ namespace Clients
                     bool isFound = true;
                     for (int k = 0; k != sa[j].Length; k++)
                     {
-                        if (s[i + k] != sa[j][k])
-                        {
-                            isFound = false;
-                            break;
-                        }
+                        if (i + k != s.Length && s[i + k] == sa[j][k])
+                            continue;
+
+                        isFound = false;
+                        break;
                     }
 
                     if (isFound)
@@ -190,7 +190,7 @@ namespace Clients
 
             contract.Summ = 0; // обнуляем общую сумму услуг договора
 
-            while ((sr = GetContractServices(dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
+            while ((sr = GetContractServices(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
             {
                 contract.AddService(sr); // добавляем услугу в список услуг договора
             }
@@ -214,7 +214,7 @@ namespace Clients
         //  "Ремонт картриджа Canon 703  "
         //  "Ремонт картриджа Canon 703 (фотовал) "
 
-        private Service GetContractServices(DataRow dr, int NameOfServiceCol, int SummCol)
+        private Service GetContractServices(Client cl, DataRow dr, int NameOfServiceCol, int SummCol)
         {
             // Извлекаем из строк:
             //  NameWork - название услуги(напр. "Заправка картриджа")
@@ -305,9 +305,10 @@ namespace Clients
                 }
             }
 
-            CultureInfo culture = new CultureInfo("ru-RU");
+            var culture = new CultureInfo("ru-RU");
 
-            return new Service(namew, named, subdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat), -1, addInfo);
+            int IdSubdiv = cl.AddSubdision(subdiv);
+            return new Service(namew, named, IdSubdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat), -1, addInfo);
         }
 
         // Ищет колонку в DateRow dr, со строкой isS, начиная с колонки startcol, count колонок

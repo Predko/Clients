@@ -54,8 +54,9 @@ namespace Clients
         //------------------------------------------------------------------------------------
         private void InitDataGridViewContract()
         {
+            dataGridViewContract.CellParsing += DataGridViewContract_CellParsing;
             dataGridViewContract.CellEndEdit += DataGridViewContract_CellEndEdit;
-            dataGridViewContract.CellValidating += dataGridViewContract_CellValidating;
+            dataGridViewContract.CellValidating += DataGridViewContract_CellValidating;
 
             dataGridViewContract.DefaultValuesNeeded += DataGridViewContract_DefaultValuesNeeded;
             dataGridViewContract.RowsRemoved += DataGridViewContract_RowsRemoved;
@@ -101,8 +102,8 @@ namespace Clients
             ColumnAddInfo.Items.AddRange(cai);
             dataGridViewContract["ColumnAddInfo", 0].Value = cai[0];
 
-            dataGridViewContract["ColumnServiceNumb",0].Value = 0;
-            dataGridViewContract["ColumnServiceSumm",0].Value = (decimal)0;     // стоимость
+            dataGridViewContract["ColumnServiceNumb", 0].Value = 0;
+            dataGridViewContract["ColumnServiceSumm", 0].Value = (decimal)0;     // стоимость
 
             dataGridViewContract["ColumnIdService", 0].Value = -1;
 
@@ -120,34 +121,64 @@ namespace Clients
         public void SetComboBoxColumns()
         {
             ColumnNameWork.Items.Clear();
-            ColumnNameWork.Items.Add("");
-            foreach (string s in AllNameWorks.Values)
-            {
-                ColumnNameWork.Items.Add(s);
-            }
-            dataGridViewContract["ColumnNameWork", 0].Value = AllNameWorks.Values[0];
+
+            SortedColumn(ColumnNameWork.Items, AllNameWorks.Values);
+
+            dataGridViewContract["ColumnNameWork", 0].Value = ColumnNameWork.Items[0];
 
             ColumnNameDevice.Items.Clear();
-            ColumnNameDevice.Items.Add("");
-            foreach (string s in AllNameDevices.Values)
-            {
-                ColumnNameDevice.Items.Add(s);
-            }
-            dataGridViewContract["ColumnNameDevice", 0].Value = AllNameDevices.Values[0];
 
-            ColumnSubdivision.Items.Clear();
-            foreach (string s in AllSubdivisions.Values)
-            {
-                ColumnSubdivision.Items.Add(s);
-            }
-            dataGridViewContract["ColumnSubdivision", 0].Value = AllSubdivisions.Values[0];
+            SortedColumn(ColumnNameDevice.Items, AllNameDevices.Values);
+
+            dataGridViewContract["ColumnNameDevice", 0].Value = ColumnNameDevice.Items[0];
 
             ColumnAddInfo.Items.Clear();
-            foreach (string s in AllAddInfo.Values)
+
+            SortedColumn(ColumnAddInfo.Items, AllAddInfo.Values);
+
+            dataGridViewContract["ColumnAddInfo", 0].Value = ColumnAddInfo.Items[0];
+        }
+
+        // Сортирует список пунктов в ComboBoxColumn
+        private void SortedColumn(DataGridViewComboBoxCell.ObjectCollection cbcell, IList<string> lstr)
+        {
+            var ls = new LinkedList<string>();
+            ls.AddFirst(lstr[0]);
+            for (int i = 1; i != lstr.Count; i++)
             {
-                ColumnAddInfo.Items.Add(s);
+                var current = ls.First;
+                var s = lstr[i];
+                int res;
+                do
+                {
+                    if ((res = s.CompareTo(current.Value)) < 0)
+                    {
+                        break;
+                    }
+                    current = current.Next;
+                }
+                while (current != null);
+
+                if(current == null)
+                {
+                    ls.AddLast(s);
+                }
+                else
+                if (res < 0)
+                {
+                    ls.AddBefore(current, s);
+                }
+                else
+                if (res > 0)
+                {
+                    ls.AddAfter(current, s);
+                }
             }
-            dataGridViewContract["ColumnAddInfo", 0].Value = AllAddInfo.Values[0];
+            cbcell.Clear();
+            foreach (string s in ls)
+            {
+                cbcell.Add(s);
+            }
         }
 
         private void ChangeServiceList_Event(object o, ChangingListServicesEventArgs e)
@@ -156,55 +187,61 @@ namespace Clients
             {
                 case Change.Add:
 
-                    DataGridViewRow row = dataGridViewContract.Rows[dataGridViewContract.Rows.Add()];
-
-                    // Если в ComboBoxCell нет этих пунктов, добавляем их
-                    if (!ColumnNameWork.Items.Contains(e.service.Nw.Name))
-                        ColumnNameWork.Items.Add(e.service.Nw.Name);
-                    row.Cells["ColumnNameWork"].Value = e.service.Nw.Name;
-
-                    if (!ColumnNameDevice.Items.Contains(e.service.Nd.Name))
-                        ColumnNameDevice.Items.Add(e.service.Nd.Name);
-                    row.Cells["ColumnNameDevice"].Value = e.service.Nd.Name;
-
-                    if (!ColumnSubdivision.Items.Contains(e.service.Sd.Name))
-                        ColumnSubdivision.Items.Add(e.service.Sd.Name);
-                    row.Cells["ColumnSubdivision"].Value = e.service.Sd.Name;
-
-                    if (!ColumnAddInfo.Items.Contains(e.service.Ai.InfoString))
-                        ColumnAddInfo.Items.Add(e.service.Ai.InfoString);
-                    row.Cells["ColumnAddInfo"].Value = e.service.Ai.InfoString;
-
-                    // Заполяем остальные ячейки
-                    row.Cells["ColumnServiceNumb"].Value = e.service.Number;
-                    row.Cells["ColumnServiceSumm"].Value = e.service.Value;     // стоимость
-                    row.Cells["ColumnIdService"].Value = e.service.Id;
-
+                    AddServiceToDGV(e.service);
                     break;
 
                 case Change.Del:
 
-                    int id;
-
-                    row = null;
-                    foreach (DataGridViewRow r in dataGridViewContract.Rows)
-                    {
-                        id = (int)r.Cells["ColumnIdService"].Value;
-//                        int.TryParse(r.Cells["ColumnIdService"].Value.ToString(), out id);
-                        if (id == e.service.Id)
-                        {
-                            row = r;
-                            break;
-                        }
-                    }
-
-                    if(row != null)
-                        dataGridViewContract.Rows.Remove(row);
-
+                    RemoveServiceFromDGV(e.service.Id);
                     break;
                 case Change.Clear:
                     break;
             }
+        }
+
+        public void AddServiceToDGV(Service sv)
+        {
+            DataGridViewRow row = dataGridViewContract.Rows[dataGridViewContract.Rows.Add()];
+
+            // Если в ComboBoxCell нет этих пунктов, добавляем их
+            if (!ColumnNameWork.Items.Contains(sv.Nw.Name))
+                ColumnNameWork.Items.Add(sv.Nw.Name);
+            row.Cells["ColumnNameWork"].Value = sv.Nw.Name;
+
+            if (!ColumnNameDevice.Items.Contains(sv.Nd.Name))
+                ColumnNameDevice.Items.Add(sv.Nd.Name);
+            row.Cells["ColumnNameDevice"].Value = sv.Nd.Name;
+
+            string namesd = CurrentClient.Subdivisions[sv.Sd];
+            if (!ColumnSubdivision.Items.Contains(namesd))
+                ColumnSubdivision.Items.Add(namesd);
+            row.Cells["ColumnSubdivision"].Value = namesd;
+
+            if (!ColumnAddInfo.Items.Contains(sv.Ai.InfoString))
+                ColumnAddInfo.Items.Add(sv.Ai.InfoString);
+            row.Cells["ColumnAddInfo"].Value = sv.Ai.InfoString;
+
+            // Заполяем остальные ячейки
+            row.Cells["ColumnServiceNumb"].Value = sv.Number;
+            row.Cells["ColumnServiceSumm"].Value = sv.Value;     // стоимость
+            row.Cells["ColumnIdService"].Value = sv.Id;
+        }
+
+        public void RemoveServiceFromDGV(int ServiceId)
+        {
+            DataGridViewRow row = null;
+            foreach (DataGridViewRow r in dataGridViewContract.Rows)
+            {
+                var id = (int)r.Cells["ColumnIdService"].Value;
+                if (id == ServiceId)
+                {
+                    row = r;
+                    break;
+                }
+            }
+
+            if (row != null)
+                dataGridViewContract.Rows.Remove(row);
         }
 
         public void ClearDataGridView()
@@ -266,9 +303,11 @@ namespace Clients
         private void DataGridViewContract_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             SetRowsHeaderValue(e.RowIndex);
-            for (int i = 0; i != e.RowCount; i++)
+            
+            for (int i = 0; i != e.RowCount && dataGridViewContract.Rows.Count > 1; i++)
             {
                 // находим id услуги, соответствующий удаляемой строке и вызываем метод удаления услуги, если он подключен
+
                 OnRemovedService((int)dataGridViewContract.Rows[e.RowIndex + i].Cells["ColumnIdService"].Value);
             }
         }
@@ -281,28 +320,6 @@ namespace Clients
         private void DataGridViewContract_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             SetRowsHeaderValue(e.RowIndex);
-
-            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие для предотвращения рекурсивного вызова
-
-            for (int i = 0; i != e.RowCount; i++)
-            {
-                DataGridViewRow dr = dataGridViewContract.Rows[e.RowIndex + i];
-
-                if(dr.Cells["ColumnIdService"].Value != null && int.Parse(dr.Cells["ColumnIdService"].Value.ToString()) != -1)
-                {
-                    var sv = new Service(dr.Cells["ColumnNameWork"].Value.ToString(),
-                                             dr.Cells["ColumnNameDevice"].Value.ToString(),
-                                             dr.Cells["ColumnSubdivision"].Value.ToString(),
-                                             int.Parse(dr.Cells["ColumnServiceNumb"].Value.ToString()),
-                                             decimal.Parse(dr.Cells["ColumnServiceSumm"].Value.ToString()),
-                                             int.Parse(dr.Cells["ColumnIdService"].Value.ToString()),
-                                             dr.Cells["ColumnAddInfo"].Value.ToString());
-
-                    CurrentContract.AddService(sv);
-                }
-            }
-
-            Contract.ChangeServiceList += ChangeServiceList_Event;
         }
 
         //----------------------------------------------------------------------------------------
@@ -364,9 +381,106 @@ namespace Clients
         // проверка правильности введённых значений в строке (не работает)
         private void DataGridViewContract_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
         {
-            //if ((string)dataGridViewContract.Rows[e.RowIndex].Cells["ColumnServiceNumb"].Value == ""
-            //    || (string)dataGridViewContract.Rows[e.RowIndex].Cells["ColumnServiceNumb"].Value == "")
-            //    e.Cancel = true;
+            var summ = (decimal)dataGridViewContract.Rows[e.RowIndex].Cells["ColumnServiceSumm"].Value;
+
+            if (summ == 0 || ((string)dataGridViewContract.Rows[e.RowIndex].Cells["ColumnNameWork"].Value)?.Length == 0)
+            {
+                return; // Не заполненную строку не фиксируем в списке услуг договора!
+            }
+
+            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие для предотвращения рекурсивного вызова
+
+            DataGridViewRow dr = dataGridViewContract.Rows[e.RowIndex];
+
+            SetServiceFromDgvRow(dr, summ);
+
+            Contract.ChangeServiceList += ChangeServiceList_Event;
+        }
+
+        // завершаем редактирование строки: создаём новую услугу или редактируем существующую
+        private void SetServiceFromDgvRow(DataGridViewRow dr, decimal summ)
+        {
+            // Проверяем, это новая строка или строка редактировалась
+            if (dr.Cells["ColumnIdService"].Value != null)
+            {
+                if ((int)dr.Cells["ColumnIdService"].Value == -1)
+                {
+                    // Это новая строка.
+                    // Добавляем услугу
+                    var sv = new Service((string)dr.Cells["ColumnNameWork"].Value,
+                                         (string)dr.Cells["ColumnNameDevice"].Value,
+                                          CurrentClient.AddSubdision((string)dr.Cells["ColumnSubdivision"].Value),
+                                         (int)dr.Cells["ColumnServiceNumb"].Value,
+                                         summ,
+                                         (int)dr.Cells["ColumnIdService"].Value,
+                                         (string)dr.Cells["ColumnAddInfo"].Value);
+
+                    CurrentContract.AddService(sv);
+                }
+                else // Не новая услуга. Можно сделать проверку, изменилась ли она. Стоит установить флажки изменений в событиях ячеек!
+                {
+                    // Извлекаем услугу с таким id
+                    Service sv = AllServices[(int)dr.Cells["ColumnIdService"].Value];
+
+                    // Меняем значения на полученные из редактируемой строки
+                    sv.SetService((string)dr.Cells["ColumnNameWork"].Value,
+                                  (string)dr.Cells["ColumnNameDevice"].Value,
+                                  CurrentClient.AddSubdision((string)dr.Cells["ColumnSubdivision"].Value),
+                                  (int)dr.Cells["ColumnServiceNumb"].Value,
+                                  summ,
+                                  (string)dr.Cells["ColumnAddInfo"].Value);
+                }
+            }
+        }
+
+        private void DataGridViewContract_CellParsing(object sender, DataGridViewCellParsingEventArgs e)
+        {
+            if (e != null)
+            {
+                string nameCol = dataGridViewContract.Columns[e.ColumnIndex].Name;
+                if (nameCol == "ColumnServiceSumm")
+                {
+                    if (e.Value != null)
+                    {
+                        try
+                        {
+                            e.Value = decimal.Parse(e.Value.ToString());
+                            // Set the ParsingApplied property to 
+                            // Show the event is handled.
+                            e.ParsingApplied = true;
+
+                        }
+                        catch (FormatException)
+                        {
+                            // Set to false in case another CellParsing handler
+                            // wants to try to parse this DataGridViewCellParsingEventArgs instance.
+                            e.ParsingApplied = false;
+                        }
+                    }
+                }
+                else
+                if (nameCol == "ColumnServiceNumb")
+                {
+                    if (e.Value != null)
+                    {
+                        try
+                        {
+                            e.Value = int.Parse(e.Value.ToString());
+                            // Set the ParsingApplied property to 
+                            // Show the event is handled.
+                            e.ParsingApplied = true;
+
+                        }
+                        catch (FormatException)
+                        {
+                            // Set to false in case another CellParsing handler
+                            // wants to try to parse this DataGridViewCellParsingEventArgs instance.
+                            e.ParsingApplied = false;
+                        }
+                    }
+                }
+            }
+
         }
 
         private void DataGridViewContract_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -374,7 +488,9 @@ namespace Clients
             // Завершаем редактирование ComboBoxCell с вводом нового значения
             if (cbNeedFill)
             {
-                dataGridViewContract[e.ColumnIndex, e.RowIndex].Value = cbCellValue; // заносим новое значение в редактируемую ячейку
+                // заносим новое значение в редактируемую ячейку
+                dataGridViewContract[e.ColumnIndex, e.RowIndex].Value = cbCellValue;
+
                 cbNeedFill = false; // сбрасываем флаг
             }
 
@@ -386,7 +502,7 @@ namespace Clients
         }
 
         // 
-        private void dataGridViewContract_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void DataGridViewContract_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             // Если эта ячейка DataGridViewComboBoxColumn, добавляем новое значение в список
 

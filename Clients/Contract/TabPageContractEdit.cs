@@ -26,8 +26,30 @@ namespace Clients
         //
         private void TabPageContractEdit_Enter(object sender, EventArgs e)
         {
+            SetInfoTabPageContractEdit();
+        }
+
+        private void SetInfoTabPageContractEdit()
+        {
+            ClearDataGridView();
+
             labelClientName.Text = CurrentClient.Name;  // Название клиента
 
+            // заполняем список подразделений текущего клиента
+            ColumnSubdivision.Items.Clear();
+
+            List<string> list = CurrentClient.Subdivisions.Values.ToList();
+
+            list.Sort();
+
+            foreach (string s in list)
+            {
+                ColumnSubdivision.Items.Add(s);
+            }
+
+            dataGridViewContract["ColumnSubdivision", 0].Value = CurrentClient.Subdivisions.Values[0];
+
+            // Информация о текущем договоре
             if (CurrentContract != null)
             {
                 comboBoxTypeContract.Items[0] = String.Format($"Договор № {CurrentContract.Numb} от {CurrentContract.Dt:d}");
@@ -35,6 +57,11 @@ namespace Clients
                 comboBoxTypeContract.Items[1] = String.Format($"Акт приёмки сдачи работ № {CurrentContract.Numb} от {CurrentContract.Dt:d}");
 
                 comboBoxTypeContract.SelectedIndex = (int)CurrentContract.Type;
+            }
+
+            foreach(int id in CurrentContract.services)
+            {
+                AddServiceToDGV(AllServices[id]);
             }
         }
 
@@ -59,6 +86,8 @@ namespace Clients
                         break;
                 }
             }
+
+            ClearDataGridView();
 
             // добавляем событие вызываемое при изменении списка услуг в текущем контракте
             Contract.ChangeServiceList -= ChangeServiceList_Event;

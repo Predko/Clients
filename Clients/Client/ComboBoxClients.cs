@@ -9,27 +9,12 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-        private Client _currentClient = null;
-        private Contract _currentContract;
-
-        private Client CurrentClient        // Текущий клиент
-        {
-            get
-            {
-                return _currentClient;
-            }
-            set
-            {
-                _currentClient = value;
-            }
-        }
-
         //-------------------------------------------------------------
         //      Инициализация comboBoxClients
         //
         private void InitComboBoxClients()
         {
-            this.comboBoxClients.SelectedIndexChanged += new System.EventHandler(this.ComboBoxClients_SelectedIndexChanged);
+            comboBoxClients.SelectedIndexChanged += ComboBoxClients_SelectedIndexChanged;
 
             // при изменении списка клиентов, вызывать это событие
             clients.ListClientsChanged += ChangeComboBoxClients;
@@ -41,13 +26,6 @@ namespace Clients
         private void ComboBoxClients_SelectedIndexChanged(object sender, EventArgs e)
         {
             CurrentClient = (Client)((ComboBox)sender).SelectedItem;
-
-            // заполняем listBoxContracts текущим списком договоров
-            listBoxContracts.BeginUpdate();
-
-            SetClientContracts(CurrentClient);
-
-            listBoxContracts.EndUpdate();
         }
 
         //---------------------------------------------------------------
@@ -59,16 +37,16 @@ namespace Clients
         {
             switch (e.change)
             {
-                case Change.Add:                            // добавляем элемент в список не нарушая сортировки
+                case Change.Add:                                // добавляем элемент в список не нарушая сортировки
                     SortedInsertItem(comboBoxClients, e.client);
                     break;
 
-                case Change.Clear:                          // очищаем список
+                case Change.Clear:                              // очищаем список
                     comboBoxClients.Items.Clear();
                     break;
 
-                case Change.Set:                            // устанавливаем элемент с данным индексом
-                    comboBoxClients.Items[e.index] = e.client;
+                case Change.Set:                                // устанавливаем элемент с данным индексом
+                    comboBoxClients.Items[e.index] = e.client;  // нарушается сортировка!
                     break;
             }
         }
@@ -80,7 +58,7 @@ namespace Clients
             {
                 for (int i = 0; i < cb.Items.Count; i++)
                 {
-                    Client c = (Client)cb.Items[i];
+                    var c = (Client)cb.Items[i];
 
                     int res = c.Name.CompareTo(cl.Name);
 
