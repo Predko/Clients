@@ -37,8 +37,8 @@ namespace Clients
         }
     }
 
-        // перечисление вариантов изменения списка - добавить, очистить, установить по индексу
-        public enum Change { Add, Del, Clear, Set }
+    // перечисление вариантов изменения списка - добавить, очистить, установить по индексу
+    public enum Change { Add, Del, Clear, Set }
 
     // класс аргумента события изменения списка
     public class ChangedListClientsEventArgs : EventArgs
@@ -51,7 +51,7 @@ namespace Clients
     // Класс-обёртка списка клиентов
     // предназначен для отображения списка в комбобоксе при изменении
     // Вместо binding...
-    public class ListClients:IEnumerable<KeyValuePair<int, Client>>
+    public class ListClients:IEnumerable<Client>
     {
         private static readonly SortedList<int, Client> clients = new SortedList<int, Client>();  // Список всех клиентов
 
@@ -86,7 +86,7 @@ namespace Clients
 
             if (clients.ContainsKey(client.Id))
             {
-                // Ошибка - повтор идентификатора клиента
+                // Ошибка - такой клиент уже есть
                 // заносим ошибку в log-файл
                 return;    // Ничего не делаем
             }
@@ -97,6 +97,8 @@ namespace Clients
             ChangedEventArgs.client = client;
             OnChangeListClients(ChangedEventArgs);
         }
+
+        public bool Contains(int id) => clients.ContainsKey(id);
 
         // Первый клиент в списке
         public Client First() => clients.First().Value;
@@ -124,7 +126,7 @@ namespace Clients
         }
 
 
-        public IEnumerator<KeyValuePair<int, Client>> GetEnumerator() => ((IEnumerable<KeyValuePair<int, Client>>)clients).GetEnumerator();
+        public IEnumerator<Client> GetEnumerator() => clients.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

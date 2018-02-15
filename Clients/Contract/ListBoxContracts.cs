@@ -102,7 +102,7 @@ namespace Clients
             {
                 for (int i = 0; i < lb.Items.Count; i++)
                 {
-                    Contract c = (Contract)lb.Items[i];
+                    var c = (Contract)lb.Items[i];
 
                     int res = c.CompareTo(ct);
 

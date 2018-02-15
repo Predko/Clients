@@ -52,7 +52,7 @@ namespace Clients
         // Загрузить данные из xml файла собственного формата
         private void ToolStripMenuItemLoad_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            var openFileDialog = new OpenFileDialog
             {
                 Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*",
                 FilterIndex = 0,
@@ -62,7 +62,7 @@ namespace Clients
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 // Открываем и загружаем файл данных со списком клиентов и контрактов(xml)
-                ClientsXml clientsXml = new ClientsXml(openFileDialog.FileName);
+                var clientsXml = new ClientsXml(openFileDialog.FileName);
 
                 if (clientsXml.Load_Ok)
                 {
@@ -88,7 +88,7 @@ namespace Clients
         // Загрузить данные из файла xml полученного в результате импорта из базы данных MS Access
         private void ToolStripMenuItemLoadXmlAccess_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            var openFileDialog = new OpenFileDialog
             {
                 Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*",
                 FilterIndex = 0,

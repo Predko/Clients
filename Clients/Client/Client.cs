@@ -20,7 +20,7 @@ namespace Clients
         private Contract _currentContract;  // текущий договор
     }
 
-        public class Client: IComparable<Client>
+    public class Client: IComparable<Client>
     {
         public int Id;                      // идентификатор клиента
         public string Name;                 // Название организации
@@ -42,7 +42,6 @@ namespace Clients
             this.SettlementAccount = String.Empty;
             this.City = String.Empty;
             this.Address = String.Empty;
-            //Subdivisions.Add(0, "");
         }
 
         public Client(string Name, int Id, string SettlementAccount = "", string City = "", string Address = "")
@@ -52,7 +51,6 @@ namespace Clients
             this.SettlementAccount = SettlementAccount;
             this.City = City;
             this.Address = Address;
-            //Subdivisions.Add(0, "");
         }
 
         // Добавляет имя подразделения в список. Если такое есть - возвращает его id(индекс в списке).

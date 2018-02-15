@@ -19,6 +19,7 @@ namespace Clients
         private void InitTabPageContractEdit()
         {
             tabPageContractEdit.Enter += TabPageContractEdit_Enter;
+            tabPageContractEdit.Leave += TabPageContractEdit_Leave;
         }
 
         //---------------------------------------------
@@ -26,7 +27,19 @@ namespace Clients
         //
         private void TabPageContractEdit_Enter(object sender, EventArgs e)
         {
+            ToolStripMenuChange(false);
             SetInfoTabPageContractEdit();
+        }
+
+        private void TabPageContractEdit_Leave(object sender, EventArgs e)
+        {
+            ToolStripMenuChange(true);
+        }
+
+        private void ToolStripMenuChange(bool change)
+        {
+            toolStripMenuItemLoadXmlAccess.Enabled = change;
+            toolStripMenuItemLoad.Enabled = change;
         }
 
         private void SetInfoTabPageContractEdit()

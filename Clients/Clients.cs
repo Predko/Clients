@@ -22,7 +22,7 @@ namespace Clients
 
     public partial class Clients : Form
     {
-        public readonly ListClients clients = new ListClients();    // Список всех клиентов
+        public static readonly ListClients clients = new ListClients();    // Список всех клиентов
 
         public Clients()
         {

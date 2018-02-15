@@ -90,20 +90,20 @@ namespace Clients
                             ),
 
                             clients.Select(c => new XElement("Client",
-                            new XAttribute("ClientId", c.Key),
-                            new XElement("ClientName", c.Value.Name),
-                            new XElement("SettlementAccount", c.Value.SettlementAccount),
-                            new XElement("City", c.Value.City),
-                            new XElement("Address", c.Value.Address),
+                            new XAttribute("ClientId", c.Id),
+                            new XElement("ClientName", c.Name),
+                            new XElement("SettlementAccount", c.SettlementAccount),
+                            new XElement("City", c.City),
+                            new XElement("Address", c.Address),
 
                             new XElement("Subdivisions",
-                                c.Value.Subdivisions.Select(sd =>
+                                c.Subdivisions.Select(sd =>
                                 new XElement("Name", sd.Value,
                                     new XAttribute("Id", sd.Key)))),
 
                             new XElement("Contracts",
-                                new XAttribute("Count", c.Value.contracts.Count),
-                                c.Value.contracts.Select(t =>
+                                new XAttribute("Count", c.contracts.Count),
+                                c.contracts.Select(t =>
                                 new XElement("Contract",
                                     new XAttribute("ContractId", t.Id),
                                     new XElement("DateContract", t.Dt.ToString("d")),
@@ -211,9 +211,6 @@ namespace Clients
 
                 ReadListFromXml(Clients.AllAddInfo, xelm.Element("ListAddInfo")?.Elements(), "InfoString");
 
-                // выполняем необходимую обработку связанных данных
-                OnChangeServiceList();
-
                 // Загружаем список всех услуг
                 IEnumerable<XElement> xelements = xelm.Element("ListServices")?.Elements();
 
@@ -232,6 +229,9 @@ namespace Clients
 
                         sv.Add();
                     }
+
+                    // выполняем необходимую обработку связанных cо списком услуг данных
+                    OnChangeServiceList();
                 }
             }
 
@@ -318,7 +318,12 @@ namespace Clients
                         //
                         var ctr = new Contract(client, id, dt, number, summ, signed, svalue, tc);
 
-                        IEnumerable<XElement> ServicesElements = xe.Element("Services")?.Elements();
+                        if(ctr.Numb == 24)
+                        {
+                            number = ctr.Numb;
+                        }
+
+                        IEnumerable<XElement> ServicesElements = element.Element("Services")?.Elements();
 
                         if (ServicesElements != null)
                         {
@@ -328,7 +333,7 @@ namespace Clients
                             }
                         }
 
-                        client.contracts.Add(new Contract(client, id, dt, number, summ, signed, svalue, tc));
+                        client.contracts.Add(ctr);
                     } // end foreach
                 }
 
@@ -374,41 +379,54 @@ namespace Clients
             Thread.CurrentThread.CurrentCulture = ci;
             #endregion
 
-            foreach (XElement xe in xClients.Element("dataroot").Elements("Clients"))
+            foreach (XElement xe in xClients.Element("dataroot").Elements("Клиенты"))
             {// 
-                int id = int.Parse(xe.Element("ClientId").Value);
-                string name = xe.Element("ClientName").Value;
-                string settlementAccount = xe.Element("SettlementAccount")?.Value;
-                string city = xe.Element("City")?.Value;
-                string address = xe.Element("Address")?.Value;
+                int id = int.Parse(xe.Element("КодКлиента").Value);
+                string name = xe.Element("НазваниеКомпании").Value;
+                string settlementAccount = xe.Element("АдресВыставленияСчета")?.Value;
+                string city = xe.Element("Город")?.Value;
+                string address = xe.Element("ОбластьКрайРеспублика")?.Value;
 
-                Client client = new Client(name, id, settlementAccount, city, address);
+                Client client;
+
+                if (Clients.clients.Contains(id))
+                {
+                    client = Clients.clients[id];   // клиент с таким Id уже есть. Обновляенм его данные
+                    client.Name = name;
+                    client.SettlementAccount = settlementAccount;
+                    client.City = city;
+                    client.Address = address;
+                }
+                else
+                {
+                    client = new Client(name, id, settlementAccount, city, address);
+                }
 
                 string svalue;
 
-                IEnumerable<XElement> xelement = xe.Elements("Contracts");
+                IEnumerable<XElement> xelement = xe.Elements("Договоры");
                 if (xelement != null)
                 {
                     foreach (XElement element in xelement)
                     {
-                        id = int.Parse(element.Element("ContractId").Value);
+                        id = int.Parse(element.Element("КодЗаказа").Value);
 
-                        svalue = element.Element("DateContract")?.Value;
+                        svalue = element.Element("ДатаРазмещения")?.Value;
 
                         if (!DateTime.TryParse(svalue, out DateTime dt))
                             dt = DateTime.MinValue;
 
-                        svalue = element.Element("Number")?.Value;
+                        svalue = element.Element("НомерЗаказа")?.Value;
                         int number = (int)double.Parse(svalue ?? "0");
 
-                        svalue = element.Element("Summ")?.Value;
+                        svalue = element.Element("Сумма")?.Value;
                         decimal summ = decimal.Parse(svalue ?? "0");
 
-                        bool signed = (int.Parse(element.Element("Signed").Value) == 1);
+                        bool signed = (int.Parse(element.Element("Наличие_x0020_договора").Value) == 1);
 
-                        string sfn = GetFileName(element.Element("FileName")?.Value);
+                        string sfn = GetFileName(element.Element("ФайлДоговора")?.Value);
 
-                        Regex regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
+                        var regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
 
                         string filename = regex.Replace(sfn,
                                                 (m) => {
@@ -429,7 +447,10 @@ namespace Clients
                                                     ? TypeContract.Contract     // Договор
                                                     : TypeContract.СWC;         // Акт приёмки сдачи работ
 
-                        client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
+                        if (!Clients.AllContracts.ContainsKey(id))
+                        {
+                            client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
+                        }
                     }
                 }
 
