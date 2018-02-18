@@ -13,6 +13,8 @@ namespace Clients
 {
     public partial class Clients : Form
     {
+        private int tpNumbCurrentContract = 0;  // Номер договора, показанного на вкладке
+
         //---------------------------------------------
         // инициализация вкладки "Договор"
         // 
@@ -27,23 +29,35 @@ namespace Clients
         //
         private void TabPageContractEdit_Enter(object sender, EventArgs e)
         {
-            ToolStripMenuChange(false);
+            ToolStripMenuChange(false); // Отключаем пукты меню, которые не должны использоваться на вкладке
+
             SetInfoTabPageContractEdit();
+
+            dataGridViewContract.Select();
         }
 
         private void TabPageContractEdit_Leave(object sender, EventArgs e)
         {
             ToolStripMenuChange(true);
+
+            // Обновляем текущий элемент в ListBox
+            listBoxContracts.Items[listBoxContracts.SelectedIndex] = CurrentContract;
         }
 
         private void ToolStripMenuChange(bool change)
         {
             toolStripMenuItemLoadXmlAccess.Enabled = change;
+
             toolStripMenuItemLoad.Enabled = change;
         }
 
         private void SetInfoTabPageContractEdit()
         {
+            if (tpNumbCurrentContract == CurrentContract.Numb)
+                return;
+
+            tpNumbCurrentContract = CurrentContract.Numb;
+
             ClearDataGridView();
 
             labelClientName.Text = CurrentClient.Name;  // Название клиента
@@ -76,6 +90,8 @@ namespace Clients
             {
                 AddServiceToDGV(AllServices[id]);
             }
+
+            labelInTotalValue.Text = $"{CurrentContract.Summ}";
         }
 
         // Загружаем информацию об услугах из файла договора .xls
@@ -87,8 +103,7 @@ namespace Clients
             {
                 var fbd = new FolderBrowserDialog();
 
-                DialogResult res = fbd.ShowDialog();
-                switch (res)
+                switch (fbd.ShowDialog())
                 {
                     case DialogResult.Cancel:
                     case DialogResult.Abort:
@@ -108,20 +123,20 @@ namespace Clients
 
             var xls = new GetContractInfoFromXls(filename, ModeGetData.OLEDB);
 
-            if (xls.Dt == null) // Не удалось загрузить информацию
+            if (xls.Dt == null || xls.Dt.Rows.Count < 20) // Не удалось загрузить информацию
                 return;
 
-            var gls = new GetListServicesFromDT(xls.Dt, CurrentContract.Clone());
+            var gls = new GetListServicesFromDT(xls.Dt, CurrentContract);
 
             if (!gls.GetListServices())
             {
                 return; // чтение списка услуг не удалось
             }
 
-            CurrentContract.services = gls.contract.services;
-
             // Удаляем событие вызываемое при изменении списка услуг в текущем контракте
             Contract.ChangeServiceList -= ChangeServiceList_Event;
+
+            labelInTotalValue.Text = $"{CurrentContract.Summ}";
         }
     }
 }

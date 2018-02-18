@@ -46,7 +46,6 @@ namespace Clients
         public readonly Contract contract;
         private readonly DataTable dt;
         private readonly int rowcount;
-        private bool EndListService = false;    // Список услуг прочитан полностью
 
         public GetListServicesFromDT(DataTable dt, Contract contract)
         {
@@ -78,12 +77,7 @@ namespace Clients
             }
 
             // Извлекаем и заполняем список услуг
-            for (++i; i < rowcount; i++)
-            {
-                GetContractListServices(i, NameOfServiceCol, SummCol);
-                if (EndListService)
-                    break;
-            }
+            GetContractListServices(++i, NameOfServiceCol, SummCol);
 
             return true;
         }
@@ -111,7 +105,7 @@ namespace Clients
 
                 if (s.Contains("Акт"))
                 {
-                    tc = TypeContract.СWC;
+                    tc = TypeContract.CWC;
                     break;
                 }
                 else
@@ -186,13 +180,16 @@ namespace Clients
         // Заполняем список услуг
         private void GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
         {
-            Service sr;
+             Service sv;
 
-            contract.Summ = 0; // обнуляем общую сумму услуг договора
-
-            while ((sr = GetContractServices(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
+            foreach (int id in contract.services.ToArray<int>())   // Очищаем список услуг услуг договора
             {
-                contract.AddService(sr); // добавляем услугу в список услуг договора
+                contract.DelService(Clients.AllServices[id]);
+            }
+
+            while ((sv = GetContractServices(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
+            {
+                contract.AddService(sv); // добавляем услугу в список услуг договора
             }
         }
 
@@ -213,14 +210,20 @@ namespace Clients
         //  "Ремонт картриджа Canon 703 (13775) "
         //  "Ремонт картриджа Canon 703  "
         //  "Ремонт картриджа Canon 703 (фотовал) "
-
-        private Service GetContractServices(Client cl, DataRow dr, int NameOfServiceCol, int SummCol)
-        {
             // Извлекаем из строк:
             //  NameWork - название услуги(напр. "Заправка картриджа")
             //  Subdivision - название подразделения клиента(напр. "к.401")
             //  NameDevice - название устройства(напр. "Canon 725")
             //  Price   - стоимость услуги
+
+        private Service GetContractServices(Client cl, DataRow dr, int NameOfServiceCol, int SummCol)
+        {
+            string[] addInfoArray = { "ф/", "Ф/", "Фот", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/",
+                            "Вал", "вал", "Маг", "маг", "Т/", "т/", "без", "б/з", "Б/з","Терм", "терм", "Замена", "замена", "Увел", "увел", "объ"};
+
+            string[] nameDevices = { "Hp", "hp", "HP", "Ca", "CA", "ca", "Br", "BR", "br", "Le", "LE", "le",
+                                     "Ep", "EP", "ep", "Ri", "RI", "ri", "Xe", "XE", "xe", "Sa", "SA", "sa"};
+
 
             string s = dr.ItemArray[NameOfServiceCol].ToString();
 
@@ -228,7 +231,6 @@ namespace Clients
 
             if (s.Length == 0 || s.Contains(sa))    // Итоговая строка.  Список услуг завершён
             {
-                EndListService = true;
                 return null;
             }
 
@@ -242,7 +244,7 @@ namespace Clients
 
             s = res[0];
 
-            int numbWS = 2; // количество пробелов которое необходимо найти
+            int numbWS = 3; // количество пробелов которое необходимо найти
             int index, idxStartWord = s.Length;
 
             for (index = s.Length - 1; index != 0 && numbWS != 0; index--)
@@ -251,16 +253,14 @@ namespace Clients
                 {
                     // Проверяем выделенное слово на наличие ключевых подстрок, например "картридж".
                     // Возможно, название устройства состоит из одного слова
-                    if (s.Contains(new string[] { "кар", "прин", "закре", "пода", "бума"}, index))
+                    if (s.Contains(new string[] { "кар", "прин", "закре", "пода", "бума", "кно"}, index))
                     {
                         // это не название устройства
                         index = idxStartWord; // указываем на индекс следующего слова
                         break;
                     }
-                    else
-                    {
-                        idxStartWord = index;
-                    }
+
+                    idxStartWord = index;
 
                     if (--numbWS == 0)
                     {
@@ -286,9 +286,6 @@ namespace Clients
 
             // Извлекаем из строки номер(порядковый) услуги, название подразделения и дополнительную информацию о услуге
 
-            string[] addInfoArray = { "ф/", "Ф/", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/",
-                            "Вал", "вал", "Маг", "маг", "Т/", "т/", "без","Терм", "терм", "Замена", "замена"};
-
             for (int idx = 1; idx < res.Length; idx++)
             {
                 if(!flag.HasFlag(Flags.isNumber) && int.TryParse(res[idx], out numb))
@@ -296,13 +293,17 @@ namespace Clients
                     flag |= Flags.isNumber;  // это номер услуги
                 }
                 else
-                if (!flag.HasFlag(Flags.isAddInfo) && res[idx].Contains(addInfoArray))
+                if (res[idx].Contains(addInfoArray))
                 {
                     addInfo = res[idx];
-                    flag |= Flags.isAddInfo; // Это дополнительная информация о услуге
                 }
                 else
-                if(!flag.HasFlag(Flags.isSubdivision))
+                if (named.Length == 0 && res[idx].Contains(nameDevices))
+                {
+                    named = res[idx];
+                }
+                else
+                if (!flag.HasFlag(Flags.isSubdivision))
                 {
                     subdiv = res[idx]; // Это название подразделения
                     flag |= Flags.isSubdivision;
@@ -312,6 +313,7 @@ namespace Clients
             var culture = new CultureInfo("ru-RU");
 
             int IdSubdiv = cl.AddSubdision(subdiv);
+
             return new Service(namew, named, IdSubdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat), -1, addInfo);
         }
 

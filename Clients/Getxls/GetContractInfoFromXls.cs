@@ -47,7 +47,9 @@ namespace Clients
 
             //ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + path + ";Extended Properties='Excel 8.0;HDR=NO;IMEX=1';";
 
-            string ConnectionString = "Provider=Microsoft.JET.OLEDB.4.0;Data Source=" + file + ";Extended Properties='Excel 8.0;HDR=NO;IMEX=1';";
+            string ConnectionString = "Provider=Microsoft.JET.OLEDB.4.0;Data Source="
+                                      + file
+                                      + ";Extended Properties='Excel 8.0;HDR=NO;IMEX=1';";
 
             using (OleDbConnection conn = new OleDbConnection(ConnectionString))
             {
@@ -58,19 +60,19 @@ namespace Clients
 
                 DataRow dr = dtSheet.Rows[0];
 
-                string sheetName = dr["TABLE_NAME"].ToString();
+                string sheetName = dr["TABLE_NAME"].ToString().Trim('\'');
 
                 if (!sheetName.EndsWith("$"))
                     return null;                // нет первого листа
 
                 string sql = $"SELECT * FROM [{sheetName}]";
 
-                OleDbDataAdapter ada = new OleDbDataAdapter(sql, ConnectionString);
+                var ada = new OleDbDataAdapter(sql, ConnectionString);
 
-                DataTable dt = new DataTable();
-                DataSet set = new DataSet();
+                var dt = new DataTable();
+                var set = new DataSet();
 
-                ada.Fill(dt);
+                ada.Fill(0, 100, dt);
 
                 set.Tables.Add(dt);
                 return set.Tables[0];

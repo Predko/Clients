@@ -9,21 +9,6 @@ namespace Clients
 {
     public partial class Clients: Form
     {
-        public event EventHandler ChangeCurrentContract_EventHandler;    // событие, вызываемое при изменении текущего контракта
-
-        public Contract CurrentContract // Текущий договор
-        {
-            get => _currentContract;
-            set
-            {
-                if(_currentContract != value)
-                {
-                    _currentContract = value;
-                    OnChangeCurrentContractInfo(EventArgs.Empty); // обрабатываем подключённые события после изменения текущего договора
-                }
-            }
-        }
-
 //
 //------------------------------------  Методы -----------------------------------------
 //
@@ -41,7 +26,7 @@ namespace Clients
         // обрабатываем подключённые события после изменения текущего договора
         private void OnChangeCurrentContractInfo(EventArgs eventArgs)
         {
-            var temp = new EventHandler(ChangeCurrentContract_EventHandler);
+            var temp = ChangeCurrentContract_EventHandler;
 
             temp?.Invoke(this, eventArgs);
         }
@@ -125,12 +110,23 @@ namespace Clients
         {
             labelFileName.Text = CurrentContract?.FileName ?? "Файл отсутствует";
 
-            String numb = CurrentContract?.Numb.ToString() ?? "";
+            string numb = CurrentContract?.Numb.ToString() ?? "";
 
-            labelContract.Text = tabPageContractEdit.Text = $"Договор № {numb}";
+            string typeContract;
+            if (CurrentContract != null)
+            {
+                typeContract = (CurrentContract.Type == TypeContract.CWC) ? "Акт"
+                                                                          : "Договор";
+            }
+            else
+            {
+                typeContract = "Договор";
+            }
+
+            labelContract.Text = tabPageContractEdit.Text = $"{typeContract} № {numb}";
         }
 
-        public void ChangeContracts(Object sender, ChangedContractsEventArgs e)
+        public void LbChangeContracts(Object sender, ChangedContractsEventArgs e)
         {
             switch (e.change)
             {

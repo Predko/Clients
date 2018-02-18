@@ -18,6 +18,20 @@ namespace Clients
     public partial class Clients : Form
     {
         private Contract _currentContract;  // текущий договор
+        public event EventHandler ChangeCurrentContract_EventHandler;    // событие, вызываемое при изменении текущего контракта
+
+        public Contract CurrentContract // Текущий договор
+        {
+            get => _currentContract;
+            set
+            {
+                if (_currentContract != value)
+                {
+                    _currentContract = value;
+                    OnChangeCurrentContractInfo(EventArgs.Empty); // обрабатываем подключённые события после изменения текущего договора
+                }
+            }
+        }
     }
 
     public class Client: IComparable<Client>
