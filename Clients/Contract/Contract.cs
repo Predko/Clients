@@ -11,7 +11,7 @@ namespace Clients
     public enum TypeContract
     {
         Contract = 0,
-        СWC = 1,         // Сompleted Works Certificate - акт выполненных работ
+        CWC = 1,         // Сompleted Works Certificate - акт выполненных работ
         None
     }
 
@@ -36,7 +36,7 @@ namespace Clients
     {
         public static event EventHandler<ChangingListServicesEventArgs> ChangeServiceList;  // Событие, вызываемое при изменении списка услуг
 
-        public static ChangingListServicesEventArgs ChangingLSEventArgs = new ChangingListServicesEventArgs();
+        public static ChangingListServicesEventArgs ChangingLS_EventArgs = new ChangingListServicesEventArgs();
 
         private static int lastYear = DateTime.Now.Year;    // год в последнем договоре с номером lastNumb
 
@@ -117,12 +117,12 @@ namespace Clients
         {
             Summ += sv.Value;
 
-            ChangingLSEventArgs.type = Change.Add;
-            ChangingLSEventArgs.service = sv;
+            ChangingLS_EventArgs.type = Change.Add;
+            ChangingLS_EventArgs.service = sv;
 
             sv.Add();   // добавляем услугу в общий список всех услуг
 
-            OnChangingListServices(ChangingLSEventArgs);
+            OnChangingListServices(ChangingLS_EventArgs);
 
             services.Add(sv.Id); // добавляем Id услуги в список услуг данного договора
         }
@@ -130,21 +130,35 @@ namespace Clients
         // удалить услугу
         public void DelService(Service sv)
         {
-            if (sv.Id != -1)        // если такая услуга есть в списке
+            int id = services.IndexOf(sv.Id);
+            if (id != -1)        // если такая услуга есть в списке
             {
                 Summ -= sv.Value;            // уменьшаем сумму договора на стоимость этой услуги
 
-                int index = services.IndexOf(sv.Id);
+                ChangingLS_EventArgs.type = Change.Del;
+                ChangingLS_EventArgs.index = sv.Id;
+                ChangingLS_EventArgs.service = sv;
 
-                ChangingLSEventArgs.type = Change.Del;
-                ChangingLSEventArgs.index = index;
-                ChangingLSEventArgs.service = sv;
+                OnChangingListServices(ChangingLS_EventArgs);
 
-                OnChangingListServices(ChangingLSEventArgs);
-
-                services.RemoveAt(index);                 // удаляем
+                sv.Remove();    // удаляем из списка всех услуг
+                services.Remove(sv.Id);                 // удаляем
             }
         }
+
+        // Обновляем значения услуги новыми данными
+        public void SetService(string nw, string nd, int sd, int number, decimal value, int id, string ai)
+        {
+
+            int index = Clients.AllServices.IndexOfKey(id);
+            if (index != -1)
+            {
+                var sv = Clients.AllServices.Values[index];
+
+                sv.SetService(nw, nd, sd, number, value, ai);
+            }
+        }
+
 
         // клонируем Contract(неполная копия. Список услуг - ссылка)
         public Contract Clone()

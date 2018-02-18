@@ -65,10 +65,10 @@ namespace Clients
 
                 string sql = $"SELECT * FROM [{sheetName}]";
 
-                OleDbDataAdapter ada = new OleDbDataAdapter(sql, ConnectionString);
+                var ada = new OleDbDataAdapter(sql, ConnectionString);
 
-                DataTable dt = new DataTable();
-                DataSet set = new DataSet();
+                var dt = new DataTable();
+                var set = new DataSet();
 
                 ada.Fill(dt);
 

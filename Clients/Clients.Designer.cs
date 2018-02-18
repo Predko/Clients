@@ -47,9 +47,18 @@
             this.listBoxContracts = new System.Windows.Forms.ListBox();
             this.comboBoxClients = new System.Windows.Forms.ComboBox();
             this.tabPageContractEdit = new System.Windows.Forms.TabPage();
+            this.labelInTotalValue = new System.Windows.Forms.Label();
+            this.labelInTotalString = new System.Windows.Forms.Label();
             this.buttonLoadContractFrom_xls = new System.Windows.Forms.Button();
             this.labelClientName = new System.Windows.Forms.Label();
             this.dataGridViewContract = new System.Windows.Forms.DataGridView();
+            this.ColumnNameWork = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnNameDevice = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnAddInfo = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.ColumnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnIdService = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.comboBoxTypeContract = new System.Windows.Forms.ComboBox();
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,13 +70,6 @@
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.PanelTabs = new System.Windows.Forms.Panel();
             this.richTextBoxDebug = new System.Windows.Forms.RichTextBox();
-            this.ColumnNameWork = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnNameDevice = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnAddInfo = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnSubdivision = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.ColumnServiceNumb = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnServiceSumm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnIdService = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControlClients.SuspendLayout();
             this.tabPageClients.SuspendLayout();
             this.tabPageContractEdit.SuspendLayout();
@@ -249,6 +251,8 @@
             // tabPageContractEdit
             // 
             this.tabPageContractEdit.BackColor = System.Drawing.Color.Transparent;
+            this.tabPageContractEdit.Controls.Add(this.labelInTotalValue);
+            this.tabPageContractEdit.Controls.Add(this.labelInTotalString);
             this.tabPageContractEdit.Controls.Add(this.buttonLoadContractFrom_xls);
             this.tabPageContractEdit.Controls.Add(this.labelClientName);
             this.tabPageContractEdit.Controls.Add(this.dataGridViewContract);
@@ -260,6 +264,26 @@
             this.tabPageContractEdit.Size = new System.Drawing.Size(1504, 673);
             this.tabPageContractEdit.TabIndex = 1;
             this.tabPageContractEdit.Text = "Договор";
+            // 
+            // labelInTotalValue
+            // 
+            this.labelInTotalValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelInTotalValue.AutoSize = true;
+            this.labelInTotalValue.Location = new System.Drawing.Point(1422, 639);
+            this.labelInTotalValue.Name = "labelInTotalValue";
+            this.labelInTotalValue.Size = new System.Drawing.Size(54, 23);
+            this.labelInTotalValue.TabIndex = 5;
+            this.labelInTotalValue.Text = "0,00";
+            // 
+            // labelInTotalString
+            // 
+            this.labelInTotalString.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelInTotalString.AutoSize = true;
+            this.labelInTotalString.Location = new System.Drawing.Point(1284, 639);
+            this.labelInTotalString.Name = "labelInTotalString";
+            this.labelInTotalString.Size = new System.Drawing.Size(76, 23);
+            this.labelInTotalString.TabIndex = 4;
+            this.labelInTotalString.Text = "Итого:";
             // 
             // buttonLoadContractFrom_xls
             // 
@@ -310,9 +334,74 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
             this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewContract.RowTemplate.Height = 28;
-            this.dataGridViewContract.Size = new System.Drawing.Size(1492, 516);
+            this.dataGridViewContract.Size = new System.Drawing.Size(1492, 468);
             this.dataGridViewContract.StandardTab = true;
             this.dataGridViewContract.TabIndex = 1;
+            // 
+            // ColumnNameWork
+            // 
+            this.ColumnNameWork.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ColumnNameWork.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.ColumnNameWork.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnNameWork.HeaderText = "Оказанные услуги";
+            this.ColumnNameWork.Name = "ColumnNameWork";
+            this.ColumnNameWork.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnNameWork.Sorted = true;
+            this.ColumnNameWork.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // ColumnNameDevice
+            // 
+            this.ColumnNameDevice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.ColumnNameDevice.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.ColumnNameDevice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnNameDevice.HeaderText = "Устройство";
+            this.ColumnNameDevice.Name = "ColumnNameDevice";
+            this.ColumnNameDevice.Sorted = true;
+            this.ColumnNameDevice.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.ColumnNameDevice.Width = 156;
+            // 
+            // ColumnAddInfo
+            // 
+            this.ColumnAddInfo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnAddInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnAddInfo.HeaderText = "Доп. информация";
+            this.ColumnAddInfo.Name = "ColumnAddInfo";
+            this.ColumnAddInfo.Sorted = true;
+            this.ColumnAddInfo.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.ColumnAddInfo.Width = 193;
+            // 
+            // ColumnSubdivision
+            // 
+            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnSubdivision.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.ColumnSubdivision.DropDownWidth = 2;
+            this.ColumnSubdivision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnSubdivision.HeaderText = "Подразделение";
+            this.ColumnSubdivision.Name = "ColumnSubdivision";
+            this.ColumnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.ColumnSubdivision.Sorted = true;
+            this.ColumnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.ColumnSubdivision.Width = 189;
+            // 
+            // ColumnServiceNumb
+            // 
+            this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnServiceNumb.HeaderText = "№ услуги";
+            this.ColumnServiceNumb.Name = "ColumnServiceNumb";
+            this.ColumnServiceNumb.Width = 124;
+            // 
+            // ColumnServiceSumm
+            // 
+            this.ColumnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnServiceSumm.HeaderText = "Сумма";
+            this.ColumnServiceSumm.Name = "ColumnServiceSumm";
+            this.ColumnServiceSumm.Width = 101;
+            // 
+            // ColumnIdService
+            // 
+            this.ColumnIdService.HeaderText = "Id услуги";
+            this.ColumnIdService.Name = "ColumnIdService";
+            this.ColumnIdService.Visible = false;
             // 
             // comboBoxTypeContract
             // 
@@ -320,9 +409,9 @@
             this.comboBoxTypeContract.Items.AddRange(new object[] {
             "Договор №",
             "Акт выполненных работ №"});
-            this.comboBoxTypeContract.Location = new System.Drawing.Point(367, 114);
+            this.comboBoxTypeContract.Location = new System.Drawing.Point(436, 114);
             this.comboBoxTypeContract.Name = "comboBoxTypeContract";
-            this.comboBoxTypeContract.Size = new System.Drawing.Size(418, 31);
+            this.comboBoxTypeContract.Size = new System.Drawing.Size(641, 31);
             this.comboBoxTypeContract.TabIndex = 0;
             // 
             // menuStripMain
@@ -403,61 +492,6 @@
             this.richTextBoxDebug.TabIndex = 5;
             this.richTextBoxDebug.Text = "";
             // 
-            // ColumnNameWork
-            // 
-            this.ColumnNameWork.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.ColumnNameWork.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.ColumnNameWork.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColumnNameWork.HeaderText = "Оказанные услуги";
-            this.ColumnNameWork.Name = "ColumnNameWork";
-            this.ColumnNameWork.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnNameWork.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // ColumnNameDevice
-            // 
-            this.ColumnNameDevice.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.ColumnNameDevice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColumnNameDevice.HeaderText = "Имя устройства";
-            this.ColumnNameDevice.Name = "ColumnNameDevice";
-            this.ColumnNameDevice.Width = 200;
-            // 
-            // ColumnAddInfo
-            // 
-            this.ColumnAddInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColumnAddInfo.HeaderText = "Доп. информация";
-            this.ColumnAddInfo.Name = "ColumnAddInfo";
-            this.ColumnAddInfo.Width = 200;
-            // 
-            // ColumnSubdivision
-            // 
-            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnSubdivision.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.ColumnSubdivision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ColumnSubdivision.HeaderText = "Подразделение (кабинет)";
-            this.ColumnSubdivision.Name = "ColumnSubdivision";
-            this.ColumnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnSubdivision.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.ColumnSubdivision.Width = 200;
-            // 
-            // ColumnServiceNumb
-            // 
-            this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnServiceNumb.HeaderText = "№ услуги";
-            this.ColumnServiceNumb.Name = "ColumnServiceNumb";
-            this.ColumnServiceNumb.Width = 80;
-            // 
-            // ColumnServiceSumm
-            // 
-            this.ColumnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.ColumnServiceSumm.HeaderText = "Сумма";
-            this.ColumnServiceSumm.Name = "ColumnServiceSumm";
-            // 
-            // ColumnIdService
-            // 
-            this.ColumnIdService.HeaderText = "Id услуги";
-            this.ColumnIdService.Name = "ColumnIdService";
-            this.ColumnIdService.Visible = false;
-            // 
             // Clients
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -526,6 +560,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceNumb;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnServiceSumm;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnIdService;
+        private System.Windows.Forms.Label labelInTotalValue;
+        private System.Windows.Forms.Label labelInTotalString;
     }
 }
 

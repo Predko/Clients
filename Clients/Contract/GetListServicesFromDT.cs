@@ -46,7 +46,6 @@ namespace Clients
         public readonly Contract contract;
         private readonly DataTable dt;
         private readonly int rowcount;
-        private bool EndListService = false;    // Список услуг прочитан полностью
 
         public GetListServicesFromDT(DataTable dt, Contract contract)
         {
@@ -78,12 +77,7 @@ namespace Clients
             }
 
             // Извлекаем и заполняем список услуг
-            for (++i; i < rowcount; i++)
-            {
-                GetContractListServices(i, NameOfServiceCol, SummCol);
-                if (EndListService)
-                    break;
-            }
+            GetContractListServices(++i, NameOfServiceCol, SummCol);
 
             return true;
         }
@@ -111,7 +105,7 @@ namespace Clients
 
                 if (s.Contains("Акт"))
                 {
-                    tc = TypeContract.СWC;
+                    tc = TypeContract.CWC;
                     break;
                 }
                 else
@@ -186,13 +180,18 @@ namespace Clients
         // Заполняем список услуг
         private void GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
         {
-            Service sr;
+             Service sv;
 
             contract.Summ = 0; // обнуляем общую сумму услуг договора
 
-            while ((sr = GetContractServices(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
+            foreach (int id in contract.services.ToArray<int>())   // Очищаем список услуг услуг договора
             {
-                contract.AddService(sr); // добавляем услугу в список услуг договора
+                contract.DelService(Clients.AllServices[id]);
+            }
+
+            while ((sv = GetContractServices(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
+            {
+                contract.AddService(sv); // добавляем услугу в список услуг договора
             }
         }
 
@@ -228,7 +227,6 @@ namespace Clients
 
             if (s.Length == 0 || s.Contains(sa))    // Итоговая строка.  Список услуг завершён
             {
-                EndListService = true;
                 return null;
             }
 
@@ -286,8 +284,8 @@ namespace Clients
 
             // Извлекаем из строки номер(порядковый) услуги, название подразделения и дополнительную информацию о услуге
 
-            string[] addInfoArray = { "ф/", "Ф/", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/",
-                            "Вал", "вал", "Маг", "маг", "Т/", "т/", "без","Терм", "терм", "Замена", "замена"};
+            string[] addInfoArray = { "ф/", "Ф/", "Фот", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/",
+                            "Вал", "вал", "Маг", "маг", "Т/", "т/", "без", "б/з", "Б/з","Терм", "терм", "Замена", "замена"};
 
             for (int idx = 1; idx < res.Length; idx++)
             {
@@ -296,13 +294,19 @@ namespace Clients
                     flag |= Flags.isNumber;  // это номер услуги
                 }
                 else
-                if (!flag.HasFlag(Flags.isAddInfo) && res[idx].Contains(addInfoArray))
+                if (res[idx].Contains(addInfoArray)) // !flag.HasFlag(Flags.isAddInfo) &&
                 {
                     addInfo = res[idx];
                     flag |= Flags.isAddInfo; // Это дополнительная информация о услуге
                 }
                 else
-                if(!flag.HasFlag(Flags.isSubdivision))
+                if (res[idx].Contains(addInfoArray)) // !flag.HasFlag(Flags.isAddInfo) &&
+                {
+                    addInfo = res[idx];
+                    flag |= Flags.isAddInfo; // Это дополнительная информация о услуге
+                }
+                else
+                if (!flag.HasFlag(Flags.isSubdivision))
                 {
                     subdiv = res[idx]; // Это название подразделения
                     flag |= Flags.isSubdivision;
@@ -312,6 +316,7 @@ namespace Clients
             var culture = new CultureInfo("ru-RU");
 
             int IdSubdiv = cl.AddSubdision(subdiv);
+
             return new Service(namew, named, IdSubdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat), -1, addInfo);
         }
 
