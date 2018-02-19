@@ -10,7 +10,7 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-        DataTable dtFile_xls;
+        private DataTable dtFile_xls;
 
 
 
@@ -83,6 +83,8 @@ namespace Clients
                     comboBoxClients.EndUpdate();               // обновляем содержимое ComboBox, отображающего clients
                 }
             }
+
+            LoadAllServicesToolStripMenuItem.Enabled = true;
         }
 
         // Загрузить данные из файла xml полученного в результате импорта из базы данных MS Access
@@ -98,7 +100,7 @@ namespace Clients
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 // Открываем и загружаем файл данных со списком клиентов и контрактов(xml)
-                ClientsXml clientsXml = new ClientsXml(openFileDialog.FileName);
+                var clientsXml = new ClientsXml(openFileDialog.FileName);
 
                 if (clientsXml.Load_Ok)
                 {
@@ -114,6 +116,8 @@ namespace Clients
                     comboBoxClients.EndUpdate();               // обновляем содержимое ComboBox, отображающего clients
                 }
             }
+
+            LoadAllServicesToolStripMenuItem.Enabled = true;
         }
 
         // Чтение данных о договоре из файла xls и вывод в новой форме в DataGridView с помощью Interop
@@ -132,6 +136,30 @@ namespace Clients
 
             if (dtFile_xls != null)
                 ShowDataTable();
+        }
+
+        private void LoadAllServicesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangedCurrentClient_EventHandler -= SetClientContracts;
+
+            comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
+
+            LoadAllServices();
+
+            ChangedCurrentClient_EventHandler += SetClientContracts;
+
+            comboBoxClients.SelectedIndex = 0;  // После загрузки выбираем первый элемент
+
+            comboBoxClients.EndUpdate();        // обновляем содержимое ComboBox, отображающего clients
+
+            if(listBoxContracts.Items.Count == 0)
+            {
+                CurrentContract = null;
+            }
+            else
+            {
+                listBoxContracts.SelectedIndex = 0;
+            }
         }
 
         // Вывод данных в форме FormShowDataTable в DataGridView

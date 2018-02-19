@@ -15,6 +15,8 @@ namespace Clients
     {
         private int tpNumbCurrentContract = 0;  // Номер договора, показанного на вкладке
 
+        private DateTime tpDate = DateTime.MinValue; // и дата
+
         //---------------------------------------------
         // инициализация вкладки "Договор"
         // 
@@ -53,10 +55,14 @@ namespace Clients
 
         private void SetInfoTabPageContractEdit()
         {
-            if (tpNumbCurrentContract == CurrentContract.Numb)
+            if (tpNumbCurrentContract == CurrentContract.Numb
+                && tpDate == CurrentContract.Dt)
+            {
                 return;
+            }
 
             tpNumbCurrentContract = CurrentContract.Numb;
+            tpDate = CurrentContract.Dt;
 
             ClearDataGridView();
 
@@ -121,22 +127,31 @@ namespace Clients
             Contract.ChangeServiceList -= ChangeServiceList_Event;
             Contract.ChangeServiceList += ChangeServiceList_Event;
 
-            var xls = new GetContractInfoFromXls(filename, ModeGetData.OLEDB);
-
-            if (xls.Dt == null || xls.Dt.Rows.Count < 20) // Не удалось загрузить информацию
-                return;
-
-            var gls = new GetListServicesFromDT(xls.Dt, CurrentContract);
-
-            if (!gls.GetListServices())
-            {
-                return; // чтение списка услуг не удалось
-            }
+            LoadFromFile_xls(CurrentContract, filename);
 
             // Удаляем событие вызываемое при изменении списка услуг в текущем контракте
             Contract.ChangeServiceList -= ChangeServiceList_Event;
 
             labelInTotalValue.Text = $"{CurrentContract.Summ}";
         }
+
+
+        private bool LoadFromFile_xls(Contract contract, string filename)
+        {
+            var xls = new GetContractInfoFromXls(filename, ModeGetData.OLEDB);
+
+            if (xls.Dt == null) // Не удалось загрузить информацию
+                return false;
+
+            var gls = new GetListServicesFromDT(xls.Dt, contract);
+
+            if (!gls.GetListServices())
+            {
+                return false; // чтение списка услуг не удалось
+            }
+
+            return true;
+        }
     }
 }
+

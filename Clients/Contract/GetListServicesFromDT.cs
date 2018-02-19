@@ -77,9 +77,7 @@ namespace Clients
             }
 
             // Извлекаем и заполняем список услуг
-            GetContractListServices(++i, NameOfServiceCol, SummCol);
-
-            return true;
+            return GetContractListServices(++i, NameOfServiceCol, SummCol);
         }
 
         // Ищем тип договора и номер. Дату не извлекаем. Образцы возможных строк:
@@ -91,7 +89,7 @@ namespace Clients
             int count = dr.ItemArray.Length;
 
             // ищем тип: строки "Акт" или "Договор"
-            TypeContract tc = TypeContract.None;
+            var tc = TypeContract.None;
             string s;
             int i = -1;
             while (++i < count)
@@ -119,8 +117,6 @@ namespace Clients
             if (i >= count && tc == TypeContract.None)
                 return false;       // в этой строке нет искомых подстрок
 
-            contract.Type = tc;
-
             // Ищем номер договора. Продолжаем со следующей колонки
             bool isNumb = false;
             while (i < count)
@@ -138,6 +134,9 @@ namespace Clients
                         return false;    //не удалось определить номер.   
 
                     contract.Numb = n;
+
+                    contract.Type = tc;
+
                     return true;        // завершаем после получения номера.
                 }
                 else
@@ -159,38 +158,63 @@ namespace Clients
 
             // Определяем номера колонок со списком оказанных услуг
             int count = dr.ItemArray.Length;
-            int currcol = -1;
-            NumbCol = GetNumberCol(dr, currcol, count, "№");
+
+            NumbCol = GetNumberCol(dr, -1, count, "№");
             if (NumbCol == -1)
                 return false;
 
-            NameOfServiceCol = GetNumberCol(dr, currcol, count, "Наименование работ");
+            NameOfServiceCol = GetNumberCol(dr, NumbCol, count, "Наименование работ");
             if (NameOfServiceCol == -1)
                 return false;
 
-            SummCol = GetNumberCol(dr, currcol, count, "Сумма в бел.р.");
+            SummCol = GetNumberCol(dr, NameOfServiceCol, count, "Сумма в бел.р.");
             if (SummCol == -1)
                 return false;
 
             // Номера колонок найдены
-
             return true;
         }
 
         // Заполняем список услуг
-        private void GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
+        private bool GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
         {
-             Service sv;
+            Service sv;
+            decimal oldSumm = contract.Summ;
 
-            foreach (int id in contract.services.ToArray<int>())   // Очищаем список услуг услуг договора
+            if (contract.services.Count == 0)
             {
-                contract.DelService(Clients.AllServices[id]);
+                contract.Summ = 0;
+            }
+            else
+            {
+                contract.ClearServices();
+            }
+
+            int countRows = dt.Rows.Count;
+
+            bool ErrorLoadRow()
+            {
+                contract.ClearServices();
+                contract.Summ = oldSumm;    // Возвращаем старое значение суммы
+                return false;
+            }
+
+            if (indexRow >= countRows)
+            {
+                return ErrorLoadRow();
             }
 
             while ((sv = GetContractServices(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
             {
                 contract.AddService(sv); // добавляем услугу в список услуг договора
+
+                if(indexRow >= countRows) // Проверяем, полностью ли прочитан файл
+                {
+                    return ErrorLoadRow();
+                }
             }
+
+            return true;
         }
 
         [Flags]
@@ -219,11 +243,12 @@ namespace Clients
         private Service GetContractServices(Client cl, DataRow dr, int NameOfServiceCol, int SummCol)
         {
             string[] addInfoArray = { "ф/", "Ф/", "Фот", "фот", "Доз", "доз", "чис", "Чис", "нож", "Ч/", "ч/",
-                            "Вал", "вал", "Маг", "маг", "Т/", "т/", "без", "б/з", "Б/з","Терм", "терм", "Замена", "замена", "Увел", "увел", "объ"};
+                            "Вал", "вал", "Маг", "маг", "Т/", "т/", "без", "б/з", "Б/з","ермоп", "амена", "велич", "объ"};
 
             string[] nameDevices = { "Hp", "hp", "HP", "Ca", "CA", "ca", "Br", "BR", "br", "Le", "LE", "le",
                                      "Ep", "EP", "ep", "Ri", "RI", "ri", "Xe", "XE", "xe", "Sa", "SA", "sa"};
 
+            string[] nameWorks = { "кар", "прин", "закре", "пода", "бума", "ПК", "Пк", "пк", "ерсо", "комп", "емон", "ехнич", "кно" };
 
             string s = dr.ItemArray[NameOfServiceCol].ToString();
 
@@ -253,9 +278,9 @@ namespace Clients
                 {
                     // Проверяем выделенное слово на наличие ключевых подстрок, например "картридж".
                     // Возможно, название устройства состоит из одного слова
-                    if (s.Contains(new string[] { "кар", "прин", "закре", "пода", "бума", "кно"}, index))
+                    if (s.Contains(nameWorks, index))
                     {
-                        // это не название устройства
+                        // это не название устройства. Это название услуги
                         index = idxStartWord; // указываем на индекс следующего слова
                         break;
                     }
@@ -269,7 +294,6 @@ namespace Clients
                 }
             }
 
-
             string namew = s.Substring(0, index).Trim(); // выполненная работа без названия устройства
 
             string named = (index == s.Length)
@@ -282,7 +306,7 @@ namespace Clients
 
             int numb = 0;
 
-            Flags flag = Flags.None;
+            var flag = Flags.None;
 
             // Извлекаем из строки номер(порядковый) услуги, название подразделения и дополнительную информацию о услуге
 
@@ -314,7 +338,16 @@ namespace Clients
 
             int IdSubdiv = cl.AddSubdision(subdiv);
 
-            return new Service(namew, named, IdSubdiv, numb, decimal.Parse(dr.ItemArray[SummCol].ToString().Trim(), culture.NumberFormat), -1, addInfo);
+            string summ = dr.ItemArray[SummCol]?.ToString().Trim();
+
+            if (string.IsNullOrEmpty(summ))
+            {
+                summ = "0";
+            }
+
+            var value = decimal.Parse(summ, culture.NumberFormat);
+
+            return new Service(namew, named, IdSubdiv, numb, value, -1, addInfo);
         }
 
         // Ищет колонку в DateRow dr, со строкой isS, начиная с колонки startcol, count колонок

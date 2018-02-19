@@ -159,6 +159,14 @@ namespace Clients
             }
         }
 
+        // Очищаем список услуг услуг договора
+        public void ClearServices()
+        {
+            foreach (int id in services.ToArray<int>())
+            {
+                DelService(Clients.AllServices[id]);
+            }
+        }
 
         // клонируем Contract(неполная копия. Список услуг - ссылка)
         public Contract Clone()

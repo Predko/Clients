@@ -49,7 +49,11 @@ namespace Clients
         private void SetClientContracts(Object sender, EventArgs e)
         {
             if (CurrentClient == null)
+            {
+                // Выводим информацию о количестве и общей сумме договоров
+                labelListContractsTotals.Text = String.Format($"Договоров: {0,-5}  на сумму: {0:C}");
                 return;
+            }
 
             listBoxContracts.BeginUpdate(); // Приостанавливаем обновление в listBox
 

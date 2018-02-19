@@ -31,9 +31,7 @@ namespace Clients
 
         private void OnChangeCurrentClient(EventArgs args)
         {
-            var temp = new EventHandler(ChangedCurrentClient_EventHandler);
-
-            temp?.Invoke(this, args);
+            ChangedCurrentClient_EventHandler?.Invoke(this, args);
         }
     }
 
