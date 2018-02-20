@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.IO;
 using System.Collections;
 using System.Windows.Forms;
@@ -24,6 +24,8 @@ namespace Clients
 
     public partial class Clients : Form
     {
+        // дата деноминации
+        public readonly static DateTime dateDenomination = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US"));
     }
 
     // Договор с клиентом.
@@ -103,7 +105,10 @@ namespace Clients
 
         public override string ToString()
         {
-            return String.Format($"{Dt,-12:d} {Numb,5} {Summ,20:c}");
+            decimal summ = (Dt >= Clients.dateDenomination) ? Summ
+                                                    : Summ / 10000; // denomination after 07/01/2016
+
+            return String.Format($"{Dt,-12:d} {Numb,5} {summ,20:c}");
         }
 
 

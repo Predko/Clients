@@ -12,7 +12,7 @@ namespace Clients
 
         public event EventHandler ChangedCurrentClient_EventHandler;    // Событие, вызываемое после изменения текущего клиента
 
-        private Client CurrentClient        // Текущий клиент
+        public Client CurrentClient        // Текущий клиент
         {
             get
             {
@@ -75,7 +75,7 @@ namespace Clients
 
             if (isNewClient)    // Если добавляется новый клиент,
             {
-                int id = clients.Count; ;
+                int id = clients.Count;
                 while (clients.ContainsKey(id)) // ищем свободный идентификатор
                     id++;
 

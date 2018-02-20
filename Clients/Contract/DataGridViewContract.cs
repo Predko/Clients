@@ -305,7 +305,12 @@ namespace Clients
             // Получаем id услуги, соответствующий удаляемой строке и вызываем метод удаления услуги, если он подключен
             for(int i = 0; i != e.RowCount; i++)
             {
-                if(SelectedRow.Count != 0 && SelectedRow.ContainsKey(e.RowIndex + i))
+                if(e.RowIndex == -1)
+                {
+                    continue;
+                }
+
+                if (SelectedRow.Count != 0 && SelectedRow.ContainsKey(e.RowIndex + i))
                 {
                     // удаляем в выбранные ранее строки
                     OnRemovedService(SelectedRow[e.RowIndex + i]);

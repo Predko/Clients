@@ -59,16 +59,16 @@ namespace Clients
 
             decimal Summ = 0;
 
-            DateTime d = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US")); // дата деноминации
- 
             // заполняем listBoxContracts списком договоров и подсчитываем общую сумму
             listBoxContracts.Items.Clear();
 
             foreach (Contract c in CurrentClient.contracts)
             {
-                SortedInsertItem(listBoxContracts, c);  // Добавляем без нарушения сортировки списка
+                //SortedInsertItem(listBoxContracts, c);  // Добавляем без нарушения сортировки списка
 
-                Summ += (c.Dt >= d) ? c.Summ
+                listBoxContracts.Items.Add(c);
+
+                Summ += (c.Dt >= dateDenomination) ? c.Summ
                                     : c.Summ / 10000; // denomination after 07/01/2016
             }
 

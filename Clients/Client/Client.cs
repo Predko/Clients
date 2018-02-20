@@ -67,6 +67,16 @@ namespace Clients
             this.Address = Address;
         }
 
+        // Клонирует экземпляр
+        public Client Clone()
+        {
+            return new Client(Name, Id, SettlementAccount, City, Address)
+            {
+                contracts = contracts,
+                Subdivisions = Subdivisions
+            };
+        }
+
         // Добавляет имя подразделения в список. Если такое есть - возвращает его id(индекс в списке).
         // Возвращает индекс подразделения в списке
         public int AddSubdision(string name)

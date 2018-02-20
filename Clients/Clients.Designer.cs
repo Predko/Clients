@@ -177,6 +177,7 @@
             this.buttonEditClient.TabIndex = 9;
             this.buttonEditClient.Text = "Редактировать";
             this.buttonEditClient.UseVisualStyleBackColor = true;
+            this.buttonEditClient.Click += new System.EventHandler(this.ButtonEditClient_Click);
             // 
             // buttonNewClient
             // 
@@ -250,6 +251,7 @@
             this.comboBoxClients.Location = new System.Drawing.Point(12, 50);
             this.comboBoxClients.Name = "comboBoxClients";
             this.comboBoxClients.Size = new System.Drawing.Size(1217, 31);
+            this.comboBoxClients.Sorted = true;
             this.comboBoxClients.TabIndex = 0;
             // 
             // tabPageContractEdit

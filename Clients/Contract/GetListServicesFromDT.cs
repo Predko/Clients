@@ -248,7 +248,7 @@ namespace Clients
             string[] nameDevices = { "Hp", "hp", "HP", "Ca", "CA", "ca", "Br", "BR", "br", "Le", "LE", "le",
                                      "Ep", "EP", "ep", "Ri", "RI", "ri", "Xe", "XE", "xe", "Sa", "SA", "sa"};
 
-            string[] nameWorks = { "кар", "прин", "закре", "пода", "бума", "ПК", "Пк", "пк", "ерсо", "комп", "емон", "ехнич", "кно" };
+            string[] nameWorks = { "кар", "прин", "закре", "пода", "бума", "ПК", "Пк", "пк", "ерсо", "комп", "емон", "ехнич", "кно", "аппа", "апра", "обсл" };
 
             string s = dr.ItemArray[NameOfServiceCol].ToString();
 

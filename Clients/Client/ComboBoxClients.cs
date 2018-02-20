@@ -37,8 +37,9 @@ namespace Clients
         {
             switch (e.change)
             {
-                case Change.Add:                                // добавляем элемент в список не нарушая сортировки
-                    SortedInsertItem(comboBoxClients, e.client);
+                case Change.Add:
+                    //SortedInsertItem(comboBoxClients, e.client); // добавляем элемент в список не нарушая сортировки
+                    comboBoxClients.Items.Add(e.client);
                     break;
 
                 case Change.Clear:                              // очищаем список

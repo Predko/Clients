@@ -1,16 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Globalization;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Collections;
-using System.IO;
-
-
-using static System.Console;
 
 namespace Clients
 {
@@ -39,6 +28,18 @@ namespace Clients
             InitTabPageContractEdit();
 
             InitTabControlClients();
+        }
+
+        private void ButtonEditClient_Click(object sender, EventArgs e)
+        {
+            if (CurrentClient == null)
+            {
+                return;
+            }
+
+            var dialogClient = new DialogBoxClients(CurrentClient);
+
+            dialogClient.Show();
         }
     }
 }

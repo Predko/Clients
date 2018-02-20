@@ -185,9 +185,6 @@ namespace Clients
         // Fill List clients and List contracts (foreach(Element))
         public void XmlToClientsAndContracts(ListClients clients)
         {
-            //clients.Clear();
-            //Clients.AllContracts.Clear();
-
             #region CultureInfo setting
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
 
@@ -248,7 +245,7 @@ namespace Clients
                     }
 
                     // выполняем необходимую обработку связанных cо списком услуг данных
-                    OnChangeServiceList();
+                    //OnChangeServiceList();
                 }
             }
 
@@ -371,6 +368,11 @@ namespace Clients
 
                         if (ServicesElements != null)
                         {
+                            if(ctr.services.Count != 0)
+                            {
+                                ctr.services.Clear();
+                            }
+
                             foreach (XElement servelem in ServicesElements)
                             {
                                 ctr.services.Add(int.Parse(servelem.Attribute("Id").Value));
