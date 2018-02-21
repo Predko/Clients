@@ -120,6 +120,11 @@ namespace Clients
         // добавить услугу
         public void AddService(Service sv)
         {
+#if !DEBUG
+            if (sv == null) // Добавляем только в релизе. В отладке ловим ошибки
+                return;
+#endif
+
             Summ += sv.Value;
 
             ChangingLS_EventArgs.type = Change.Add;
@@ -136,6 +141,12 @@ namespace Clients
         public void DelService(Service sv)
         {
             int id = services.IndexOf(sv.Id);
+#if DEBUG
+            if (id == -1) // Ловим ошибки при отладке
+            {
+            }
+#endif
+
             if (id != -1)        // если такая услуга есть в списке
             {
                 Summ -= sv.Value;            // уменьшаем сумму договора на стоимость этой услуги
@@ -146,8 +157,8 @@ namespace Clients
 
                 OnChangingListServices(ChangingLS_EventArgs);
 
-                sv.Remove();    // удаляем из списка всех услуг
-                services.Remove(sv.Id);                 // удаляем
+                sv.Remove();            // удаляем из списка всех услуг
+                services.Remove(sv.Id); // удаляем
             }
         }
 
@@ -167,20 +178,28 @@ namespace Clients
         // Очищаем список услуг услуг договора
         public void ClearServices()
         {
-            foreach (int id in services.ToArray<int>())
+            //foreach (int id in services.ToArray<int>())
+            //{
+            //    if (Clients.AllServices.ContainsKey(id))
+            //    {
+            //        DelService(Clients.AllServices[id]);
+            //    }
+            //}
+
+            // удаление услуг из списка, начиная с конца списка, чтобы не нарушить индексацию списка
+            for (int i = services.Count - 1; i >= 0; i--)
             {
-                DelService(Clients.AllServices[id]);
+                int id = services[i];
+
+                if (Clients.AllServices.ContainsKey(id))
+                {
+                    DelService(Clients.AllServices[id]);
+                }
             }
         }
 
         // клонируем Contract(неполная копия. Список услуг - ссылка)
-        public Contract Clone()
-        {
-            return new Contract(this.Client, this.Id, this.Dt, this.Numb, this.Summ, this.Signed, this.FileName, this.Type)
-            {
-                services = this.services
-            };
-        }
+        public Contract Clone() => new Contract(Client, Id, Dt, Numb, Summ, Signed, FileName, Type) { services = this.services };
 
         public int CompareTo(Contract other)
         {

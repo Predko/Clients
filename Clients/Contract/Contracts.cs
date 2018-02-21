@@ -28,8 +28,7 @@ namespace Clients
         public static event EventHandler<ChangedContractsEventArgs> ChangedContracts;
 
         private SortedList<int, Contract> _contracts => Clients.AllContracts;
-        private static int LastUnusedKey { get; set; } = 0;
-
+        private static readonly FreeID LastUnusedKey;
 
         // Здесь хранится список Id(ключей из списка _contracts) всех договоров данного клиента
         private readonly List<int> contracts = new List<int>();
@@ -38,10 +37,10 @@ namespace Clients
 
         public void Add(Contract contract, bool isNewContract = false)
         {
-            if (isNewContract) // это новый договор?
+            if (isNewContract || contract.Id == -1) // это новый договор или Id == -1?
             {   // да.
-                // присваиваем Id последний не использованный ключ в списке 
-                contract.Id = LastUnusedKey++;
+                // получаем Id последний не использованный ключ в списке 
+                contract.Id = LastUnusedKey.Id;
             }
 
             _contracts.Add(contract.Id, contract);  // в общий список
@@ -58,8 +57,10 @@ namespace Clients
 
         public void Remove(Contract contract)
         {
-            _contracts.Remove(contract.Id);     // появляется неиспользованный Id.
-            contracts.Remove(contract.Id);      // В дальнейшем можно создать список неиспользованных Id и использовать их
+            LastUnusedKey.Id = contract.Id; // Помещаем неиспользуемый Id в список свободных Id
+
+            _contracts.Remove(contract.Id);
+            contracts.Remove(contract.Id);
 
             if (ChangedContracts != null)
             {
@@ -72,8 +73,12 @@ namespace Clients
 
         public void Clear()
         {
-            contracts.Select(c => _contracts.Remove(c)); // удаляем все договоры из списка в общем списке договоров всех клиентов
-            LastUnusedKey = 0;  // использованных ключей нет
+            // удаляем все договоры из списка в общем списке договоров всех клиентов
+            foreach(int id in contracts)
+            {
+                LastUnusedKey.Id = id;  // Освободившийся ключ - в список
+                _contracts.Remove(id);
+            }
 
             contracts.Clear(); // удаляем список ключей договоров
 

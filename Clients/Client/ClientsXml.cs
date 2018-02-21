@@ -495,11 +495,9 @@ namespace Clients
                                                    : TypeContract.CWC;         // Акт приёмки сдачи работ
                         }
 
-                        Contract ctr;
-
                         if (Clients.AllContracts.ContainsKey(id))   // Если такой контракт уже есть, обновляем информацию
                         {
-                            ctr = Clients.AllContracts[id];
+                            Contract ctr = Clients.AllContracts[id];
                             ctr.Dt = dt;
                             ctr.Numb = number;
                             ctr.Summ = summ;
@@ -509,8 +507,6 @@ namespace Clients
                         }
                         else // иначе, создаём новый
                         {
-                            ctr = new Contract(client, id, dt, number, summ, signed, svalue, tc);
-
                             client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
                         }
                     }
