@@ -248,7 +248,8 @@ namespace Clients
             string[] nameDevices = { "Hp", "hp", "HP", "Ca", "CA", "ca", "Br", "BR", "br", "Le", "LE", "le",
                                      "Ep", "EP", "ep", "Ri", "RI", "ri", "Xe", "XE", "xe", "Sa", "SA", "sa"};
 
-            string[] nameWorks = { "кар", "прин", "закре", "пода", "бума", "ПК", "Пк", "пк", "ерсо", "комп", "емон", "ехнич", "кно", "аппа", "апра", "обсл" };
+            string[] nameWorks = { "артр", "прин", "закре", "пода", "бума", "ПК", "Пк", "пк", "ерсо", "комп", "Комп", "омьп", "емон", "ехнич", "кно",
+                                   "аппа", "апр", "апра", "обсл", "рогр", "бесп", "рош", "астр", "бсорб", "осст", "шт.", "едукт", "ридж" };
 
             string s = dr.ItemArray[NameOfServiceCol].ToString();
 
@@ -269,36 +270,34 @@ namespace Clients
 
             s = res[0];
 
-            int numbWS = 3; // количество пробелов которое необходимо найти
             int index, idxStartWord = s.Length;
 
-            for (index = s.Length - 1; index != 0 && numbWS != 0; index--)
+            for (index = s.Length - 1; index != 0; index--)
             {
                 if (s[index] == ' ')
                 {
+                    // Пропускаем все пробелы кроме одного
+                    while (s[index - 1] == ' ')
+                        index--;
+
                     // Проверяем выделенное слово на наличие ключевых подстрок, например "картридж".
                     // Возможно, название устройства состоит из одного слова
+
                     if (s.Contains(nameWorks, index))
                     {
                         // это не название устройства. Это название услуги
-                        index = idxStartWord; // указываем на индекс следующего слова
                         break;
                     }
 
                     idxStartWord = index;
-
-                    if (--numbWS == 0)
-                    {
-                        break;
-                    }
                 }
             }
 
-            string namew = s.Substring(0, index).Trim(); // выполненная работа без названия устройства
+            string namew = s.Substring(0, idxStartWord).Trim(); // выполненная работа без названия устройства
 
-            string named = (index == s.Length)
+            string named = (idxStartWord == s.Length)
                                         ? ""
-                                        : s.Substring(index, s.Length - index).Trim(); // название устройства
+                                        : s.Substring(idxStartWord, s.Length - idxStartWord).Trim(); // название устройства
 
             string subdiv = "";     //
                                     // для инициализации нельзя использовать null. Это приводит к удалению текущего id

@@ -68,14 +68,11 @@ namespace Clients
                 {
                     comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
 
-                    // Включаем обновление содержимого колонок после загрузки списков из файла
-                    ChangedServiceList = SetComboBoxColumns;
-
                     // Заполняем список клиентов с одновременным заполнением ComboBox(через событие в ListClients)
                     // Заполнение происходит без нарушения сортировки
                     clientsXml.XmlToClientsAndContracts(clients);
 
-                    ChangedServiceList = null;
+                    SetComboBoxColumns();
 
                     // Выбираем первого клиента в списке и заполняем список договоров ListBoxContracts
                     comboBoxClients.SelectedIndex = 0;
@@ -146,6 +143,8 @@ namespace Clients
 
             LoadAllServices();
 
+            SetComboBoxColumns();
+
             ChangedCurrentClient_EventHandler += SetClientContracts;
 
             comboBoxClients.SelectedIndex = 0;  // После загрузки выбираем первый элемент
@@ -181,13 +180,15 @@ namespace Clients
         // Выбираем файл и заполняем таблицу DataTable
         private DataTable GetDataTableFromFile_xls(ModeGetData mode)
         {
-            OpenFileDialog fd = new OpenFileDialog();
-            fd.Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx|All files (*.*)|*.*";
-            fd.FilterIndex = 0;
+            var fd = new OpenFileDialog
+            {
+                Filter = "Excel files (*.xls;*.xlsx)|*.xls;*.xlsx|All files (*.*)|*.*",
+                FilterIndex = 0
+            };
 
             if (fd.ShowDialog() == DialogResult.OK)
             {
-                GetContractInfoFromXls xls = new GetContractInfoFromXls(fd.FileName, mode); // чтение файла и заполнение DataTable
+                var xls = new GetContractInfoFromXls(fd.FileName, mode); // чтение файла и заполнение DataTable
                                                                                             // из области печати
                 return xls.Dt;
             }

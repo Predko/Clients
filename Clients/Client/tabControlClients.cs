@@ -39,8 +39,6 @@ namespace Clients
 
             foreach (Client cl in clients)
             {
-                CurrentClient = cl;
-
                 foreach (Contract ct in cl.contracts)
                 {
                     if (ct.Dt < minDate || ct.FileName.Length == 0)
@@ -63,8 +61,6 @@ namespace Clients
                                 break;
                         }
                     }
-
-                    CurrentContract = ct;
 
                     LoadFromFile_xls(ct, path + ct.FileName);
                 }

@@ -185,6 +185,12 @@ namespace Clients
         // Fill List clients and List contracts (foreach(Element))
         public void XmlToClientsAndContracts(ListClients clients)
         {
+            // Очищаем  все списки
+            Clients.clients.Clear();
+            Clients.AllContracts.Clear();
+            Clients.AllServices.Clear();
+
+
             #region CultureInfo setting
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
 
@@ -203,7 +209,7 @@ namespace Clients
             {
                 // Загружаем списки наименований услуг, названий устройств, названий подразделений
                 ReadListFromXml(Clients.AllNameWorks, xelm.Element("ListNameWorks")?.Elements());
-
+                
                 ReadListFromXml(Clients.AllNameDevices, xelm.Element("ListNameDevices")?.Elements());
 
                 ReadListFromXml(Clients.AllAddInfo, xelm.Element("ListAddInfo")?.Elements(), "InfoString");
@@ -213,26 +219,11 @@ namespace Clients
 
                 if (xelements != null)
                 {
-                    //Clients.AllServices.Clear();
                     foreach (XElement xe in xelements)
                     {
                         int id = int.Parse(xe.Attribute("Id").Value);
 
-                        Service sv;
-
-                        if (Clients.AllServices.ContainsKey(id))    // Если такая услуга есть, обновляем её поля
-                        {
-                            sv = Clients.AllServices[id];
-                            sv.SetService(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)],
-                                             Clients.AllNameDevices[int.Parse(xe.Element("NameDevice").Attribute("Id").Value)],
-                                             int.Parse(xe.Element("Subdivision").Attribute("Id").Value),
-                                             int.Parse(xe.Element("Number").Value),
-                                             decimal.Parse(xe.Element("Value").Value),
-                                             Clients.AllAddInfo[int.Parse(xe.Element("AddInfo").Attribute("Id").Value)]);
-                        }
-                        else // Если нет - создаём новую
-                        {
-                            sv = new Service(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)],
+                        var sv = new Service(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)],
                                             Clients.AllNameDevices[int.Parse(xe.Element("NameDevice").Attribute("Id").Value)],
                                             int.Parse(xe.Element("Subdivision").Attribute("Id").Value),
                                             int.Parse(xe.Element("Number").Value),
@@ -240,8 +231,7 @@ namespace Clients
                                             id,
                                             Clients.AllAddInfo[int.Parse(xe.Element("AddInfo").Attribute("Id").Value)]);
 
-                            sv.Add();
-                        }
+                        sv.Add();
                     }
 
                     // выполняем необходимую обработку связанных cо списком услуг данных
@@ -250,6 +240,7 @@ namespace Clients
             }
 
             // Загружаем список клиентов
+
             foreach (XElement xe in xClients.Element("Clients").Elements("Client"))
             {
                 int id = int.Parse(xe.Attribute("ClientId").Value);
@@ -258,34 +249,27 @@ namespace Clients
                 string city = xe.Element("City")?.Value;
                 string address = xe.Element("Address")?.Value;
 
-                Client client;
-
-                if (Clients.clients.Contains(id))
-                {
-                    client = Clients.clients[id];   // клиент с таким Id уже есть. Обновляенм его данные
-                    client.Name = name;
-                    client.SettlementAccount = settlementAccount;
-                    client.City = city;
-                    client.Address = address;
+                if(clients.Contains(id))
+                {   // Ошибка! Повтор идентификатора в xml файле
                 }
-                else // Если нет - создаём новый экземпляр и добавляем в список
-                {
-                    client = new Client(name, id, settlementAccount, city, address);
 
-                    clients.Add(client);
-                }
+                var client = new Client(name, id, settlementAccount, city, address);
+
+                clients.Add(client);
 
                 // загружаем список подразделений данного клиента
+                client.Subdivisions.Clear();
+
                 IEnumerable<XElement> xelement = xe.Element("Subdivisions")?.Elements();
                 if (xelement != null)
                 {
                     foreach (XElement element in xelement)
                     {
-                        if(!client.Subdivisions.ContainsValue(element.Value))
-                        {
-                            client.Subdivisions.Add(int.Parse(element.Attribute("Id").Value),
-                                                   element.Value);
+                        if(client.Subdivisions.ContainsValue(element.Value))
+                        {// Ошибка! Повтор имени подразделения в xml файле
                         }
+
+                        client.Subdivisions.Add(int.Parse(element.Attribute("Id").Value), element.Value);
                     }
                 }
 
@@ -298,13 +282,8 @@ namespace Clients
                         id = int.Parse(element.Attribute("ContractId").Value);
 
                         string svalue = element.Element("DateContract")?.Value;
-                        DateTime dt;
 
-                        try
-                        {
-                            dt = DateTime.Parse(svalue);
-                        }
-                        catch
+                        if (!DateTime.TryParse(svalue, out DateTime dt))
                         {
                             dt = DateTime.MinValue;
                         }
@@ -319,8 +298,9 @@ namespace Clients
 
                         var regex = new Regex(@"(\.\.\\)|(/)|(\.\./)|%20");
 
-                        svalue = regex.Replace(element.Element("FileName")?.Value, 
-                                                (m) => {
+                        svalue = regex.Replace(element.Element("FileName")?.Value,
+                                                (m) =>
+                                                {
                                                     if (m.Value == @"..\")
                                                         return @"\";
                                                     if (m.Value == "../")
@@ -342,24 +322,9 @@ namespace Clients
                                                    : TypeContract.Contract;         // Договор
                         }
 
-                        Contract ctr;
+                        var ctr = new Contract(client, id, dt, number, summ, signed, svalue, tc);
 
-                        if (Clients.AllContracts.ContainsKey(id))   // Если такой контракт уже есть, обновляем информацию
-                        {
-                            ctr = Clients.AllContracts[id];
-                            ctr.Dt = dt;
-                            ctr.Numb = number;
-                            ctr.Summ = summ;
-                            ctr.Signed = signed;
-                            ctr.FileName = svalue;
-                            ctr.Type = tc;
-                        }
-                        else  // Если нет - создаём новый экземпляр и добавляем в список
-                        {
-                            ctr = new Contract(client, id, dt, number, summ, signed, svalue, tc);
-
-                            client.contracts.Add(ctr);
-                        }
+                        client.contracts.Add(ctr);
 
                         //
                         //  Здесь загружаем Services
@@ -368,10 +333,7 @@ namespace Clients
 
                         if (ServicesElements != null)
                         {
-                            if(ctr.services.Count != 0)
-                            {
-                                ctr.services.Clear();
-                            }
+                            ctr.services.Clear();
 
                             foreach (XElement servelem in ServicesElements)
                             {
@@ -408,7 +370,14 @@ namespace Clients
         // Загрузка списка клиентов и контрактов из xml документа сформированного MS Access
         public void AccessXmlToClients(ListClients clients)
         {
-            //clients.Clear();
+            // Очищаем  все списки
+            Clients.clients.Clear();
+
+            Clients.AllContracts.Clear();
+            Clients.AllServices.Clear();
+            Clients.AllNameWorks.Clear();
+            Clients.AllNameDevices.Clear();
+            Clients.AllAddInfo.Clear();
 
             #region CultureInfo setting
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
@@ -429,22 +398,9 @@ namespace Clients
                 string city = xe.Element("Город")?.Value;
                 string address = xe.Element("ОбластьКрайРеспублика")?.Value;
 
-                Client client;
+                var client = new Client(name, id, settlementAccount, city, address);
 
-                if (Clients.clients.Contains(id))
-                {
-                    client = Clients.clients[id];   // клиент с таким Id уже есть. Обновляенм его данные
-                    client.Name = name;
-                    client.SettlementAccount = settlementAccount;
-                    client.City = city;
-                    client.Address = address;
-                }
-                else
-                {
-                    client = new Client(name, id, settlementAccount, city, address);
-
-                    clients.Add(client);
-                }
+                clients.Add(client);
 
                 string svalue;
 
@@ -495,20 +451,7 @@ namespace Clients
                                                    : TypeContract.CWC;         // Акт приёмки сдачи работ
                         }
 
-                        if (Clients.AllContracts.ContainsKey(id))   // Если такой контракт уже есть, обновляем информацию
-                        {
-                            Contract ctr = Clients.AllContracts[id];
-                            ctr.Dt = dt;
-                            ctr.Numb = number;
-                            ctr.Summ = summ;
-                            ctr.Signed = signed;
-                            ctr.FileName = svalue;
-                            ctr.Type = tc;
-                        }
-                        else // иначе, создаём новый
-                        {
-                            client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
-                        }
+                        client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
                     }
                 }
             }

@@ -85,22 +85,26 @@ namespace Clients
         // Инициализация ячеек, содержащих элемент ComboBoxColumn
         private void InitComboBoxColumns()
         {
-            string[] cns = { "", "Заправка картриджа", "Восстановление картриджа", "Прошивка чипа картриджа", "Ремонт узла закрепления принтера" };
+            string[] cns = { "" };
+                //, "Заправка картриджа", "Восстановление картриджа", "Прошивка чипа картриджа", "Ремонт узла закрепления принтера" };
 
             ColumnNameWork.Items.AddRange(cns);
             dataGridViewContract["ColumnNameWork", 0].Value = cns[0];
 
-            string[] cnd = { "", "Canon 725", "Canon 728", "Canon 737", "Hp 35a", "Hp 85a", "Hp 12a", "Hp 49a", "Hp 53a", "HP 05a" };
+            string[] cnd = { "" };
+                //, "Canon 725", "Canon 728", "Canon 737", "Hp 35a", "Hp 85a", "Hp 12a", "Hp 49a", "Hp 53a", "HP 05a" };
 
             ColumnNameDevice.Items.AddRange(cnd);
             dataGridViewContract["ColumnNameDevice", 0].Value = cnd[0];
 
-            string[] csd = { "", "к.401", "к.402", "к.403", "к.405", "к.406", "к.407" };
+            string[] csd = { "" };
+                //, "к.401", "к.402", "к.403", "к.405", "к.406", "к.407" };
 
             ColumnSubdivision.Items.AddRange(csd);
             dataGridViewContract["ColumnSubdivision", 0].Value = csd[0];
 
-            string[] cai = { "", "фотовал", "доз.нож", "чист.нож", "без.запр", "вал зар.", "магн.вал" };
+            string[] cai = { "" };
+                //, "фотовал", "доз.нож", "чист.нож", "без.запр", "вал зар.", "магн.вал" };
 
             ColumnAddInfo.Items.AddRange(cai);
             dataGridViewContract["ColumnAddInfo", 0].Value = cai[0];
