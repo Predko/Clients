@@ -16,8 +16,15 @@ namespace Clients
         {
             comboBoxClients.SelectedIndexChanged += ComboBoxClients_SelectedIndexChanged;
 
+            ChangedCurrentClient_EventHandler += ComboBoxClientChangeCurrentClient;
+
             // при изменении списка клиентов, вызывать это событие
             clients.ListClientsChanged += ChangeComboBoxClients;
+        }
+
+        private void ComboBoxClientChangeCurrentClient(object sender, EventArgs e)
+        {
+            comboBoxClients.SelectedItem = CurrentClient;
         }
 
         //-------------------------------------------------------------
@@ -38,8 +45,11 @@ namespace Clients
             switch (e.change)
             {
                 case Change.Add:
-                    //SortedInsertItem(comboBoxClients, e.client); // добавляем элемент в список не нарушая сортировки
                     comboBoxClients.Items.Add(e.client);
+                    break;
+
+                case Change.Del:
+                    comboBoxClients.Items.Remove(e.client);
                     break;
 
                 case Change.Clear:                              // очищаем список
@@ -47,34 +57,9 @@ namespace Clients
                     break;
 
                 case Change.Set:                                // устанавливаем элемент с данным индексом
-                    comboBoxClients.Items[e.index] = e.client;  // нарушается сортировка!
+                    comboBoxClients.Items[e.index] = e.client;
                     break;
             }
-        }
-
-        // Вставка нового элемента без нарушения сортировки списка
-        private void SortedInsertItem(ComboBox cb, Client cl)
-        {
-            if (cb.Items.Count != 0)
-            {
-                for (int i = 0; i < cb.Items.Count; i++)
-                {
-                    var c = (Client)cb.Items[i];
-
-                    int res = c.Name.CompareTo(cl.Name);
-
-                    if (res == 0)
-                        return;     // такой элемент есть. Ничего не делаем
-
-                    if (res > 0)
-                    {
-                        cb.Items.Insert(i, cl); // найден элемент с большим весом, вставляем новый до него
-                        return;
-                    }
-                }
-            }
-
-            cb.Items.Add(cl);   // добавляем, если первый или если не найден больший чем данный
         }
     }
 }

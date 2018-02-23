@@ -49,10 +49,10 @@
     <Compile Include="Client\ComboBoxClients.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogBoxAddNewClient.cs">
+    <Compile Include="AddNewClient\DialogBoxAddNewClient.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogBoxAddNewClient.Designer.cs">
+    <Compile Include="AddNewClient\DialogBoxAddNewClient.Designer.cs">
       <DependentUpon>DialogBoxAddNewClient.cs</DependentUpon>
     </Compile>
     <Compile Include="Contract\Contracts.cs">
@@ -60,10 +60,10 @@
     </Compile>
     <Compile Include="Contract\DataGridViewContract.cs" />
     <Compile Include="Contract\GetListServicesFromDT.cs" />
-    <Compile Include="DialogBoxSaveOrNo.cs">
+    <Compile Include="AddNewClient\DialogBoxSaveOrNo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogBoxSaveOrNo.Designer.cs">
+    <Compile Include="AddNewClient\DialogBoxSaveOrNo.Designer.cs">
       <DependentUpon>DialogBoxSaveOrNo.cs</DependentUpon>
     </Compile>
     <Compile Include="Getxls\GetContractInfoFromXls.cs" />
@@ -81,6 +81,12 @@
     </Compile>
     <Compile Include="Client\ListClients.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddNewClient\DialogRemoveClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddNewClient\DialogRemoveClient.Designer.cs">
+      <DependentUpon>DialogRemoveClient.cs</DependentUpon>
     </Compile>
     <Compile Include="Service\Services.cs">
       <SubType>Form</SubType>
@@ -110,10 +116,10 @@
     <EmbeddedResource Include="Clients.resx">
       <DependentUpon>Clients.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogBoxAddNewClient.resx">
+    <EmbeddedResource Include="AddNewClient\DialogBoxAddNewClient.resx">
       <DependentUpon>DialogBoxAddNewClient.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogBoxSaveOrNo.resx">
+    <EmbeddedResource Include="AddNewClient\DialogBoxSaveOrNo.resx">
       <DependentUpon>DialogBoxSaveOrNo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormShowDataTable.resx">
@@ -129,6 +135,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="AddNewClient\DialogRemoveClient.resx">
+      <DependentUpon>DialogRemoveClient.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -172,5 +181,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

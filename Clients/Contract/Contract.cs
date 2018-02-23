@@ -178,14 +178,6 @@ namespace Clients
         // Очищаем список услуг услуг договора
         public void ClearServices()
         {
-            //foreach (int id in services.ToArray<int>())
-            //{
-            //    if (Clients.AllServices.ContainsKey(id))
-            //    {
-            //        DelService(Clients.AllServices[id]);
-            //    }
-            //}
-
             // удаление услуг из списка, начиная с конца списка, чтобы не нарушить индексацию списка
             for (int i = services.Count - 1; i >= 0; i--)
             {

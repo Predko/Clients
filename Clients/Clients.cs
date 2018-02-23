@@ -39,7 +39,9 @@ namespace Clients
 
             var dialogClient = new DialogBoxClients(CurrentClient);
 
-            dialogClient.Show();
+            dialogClient.ShowDialog();
+
+            CurrentClient = dialogClient.CurrentClient;
         }
     }
 }

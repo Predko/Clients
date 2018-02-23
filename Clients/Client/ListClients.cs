@@ -8,11 +8,11 @@ namespace Clients
 {
     public partial class Clients : Form
     {
-        private Client _currentClient;
+        private static Client _currentClient;
 
-        public event EventHandler ChangedCurrentClient_EventHandler;    // Событие, вызываемое после изменения текущего клиента
+        public static event EventHandler ChangedCurrentClient_EventHandler;    // Событие, вызываемое после изменения текущего клиента
 
-        public Client CurrentClient        // Текущий клиент
+        public static Client CurrentClient        // Текущий клиент
         {
             get
             {
@@ -29,9 +29,9 @@ namespace Clients
             }
         }
 
-        private void OnChangeCurrentClient(EventArgs args)
+        private static void OnChangeCurrentClient(EventArgs args)
         {
-            ChangedCurrentClient_EventHandler?.Invoke(this, args);
+            ChangedCurrentClient_EventHandler?.Invoke(null, args);
         }
     }
 
@@ -67,6 +67,8 @@ namespace Clients
 
         public int Count { get => clients.Count; }
 
+        public int IndexOfKey(int key) => clients.IndexOfKey(key);
+
         // добавления клиента в список. Если добавляем нового, isNewClient устанавливаем в true
         public void Add(Client client, bool isNewClient = false)
         {
@@ -92,6 +94,23 @@ namespace Clients
             clients.Add(client.Id, client);
 
             ChangedEventArgs.change = Change.Add;
+            ChangedEventArgs.client = client;
+            OnChangeListClients(ChangedEventArgs);
+        }
+
+        // Удаление клиента из списка. Удаляются также договоры из списка, услуги и очищается список подразделений
+        public void Remove(Client client)
+        {
+            if (!clients.ContainsValue(client))
+                return;                             // такого элемента нет
+
+            client.contracts.Clear();
+
+            client.ClearSubdisions();
+
+            clients.Remove(client.Id);
+
+            ChangedEventArgs.change = Change.Del;
             ChangedEventArgs.client = client;
             OnChangeListClients(ChangedEventArgs);
         }

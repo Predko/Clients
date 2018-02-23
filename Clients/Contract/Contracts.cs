@@ -28,7 +28,7 @@ namespace Clients
         public static event EventHandler<ChangedContractsEventArgs> ChangedContracts;
 
         private SortedList<int, Contract> _contracts => Clients.AllContracts;
-        private static readonly FreeID LastUnusedKey;
+        private static readonly FreeID LastUnusedKey = new FreeID();
 
         // Здесь хранится список Id(ключей из списка _contracts) всех договоров данного клиента
         private readonly List<int> contracts = new List<int>();
@@ -59,6 +59,8 @@ namespace Clients
         {
             LastUnusedKey.Id = contract.Id; // Помещаем неиспользуемый Id в список свободных Id
 
+            contract.ClearServices();   // Очищаем список услуг договора
+
             _contracts.Remove(contract.Id);
             contracts.Remove(contract.Id);
 
@@ -77,6 +79,9 @@ namespace Clients
             foreach(int id in contracts)
             {
                 LastUnusedKey.Id = id;  // Освободившийся ключ - в список
+
+                _contracts[id].ClearServices(); // Очищаем список услуг договора
+
                 _contracts.Remove(id);
             }
 

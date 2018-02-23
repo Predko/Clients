@@ -104,6 +104,16 @@ namespace Clients
             Subdivisions.Remove(id);
             freeIdSubdiv.Id = id;       // освободившийся id заносим в список
         }
+ 
+        // Очистка списка подразделений
+        public void ClearSubdisions()
+        {
+            foreach (var key in Subdivisions.Keys.ToArray())
+            {
+                Subdivisions.Remove(key);
+                freeIdSubdiv.Id = key;       // освободившийся id заносим в список
+            }
+        }
 
         public int GetIdSubdivision(string name)
         {
