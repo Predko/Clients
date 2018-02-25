@@ -29,19 +29,5 @@ namespace Clients
 
             InitTabControlClients();
         }
-
-        private void ButtonEditClient_Click(object sender, EventArgs e)
-        {
-            if (CurrentClient == null)
-            {
-                return;
-            }
-
-            var dialogClient = new DialogBoxClients(CurrentClient);
-
-            dialogClient.ShowDialog();
-
-            CurrentClient = dialogClient.CurrentClient;
-        }
     }
 }

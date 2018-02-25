@@ -98,6 +98,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DialogBoxSaveOrNo";
+            this.Text = "Сохранение";
             this.ResumeLayout(false);
             this.PerformLayout();
 

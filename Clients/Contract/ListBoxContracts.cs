@@ -17,7 +17,7 @@ namespace Clients
             listBoxContracts.SelectedIndexChanged += ListBoxContracts_SelectedIndexChanged;
 
             // при изменении текущего договора выводить информацию о нём
-            ChangeCurrentContract_EventHandler += (o, e) => WriteLabelContractInfo();
+            ChangeCurrentContract_EventHandler += (o, e) => WriteCurrentContractInfo();
 
             // при изменении текущего клиента, вызываем это событие и отображаем список договоров для него
             ChangedCurrentClient_EventHandler += SetClientContracts;
@@ -84,33 +84,8 @@ namespace Clients
             listBoxContracts.EndUpdate();   // обновляем список договоров в listBox
         }
 
-        // Вставка нового элемента без нарушения сортировки списка
-        private void SortedInsertItem(ListBox lb, Contract ct)
-        {
-            if (lb.Items.Count != 0)
-            {
-                for (int i = 0; i < lb.Items.Count; i++)
-                {
-                    var c = (Contract)lb.Items[i];
-
-                    int res = c.CompareTo(ct);
-
-                    if (res == 0)
-                        return;     // такой элемент есть. Ничего не делаем
-
-                    if (res > 0)
-                    {
-                        lb.Items.Insert(i, ct); // найден элемент с большим весом, вставляем новый до него
-                        return;
-                    }
-                }
-            }
-
-            lb.Items.Add(ct);   // добавляем, если первый или если не найден больший чем данный
-        }
-
-        // Выводит информацию о договоре на основную форму и заголовок tabPageContractEdit
-        private void WriteLabelContractInfo()
+       // Выводит информацию о договоре на основную форму и заголовок tabPageContractEdit
+        private void WriteCurrentContractInfo()
         {
             labelFileName.Text = CurrentContract?.FileName ?? "Файл отсутствует";
 
@@ -147,6 +122,5 @@ namespace Clients
                     break;
             }
         }
-
     }
 }
