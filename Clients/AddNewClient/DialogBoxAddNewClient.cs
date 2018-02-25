@@ -38,6 +38,8 @@ namespace Clients
             {
                 if(value == null)
                 {
+                    _currentClient = null;
+
                     return;
                 }
 
@@ -48,7 +50,11 @@ namespace Clients
 
                     if (res == DialogResult.Cancel) // Ничего не делаем
                     {
-                        listBoxClients.SelectedItem = _currentClient;
+                        if(_currentClient.Id != -1)
+                        {
+                            listBoxClients.SelectedItem = _currentClient;
+                        }
+
                         return;
                     }
 
@@ -87,14 +93,14 @@ namespace Clients
                 listBoxClients.Items.Add(cl);
             }
 
-            //ChangingCurrentClientEventHandler += DialogBoxClients_ChangingCurrentClientEventHandler;
-
             _currentClient = client;    // устанавливаем первоначального клиента
             SetCurrentClientInfo();     // Обновляем информацию о нём
 
             listBoxClients.SelectedItem = client;
 
             listBoxClients.EndUpdate();
+
+            textBoxClientName.Select();
         }
 
         private void SetCurrentClientInfo()
@@ -127,29 +133,6 @@ namespace Clients
             }
         }
 
-        private void ButtonAddClientExit_Click(object sender, EventArgs e)
-        {
-            // Проверяем на изменения, предлагаем сохранить.
-            //  Устанавливаем DialogResult.OK если надо сохранить изменения перед выходом.
-            var res = IsChangeAndNoSave();
-
-            if (res == DialogResult.OK)
-            {
-                DialogResult = DialogResult.OK;
-
-                DialogBoxClientSaveChanges();   // сохраняем изменения
-
-                Close();
-            }
-            else
-            if (res == DialogResult.Ignore || res == DialogResult.No)
-            {
-                DialogResult = DialogResult.Cancel;
-
-                Close();
-            }
-        }
-
         // Проверяет, были ли изменения и сохранены ли они
         // и предлагает согранить или выйти без сохранения или перкатить смену/(выход из) текущего клиента
         // true - можно менять текущего клиента
@@ -157,7 +140,7 @@ namespace Clients
         // Также устанавливает DialogResult
         private DialogResult IsChangeAndNoSave()
         {
-            if(isChangeTextBox != FlagChangeTextBoxes.None)
+            if (isChangeTextBox != FlagChangeTextBoxes.None)
             {
                 var dlg = new DialogBoxSaveOrNo();
 
@@ -177,10 +160,13 @@ namespace Clients
             CurrentClient.Address = textBoxClientAddress.Text;
             CurrentClient.SettlementAccount = textBoxClientSettlementAccount.Text;
 
-            if(CurrentClient.Id == -1)  // Это новый клиент?
+            if (CurrentClient.Id == -1)  // Это новый клиент?
             {
                 Clients.clients.Add(CurrentClient, true); // Добавляем в список всех клиентов
+
                 listBoxClients.Items.Add(CurrentClient);
+
+                listBoxClients.SelectedItem = CurrentClient;
             }
 
             SetTextBoxAddTextChangedEvent(true);    // Добавляем события
@@ -212,12 +198,33 @@ namespace Clients
             textBoxClientSettlementAccount.TextChanged -= TextBoxClientSettlementAccount_TextChanged;
         }
 
+        private void ButtonAddClientExit_Click(object sender, EventArgs e)
+        {
+            // Проверяем на изменения, предлагаем сохранить.
+            //  Устанавливаем DialogResult.OK если надо сохранить изменения перед выходом.
+            var res = IsChangeAndNoSave();
+
+            if (res == DialogResult.OK)
+            {
+                DialogResult = DialogResult.OK;
+
+                DialogBoxClientSaveChanges();   // сохраняем изменения
+
+                Close();
+            }
+            else
+            if (res == DialogResult.Ignore || res == DialogResult.No)
+            {
+                DialogResult = DialogResult.Cancel;
+
+                Close();
+            }
+        }
+
         // Сохраняем
         private void ButtonSave_Click(object sender, EventArgs e)
         {
             DialogBoxClientSaveChanges();
-
-            listBoxClients.SelectedItem = CurrentClient;
         }
 
         // Сохраняем и выходим
@@ -277,7 +284,12 @@ namespace Clients
                 {
                     if(listBoxClients.Items.Count == 1)
                     {
-                        MessageBox.Show("Нельзя удалить последнего клиента!");
+                        Clients.clients.Remove(CurrentClient);  // Удаляем последнего из списка и выходим из формы редактирования
+
+                        CurrentClient = null;
+
+                        Close();
+
                         return;
                     }
 
@@ -291,7 +303,9 @@ namespace Clients
 
                     listBoxClients.Items.Remove(CurrentClient);
 
-                    CurrentClient = (Client)listBoxClients.Items[index];
+                    isChangeTextBox = FlagChangeTextBoxes.None;
+
+                    listBoxClients.SelectedIndex = index;
                 }
             }
         }

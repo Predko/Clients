@@ -158,6 +158,7 @@
             this.buttonDeleteContract.TabIndex = 11;
             this.buttonDeleteContract.Text = "Удалить";
             this.buttonDeleteContract.UseVisualStyleBackColor = true;
+            this.buttonDeleteContract.Click += new System.EventHandler(this.ButtonDeleteContract_Click);
             // 
             // buttonDeleteClient
             // 
@@ -187,6 +188,7 @@
             this.buttonNewClient.TabIndex = 8;
             this.buttonNewClient.Text = "Добавить";
             this.buttonNewClient.UseVisualStyleBackColor = true;
+            this.buttonNewClient.Click += new System.EventHandler(this.ButtonNewClient_Click);
             // 
             // buttonEditContract
             // 
@@ -196,6 +198,7 @@
             this.buttonEditContract.TabIndex = 7;
             this.buttonEditContract.Text = "Редактировать";
             this.buttonEditContract.UseVisualStyleBackColor = true;
+            this.buttonEditContract.Click += new System.EventHandler(this.ButtonEditContract_Click);
             // 
             // buttonNewContract
             // 
@@ -205,6 +208,7 @@
             this.buttonNewContract.TabIndex = 6;
             this.buttonNewContract.Text = "Новый";
             this.buttonNewContract.UseVisualStyleBackColor = true;
+            this.buttonNewContract.Click += new System.EventHandler(this.ButtonNewContract_Click);
             // 
             // labelClient
             // 

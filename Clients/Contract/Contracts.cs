@@ -73,6 +73,8 @@ namespace Clients
             }
         }
 
+        public int IndexOf(int id) => contracts.IndexOf(id);
+
         public void Clear()
         {
             // удаляем все договоры из списка в общем списке договоров всех клиентов

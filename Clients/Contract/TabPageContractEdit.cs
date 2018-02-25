@@ -42,6 +42,8 @@ namespace Clients
         {
             ToolStripMenuChange(true);
 
+            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие
+
             // Обновляем текущий элемент в ListBox
             listBoxContracts.Items[listBoxContracts.SelectedIndex] = CurrentContract;
         }
@@ -73,7 +75,7 @@ namespace Clients
 
             List<string> list = CurrentClient.Subdivisions.Values.ToList();
 
-            list.Sort();
+            //list.Sort();
 
             foreach (string s in list)
             {

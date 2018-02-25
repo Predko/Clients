@@ -85,36 +85,23 @@ namespace Clients
         // Инициализация ячеек, содержащих элемент ComboBoxColumn
         private void InitComboBoxColumns()
         {
-            string[] cns = { "" };
-                //, "Заправка картриджа", "Восстановление картриджа", "Прошивка чипа картриджа", "Ремонт узла закрепления принтера" };
+            ColumnNameWork.Items.Add("");
+            dataGridViewContract["ColumnNameWork", 0].Value = "";
 
-            ColumnNameWork.Items.AddRange(cns);
-            dataGridViewContract["ColumnNameWork", 0].Value = cns[0];
+            ColumnNameDevice.Items.AddRange("");
+            dataGridViewContract["ColumnNameDevice", 0].Value = "";
 
-            string[] cnd = { "" };
-                //, "Canon 725", "Canon 728", "Canon 737", "Hp 35a", "Hp 85a", "Hp 12a", "Hp 49a", "Hp 53a", "HP 05a" };
+            ColumnSubdivision.Items.AddRange("");
+            dataGridViewContract["ColumnSubdivision", 0].Value = "";
 
-            ColumnNameDevice.Items.AddRange(cnd);
-            dataGridViewContract["ColumnNameDevice", 0].Value = cnd[0];
-
-            string[] csd = { "" };
-                //, "к.401", "к.402", "к.403", "к.405", "к.406", "к.407" };
-
-            ColumnSubdivision.Items.AddRange(csd);
-            dataGridViewContract["ColumnSubdivision", 0].Value = csd[0];
-
-            string[] cai = { "" };
-                //, "фотовал", "доз.нож", "чист.нож", "без.запр", "вал зар.", "магн.вал" };
-
-            ColumnAddInfo.Items.AddRange(cai);
-            dataGridViewContract["ColumnAddInfo", 0].Value = cai[0];
+            ColumnAddInfo.Items.AddRange("");
+            dataGridViewContract["ColumnAddInfo", 0].Value = "";
 
             dataGridViewContract["ColumnServiceNumb", 0].Value = 0;
             dataGridViewContract["ColumnServiceSumm", 0].Value = (decimal)0;     // стоимость
 
             dataGridViewContract["ColumnIdService", 0].Value = -1;
 
-           // dataGridViewContract.TopLeftHeaderCell.Value = "№";
 
             ColumnSubdivision.DisplayIndex = 1;
             ColumnNameDevice.DisplayIndex = 2;
@@ -266,7 +253,6 @@ namespace Clients
 
         private void DataGridViewContract_Leave(object sender, EventArgs e)
         {
-            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие
             RemovedDgvRows = null;  // при удалении строк в DataGridView, услуги в договоре удаляться не будут
         }
 
@@ -353,7 +339,7 @@ namespace Clients
         // проверка правильности введённых значений в строке
         private void DataGridViewContract_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
         {
-            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие для предотвращения рекурсивного вызова
+            Contract.ChangeServiceList -= ChangeServiceList_Event;  // удаляем событие для предотвращения рекурсивного вызова
 
             ChangeServiceRow(dataGridViewContract.Rows[e.RowIndex]);
 

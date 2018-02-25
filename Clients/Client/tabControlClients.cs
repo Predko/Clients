@@ -68,5 +68,104 @@ namespace Clients
 
             Contract.ChangeServiceList -= ChangeServiceList_Event;
         }
+
+        #region События, связанные с клиентами
+        // Выводит диалаговое окно для редактирования, создания нового и удаления клиента
+        private Client DialogEditClient(Client client)
+        {
+            var dialogClient = new DialogBoxClients(client);
+
+            dialogClient.ShowDialog();
+
+            if(clients.Count == 0)
+            {
+                comboBoxClients.Text = "";
+            }
+
+            return dialogClient.CurrentClient;
+        }
+
+        // Редактирование(и др.) клиента
+        private void ButtonEditClient_Click(object sender, EventArgs e)
+        {
+            if (CurrentClient == null)
+            {
+                return;
+            }
+
+            CurrentClient = DialogEditClient(CurrentClient);
+        }
+
+        // Создание нового и редактирование(и др.) клиента
+        private void ButtonNewClient_Click(object sender, EventArgs e)
+        {
+            var client = new Client();
+
+            CurrentClient = DialogEditClient(client);
+        }
+        #endregion
+
+        #region События, связанные с договорами
+        // Создание нового договора
+        private void ButtonNewContract_Click(object sender, EventArgs e)
+        {
+            if(CurrentClient != null)
+            {
+                CurrentContract = new Contract();
+
+                listBoxContracts.Items.Add(CurrentContract);
+                listBoxContracts.SelectedItem = CurrentContract;
+
+                CurrentClient.contracts.Add(CurrentContract, true); 
+
+                tabControlClients.SelectedTab = tabPageContractEdit;
+            }
+        }
+
+        // Редактирование выбранного договора
+        private void ButtonEditContract_Click(object sender, EventArgs e)
+        {
+            if (CurrentClient != null && CurrentContract != null)
+            {
+                tabControlClients.SelectedTab = tabPageContractEdit;
+            }
+        }
+
+        // Удаление текущего договора
+        private void ButtonDeleteContract_Click(object sender, EventArgs e)
+        {
+            if(CurrentClient != null && CurrentContract != null)
+            {
+                var typeContract = (CurrentContract.Type == TypeContract.CWC) ? "Акт"
+                                                                              : "Договор";
+
+                var res = MessageBox.Show($"Удалить {typeContract} №{CurrentContract.Numb}?\nВся информация будет потеряна!", "Удаление", MessageBoxButtons.YesNo);
+
+                if(res != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                int index = listBoxContracts.Items.IndexOf(CurrentContract); // индекс в списке удаляемого договора 
+                int count = listBoxContracts.Items.Count;
+
+                listBoxContracts.Items.Remove(CurrentContract); // Удаляем договор из списка ListBox
+
+                CurrentClient.contracts.Remove(CurrentContract); // Удаляем договор из списка договоров выбранного клиента
+
+                if (count == 1) // Это последний договор и список будет пуст?
+                {
+                    CurrentContract = null;
+
+                    listBoxContracts.SelectedItem = null;
+                }
+                else
+                if(index == count - 1) // Удалённый договор был последним в списке?
+                {
+                    listBoxContracts.SelectedIndex = index + 1; // Выбираем ближайший договор в списке
+                }
+            }
+        }
+        #endregion
     }
 }

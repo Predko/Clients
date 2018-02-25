@@ -44,10 +44,25 @@ namespace Clients
 
         private static int lastNumb = 1;                    // номер последнего договора.
 
+        private int _numb;
+
         public bool Signed;                                 // договор подписан и возвращён = true. Иначе - false
         public int Id { get; set; }                         // Идентификатор договора
         public DateTime Dt { get; set; }                    // дата договора(устанавливается на текущую)
-        public int Numb { get; set; }                       // Номер договора
+        public int Numb                                     // Номер договора. Корректируем lastNumber по максимальному номеру
+        {
+            get => _numb;
+            set
+            {
+                if(value >= lastNumb)
+                {
+                    lastNumb = value + 1;
+                }
+
+                _numb = value;
+            }
+        }
+
         public decimal Summ { get; set; }                   // Сумма по договору. 
                                                             // Вычисляется из сумм всех оказанных услуг
 
@@ -57,10 +72,10 @@ namespace Clients
 
         public List<int> services;                          // Список идентификаторов(ключей) оказанных услуг в данном договоре
 
-        public Client Client { get; set; }                  // ссылка на владельца договора
+        public Client Client { get; set; }      // ссылка на владельца договора
 
 
-        public Contract(int id = -1)            // Id получаем от родителя
+        public Contract(int id = -1)            // Id получаем при создании или будет получен позже, при добавлении в список
         {
             this.Signed = false;
             this.Id = id;
