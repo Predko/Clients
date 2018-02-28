@@ -45,7 +45,7 @@ namespace Clients
         private Color savedSelectionForeColor;      // сохранённые цвета
         private Color savedSelectionBackColor;      // сохранённые цвета
 
-        private Dictionary<int, int> SelectedRow = new Dictionary<int, int>();  // Id услуг в выбранных строках в DataGridView
+        private readonly Dictionary<int, int> SelectedRow = new Dictionary<int, int>();  // Id услуг в выбранных строках в DataGridView
 
         //--------- Методы ----------
 
@@ -102,7 +102,6 @@ namespace Clients
 
             dataGridViewContract["ColumnIdService", 0].Value = -1;
 
-
             ColumnSubdivision.DisplayIndex = 1;
             ColumnNameDevice.DisplayIndex = 2;
             ColumnAddInfo.DisplayIndex = 3;
@@ -130,7 +129,7 @@ namespace Clients
             dataGridViewContract["ColumnAddInfo", 0].Value = ColumnAddInfo.Items[0];
         }
 
-        // Сортирует список пунктов в ComboBoxColumn
+        // Добавление в список пунктов в ComboBoxColumn
         private void AddRangeComboBoxColumn(DataGridViewComboBoxCell.ObjectCollection cbcell, IList<string> lstr)
         {
             foreach (string s in lstr)
@@ -183,8 +182,6 @@ namespace Clients
             row.Cells["ColumnServiceNumb"].Value = sv.Number;
             row.Cells["ColumnServiceSumm"].Value = sv.Value;     // стоимость
             row.Cells["ColumnIdService"].Value = sv.Id;
-
-            SetRowsNumber(row.Index);
         }
 
         public void RemoveServiceFromDGV(int ServiceId)
@@ -213,11 +210,12 @@ namespace Clients
         {
             dataGridViewContract.RowsRemoved -= DataGridViewContract_RowsRemoved;
             dataGridViewContract.RowValidating -= DataGridViewContract_RowValidating;
+            dataGridViewContract.RowsAdded -= DataGridViewContract_RowsAdded;
 
             dataGridViewContract.Rows.Clear();
 
+            dataGridViewContract.RowsAdded += DataGridViewContract_RowsAdded;
             dataGridViewContract.RowValidating += DataGridViewContract_RowValidating;
-            dataGridViewContract.RowsRemoved -= DataGridViewContract_RowsRemoved;
             dataGridViewContract.RowsRemoved += DataGridViewContract_RowsRemoved;
         }
 
@@ -227,13 +225,21 @@ namespace Clients
         private void SetRowsNumber(int beginIndex)
         {
             int index = beginIndex;
+            int count = dataGridViewContract.Rows.Count;
 
-            while (index < dataGridViewContract.Rows.Count) // начинаем с заданного индекса
+            if(index != 0)
+            {
+                index--;
+            }
+
+            while (index < count) // начинаем с заданного индекса
             {
                 var row = dataGridViewContract.Rows[index];
-                if (!row.IsNewRow)
+
+                if(index != count - 1 && !row.IsNewRow)
                 {
                     row.Cells["ColumnNumberRow"].Value = String.Format("{0,3}", index + 1);
+
                 }
 
                 index++;
@@ -242,25 +248,14 @@ namespace Clients
 
         private void DataGridViewContract_Enter(object sender, EventArgs e)
         {
-            Contract.ChangeServiceList -= ChangeServiceList_Event; // удаляем событие(на всякий случай.))
-
-            // добавляем событие вызываемое при изменении списка услуг в текущем контракте
-            Contract.ChangeServiceList += ChangeServiceList_Event;
-            RemovedDgvRows = RemoveService;  // при удалении строк в DataGridView, будут удалятся услуги из договора
-
-            SetRowsNumber(0);
         }
 
         private void DataGridViewContract_Leave(object sender, EventArgs e)
         {
-            RemovedDgvRows = null;  // при удалении строк в DataGridView, услуги в договоре удаляться не будут
         }
 
         private void DataGridViewContract_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
-            // Заголовок строки содержит нумерацию строк
-            SetRowsNumber(e.Row.Index);
-
             // Значения по умолчанию для новых ячеек, содержащих ComboBox
             e.Row.Cells["ColumnNameWork"].Value = ColumnNameWork.Items[0];
             e.Row.Cells["ColumnNameDevice"].Value = ColumnNameDevice.Items[0];
@@ -339,13 +334,9 @@ namespace Clients
         // проверка правильности введённых значений в строке
         private void DataGridViewContract_RowValidating(object sender, DataGridViewCellCancelEventArgs e)
         {
-            Contract.ChangeServiceList -= ChangeServiceList_Event;  // удаляем событие для предотвращения рекурсивного вызова
-
             ChangeServiceRow(dataGridViewContract.Rows[e.RowIndex]);
 
             labelInTotalValue.Text = $"{CurrentContract.Summ}";
-
-            Contract.ChangeServiceList += ChangeServiceList_Event;
         }
 
         // Проверяет, изменились ли данные в строке и добавляет новую услугу или меняет существующую.
@@ -438,7 +429,6 @@ namespace Clients
             }
             else
             {   // иначе, переходим в следующую ячейку справа(в соответствии с DisplayIndex)
-
                 SendKeys.Send("{RIGHT}");   // эмулируем нажатие клавиши "Right" - уходим из этой ячейки в следующую
             }
 

@@ -34,13 +34,10 @@ namespace Clients
 
         public void RemoveService(int id)
         {
-            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие для предотвращения рекурсивного вызова
             Service sv = AllServices[id];
 
             if (sv != null)
                 CurrentContract.DelService(sv); // Если найдена, удаляем из списка услуг
-
-            Contract.ChangeServiceList += ChangeServiceList_Event;       // подключаем событие
         }
     }
 

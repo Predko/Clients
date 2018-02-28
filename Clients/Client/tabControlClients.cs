@@ -35,8 +35,6 @@ namespace Clients
             string path = null;
             DateTime minDate = DateTime.Parse("01/01/2015");
 
-            Contract.ChangeServiceList -= ChangeServiceList_Event;
-
             foreach (Client cl in clients)
             {
                 foreach (Contract ct in cl.contracts)
@@ -65,8 +63,6 @@ namespace Clients
                     LoadFromFile_xls(ct, path + ct.FileName);
                 }
             }
-
-            Contract.ChangeServiceList -= ChangeServiceList_Event;
         }
 
         #region События, связанные с клиентами
@@ -116,7 +112,7 @@ namespace Clients
                 listBoxContracts.Items.Add(CurrentContract);
                 listBoxContracts.SelectedItem = CurrentContract;
 
-                CurrentClient.contracts.Add(CurrentContract, true); 
+                CurrentClient.contracts.Add(CurrentContract, true);
 
                 tabControlClients.SelectedTab = tabPageContractEdit;
             }

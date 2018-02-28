@@ -28,6 +28,71 @@ namespace Clients
         public readonly static DateTime dateDenomination = DateTime.Parse(@"07/01/2016", CultureInfo.CreateSpecificCulture("en-US"));
     }
 
+    public class EventOnOff<TeventHandler>
+    {
+        // Здесь хранится событие и его состояние
+        private struct EventElem:IEquatable<EventElem>
+        {
+            public TeventHandler ev;    // Событие
+            public bool isOn;   // состояние события - вкл/выкл
+
+            public EventElem(TeventHandler e)
+            {
+                ev = e;
+                isOn = false;
+            }
+
+            bool IEquatable<EventElem>.Equals(EventElem other)
+            {
+                return ev.Equals(other.ev);
+            }
+        }
+
+        private TeventHandler eventHandler;
+
+        private bool isOn;
+
+        public TeventHandler EventHand { get => (isOn) ? eventHandler : default(TeventHandler); set => eventHandler = value; }
+
+        private readonly List<EventElem> listEvent = new List<EventElem>();
+
+        public EventOnOff()
+        {
+            isOn = false;
+        }
+
+        public void Add(TeventHandler ev)
+        {
+            listEvent.Add(new EventElem(ev));
+        }
+
+        public void Remove(TeventHandler ev)
+        {
+            int i = listEvent.IndexOf(new EventElem(ev));
+
+            if(i != -1)
+            {
+                listEvent.RemoveAt(i);
+            }
+        }
+
+        public void On(TeventHandler ev)
+        {
+            EventElem evel = listEvent.First(e => e.ev.Equals(ev));
+
+            evel.isOn = true;
+        }
+
+
+        public void Off(TeventHandler ev)
+        {
+            EventElem evel = listEvent.First(e => e.ev.Equals(ev));
+
+            evel.isOn = false;
+        }
+    }
+
+
     // Договор с клиентом.
     // Включает идентификатор, дату, номер, сумму
     // и список оказанных по данному договору услуг
@@ -129,7 +194,7 @@ namespace Clients
 
         private void OnChangingListServices(ChangingListServicesEventArgs e)
         {
-            ChangeServiceList?.Invoke(this, e);
+            ChangeServiceList?.Invoke(null, e);
         }
 
         // добавить услугу
@@ -185,6 +250,8 @@ namespace Clients
             if (index != -1)
             {
                 var sv = Clients.AllServices.Values[index];
+
+                Summ += value - sv.Value;   // Корректируем общую сумму
 
                 sv.SetService(nw, nd, sd, number, value, ai);
             }

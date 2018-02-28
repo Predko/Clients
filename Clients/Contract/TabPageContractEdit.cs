@@ -35,14 +35,16 @@ namespace Clients
 
             SetInfoTabPageContractEdit();
 
-            dataGridViewContract.Select();
+            // Подключаем события DataGridView
+            RemovedDgvRows = RemoveService;  // при удалении строк в DataGridView, будут удалятся услуги из договора
         }
 
         private void TabPageContractEdit_Leave(object sender, EventArgs e)
         {
             ToolStripMenuChange(true);
 
-            Contract.ChangeServiceList -= ChangeServiceList_Event;       // удаляем событие
+            // Отключаем события DataGridView
+            RemovedDgvRows = null;
 
             // Обновляем текущий элемент в ListBox
             listBoxContracts.Items[listBoxContracts.SelectedIndex] = CurrentContract;
@@ -53,6 +55,8 @@ namespace Clients
             toolStripMenuItemLoadXmlAccess.Enabled = change;
 
             toolStripMenuItemLoad.Enabled = change;
+
+            LoadAllServicesToolStripMenuItem.Enabled = change;
         }
 
         private void SetInfoTabPageContractEdit()
@@ -73,11 +77,7 @@ namespace Clients
             // заполняем список подразделений текущего клиента
             ColumnSubdivision.Items.Clear();
 
-            List<string> list = CurrentClient.Subdivisions.Values.ToList();
-
-            //list.Sort();
-
-            foreach (string s in list)
+            foreach (string s in CurrentClient.Subdivisions.Values.ToList())
             {
                 ColumnSubdivision.Items.Add(s);
             }
@@ -89,7 +89,7 @@ namespace Clients
             {
                 comboBoxTypeContract.Items[0] = String.Format($"Договор № {CurrentContract.Numb} от {CurrentContract.Dt:d}");
 
-                comboBoxTypeContract.Items[1] = String.Format($"Акт приёмки сдачи работ № {CurrentContract.Numb} от {CurrentContract.Dt:d}");
+                comboBoxTypeContract.Items[1] = String.Format($"Акт приёмки-сдачи работ № {CurrentContract.Numb} от {CurrentContract.Dt:d}");
 
                 comboBoxTypeContract.SelectedIndex = (int)CurrentContract.Type;
             }
@@ -100,6 +100,8 @@ namespace Clients
             }
 
             labelInTotalValue.Text = $"{CurrentContract.Summ}";
+
+//            SetRowsNumber(0);
         }
 
         // Загружаем информацию об услугах из файла договора .xls
@@ -125,14 +127,7 @@ namespace Clients
 
             ClearDataGridView();
 
-            // добавляем событие вызываемое при изменении списка услуг в текущем контракте
-            Contract.ChangeServiceList -= ChangeServiceList_Event;
-            Contract.ChangeServiceList += ChangeServiceList_Event;
-
             LoadFromFile_xls(CurrentContract, filename);
-
-            // Удаляем событие вызываемое при изменении списка услуг в текущем контракте
-            Contract.ChangeServiceList -= ChangeServiceList_Event;
 
             labelInTotalValue.Text = $"{CurrentContract.Summ}";
         }

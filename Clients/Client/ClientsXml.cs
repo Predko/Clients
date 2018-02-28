@@ -209,7 +209,7 @@ namespace Clients
             {
                 // Загружаем списки наименований услуг, названий устройств, названий подразделений
                 ReadListFromXml(Clients.AllNameWorks, xelm.Element("ListNameWorks")?.Elements());
-                
+
                 ReadListFromXml(Clients.AllNameDevices, xelm.Element("ListNameDevices")?.Elements());
 
                 ReadListFromXml(Clients.AllAddInfo, xelm.Element("ListAddInfo")?.Elements(), "InfoString");

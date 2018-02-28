@@ -108,6 +108,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DialogRemoveClient";
+            this.Text = "Удаление";
             this.ResumeLayout(false);
             this.PerformLayout();
 

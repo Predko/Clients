@@ -66,7 +66,12 @@ namespace Clients
 
                 if (clientsXml.Load_Ok)
                 {
-                    comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
+                    // Сбрасываем номер текущего договора и очищаем DataGridView.
+                    tpNumbCurrentContract = 0;
+
+                    ClearDataGridView();
+
+                    comboBoxClients.BeginUpdate();  // приостанавливаем изменение ComboBox, отображающего clients
 
                     // Заполняем список клиентов с одновременным заполнением ComboBox(через событие в ListClients)
                     // Заполнение происходит без нарушения сортировки
@@ -74,8 +79,11 @@ namespace Clients
 
                     SetComboBoxColumns();
 
-                    // Выбираем первого клиента в списке и заполняем список договоров ListBoxContracts
-                    comboBoxClients.SelectedIndex = 0;
+                    if(comboBoxClients.Items.Count != 0)
+                    {
+                        // Выбираем первого клиента в списке и заполняем список договоров ListBoxContracts
+                        comboBoxClients.SelectedIndex = 0;
+                    }
 
                     comboBoxClients.EndUpdate();               // обновляем содержимое ComboBox, отображающего clients
                 }
@@ -101,6 +109,11 @@ namespace Clients
 
                 if (clientsXml.Load_Ok)
                 {
+                    // Сбрасываем номер текущего договора и очищаем DataGridView.
+                    tpNumbCurrentContract = 0;
+
+                    ClearDataGridView();
+
                     comboBoxClients.BeginUpdate();              // приостанавливаем изменение ComboBox, отображающего clients
 
                     // Заполняем список клиентов с одновременным заполнением ComboBox(через событие в ListClients),

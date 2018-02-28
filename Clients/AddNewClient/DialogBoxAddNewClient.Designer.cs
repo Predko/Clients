@@ -51,7 +51,7 @@
             this.textBoxClientName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxClientName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxClientName.Location = new System.Drawing.Point(12, 42);
+            this.textBoxClientName.Location = new System.Drawing.Point(12, 38);
             this.textBoxClientName.Name = "textBoxClientName";
             this.textBoxClientName.Size = new System.Drawing.Size(1141, 30);
             this.textBoxClientName.TabIndex = 1;
@@ -61,7 +61,7 @@
             // 
             this.labelClientName.AutoSize = true;
             this.labelClientName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelClientName.Location = new System.Drawing.Point(14, 14);
+            this.labelClientName.Location = new System.Drawing.Point(14, 8);
             this.labelClientName.Margin = new System.Windows.Forms.Padding(5);
             this.labelClientName.Name = "labelClientName";
             this.labelClientName.Size = new System.Drawing.Size(181, 25);
@@ -84,7 +84,7 @@
             this.textBoxClientCity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxClientCity.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxClientCity.Location = new System.Drawing.Point(12, 104);
+            this.textBoxClientCity.Location = new System.Drawing.Point(12, 106);
             this.textBoxClientCity.Name = "textBoxClientCity";
             this.textBoxClientCity.Size = new System.Drawing.Size(1141, 30);
             this.textBoxClientCity.TabIndex = 2;
@@ -95,7 +95,7 @@
             this.textBoxClientAddress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxClientAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxClientAddress.Location = new System.Drawing.Point(12, 166);
+            this.textBoxClientAddress.Location = new System.Drawing.Point(12, 171);
             this.textBoxClientAddress.Multiline = true;
             this.textBoxClientAddress.Name = "textBoxClientAddress";
             this.textBoxClientAddress.Size = new System.Drawing.Size(1141, 78);
@@ -106,7 +106,7 @@
             // 
             this.labelClientAddress.AutoSize = true;
             this.labelClientAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelClientAddress.Location = new System.Drawing.Point(14, 138);
+            this.labelClientAddress.Location = new System.Drawing.Point(14, 141);
             this.labelClientAddress.Margin = new System.Windows.Forms.Padding(5);
             this.labelClientAddress.Name = "labelClientAddress";
             this.labelClientAddress.Size = new System.Drawing.Size(69, 25);
@@ -118,7 +118,7 @@
             this.textBoxClientSettlementAccount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxClientSettlementAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxClientSettlementAccount.Location = new System.Drawing.Point(12, 280);
+            this.textBoxClientSettlementAccount.Location = new System.Drawing.Point(12, 289);
             this.textBoxClientSettlementAccount.Name = "textBoxClientSettlementAccount";
             this.textBoxClientSettlementAccount.Size = new System.Drawing.Size(1141, 30);
             this.textBoxClientSettlementAccount.TabIndex = 4;
@@ -128,7 +128,7 @@
             // 
             this.labelClientSettlementAccount.AutoSize = true;
             this.labelClientSettlementAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelClientSettlementAccount.Location = new System.Drawing.Point(14, 252);
+            this.labelClientSettlementAccount.Location = new System.Drawing.Point(14, 256);
             this.labelClientSettlementAccount.Margin = new System.Windows.Forms.Padding(5);
             this.labelClientSettlementAccount.Name = "labelClientSettlementAccount";
             this.labelClientSettlementAccount.Size = new System.Drawing.Size(173, 25);
@@ -138,7 +138,7 @@
             // buttonSave
             // 
             this.buttonSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonSave.Location = new System.Drawing.Point(342, 655);
+            this.buttonSave.Location = new System.Drawing.Point(342, 704);
             this.buttonSave.Margin = new System.Windows.Forms.Padding(10);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(181, 42);
@@ -151,7 +151,7 @@
             // 
             this.buttonAddClientExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonAddClientExit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonAddClientExit.Location = new System.Drawing.Point(994, 715);
+            this.buttonAddClientExit.Location = new System.Drawing.Point(994, 764);
             this.buttonAddClientExit.Margin = new System.Windows.Forms.Padding(10);
             this.buttonAddClientExit.Name = "buttonAddClientExit";
             this.buttonAddClientExit.Size = new System.Drawing.Size(157, 42);
@@ -165,9 +165,9 @@
             this.listBoxClients.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.listBoxClients.FormattingEnabled = true;
             this.listBoxClients.ItemHeight = 25;
-            this.listBoxClients.Location = new System.Drawing.Point(12, 378);
+            this.listBoxClients.Location = new System.Drawing.Point(12, 391);
             this.listBoxClients.Name = "listBoxClients";
-            this.listBoxClients.Size = new System.Drawing.Size(1141, 254);
+            this.listBoxClients.Size = new System.Drawing.Size(1141, 279);
             this.listBoxClients.Sorted = true;
             this.listBoxClients.TabIndex = 0;
             this.listBoxClients.SelectedValueChanged += new System.EventHandler(this.ListBoxClients_SelectedValueChanged);
@@ -175,7 +175,7 @@
             // buttonClientPrevious
             // 
             this.buttonClientPrevious.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonClientPrevious.Location = new System.Drawing.Point(12, 319);
+            this.buttonClientPrevious.Location = new System.Drawing.Point(12, 336);
             this.buttonClientPrevious.Margin = new System.Windows.Forms.Padding(10);
             this.buttonClientPrevious.Name = "buttonClientPrevious";
             this.buttonClientPrevious.Size = new System.Drawing.Size(165, 42);
@@ -187,7 +187,7 @@
             // buttonClientNext
             // 
             this.buttonClientNext.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonClientNext.Location = new System.Drawing.Point(197, 319);
+            this.buttonClientNext.Location = new System.Drawing.Point(197, 336);
             this.buttonClientNext.Margin = new System.Windows.Forms.Padding(10);
             this.buttonClientNext.Name = "buttonClientNext";
             this.buttonClientNext.Size = new System.Drawing.Size(165, 42);
@@ -199,7 +199,7 @@
             // buttonAddNewClient
             // 
             this.buttonAddNewClient.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonAddNewClient.Location = new System.Drawing.Point(12, 655);
+            this.buttonAddNewClient.Location = new System.Drawing.Point(12, 704);
             this.buttonAddNewClient.Margin = new System.Windows.Forms.Padding(10);
             this.buttonAddNewClient.Name = "buttonAddNewClient";
             this.buttonAddNewClient.Size = new System.Drawing.Size(294, 42);
@@ -211,7 +211,7 @@
             // buttonClientSaveAndExit
             // 
             this.buttonClientSaveAndExit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonClientSaveAndExit.Location = new System.Drawing.Point(342, 717);
+            this.buttonClientSaveAndExit.Location = new System.Drawing.Point(342, 766);
             this.buttonClientSaveAndExit.Margin = new System.Windows.Forms.Padding(10);
             this.buttonClientSaveAndExit.Name = "buttonClientSaveAndExit";
             this.buttonClientSaveAndExit.Size = new System.Drawing.Size(232, 42);
@@ -223,7 +223,7 @@
             // buttonRemoveCurrentClient
             // 
             this.buttonRemoveCurrentClient.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonRemoveCurrentClient.Location = new System.Drawing.Point(12, 717);
+            this.buttonRemoveCurrentClient.Location = new System.Drawing.Point(12, 766);
             this.buttonRemoveCurrentClient.Margin = new System.Windows.Forms.Padding(10);
             this.buttonRemoveCurrentClient.Name = "buttonRemoveCurrentClient";
             this.buttonRemoveCurrentClient.Size = new System.Drawing.Size(181, 42);
@@ -237,7 +237,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1170, 776);
+            this.ClientSize = new System.Drawing.Size(1170, 830);
             this.ControlBox = false;
             this.Controls.Add(this.buttonRemoveCurrentClient);
             this.Controls.Add(this.buttonClientSaveAndExit);

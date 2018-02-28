@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControlClients = new System.Windows.Forms.TabControl();
             this.tabPageClients = new System.Windows.Forms.TabPage();
             this.labelFileName = new System.Windows.Forms.Label();
@@ -127,7 +127,7 @@
             this.labelFileName.Location = new System.Drawing.Point(4, 619);
             this.labelFileName.Name = "labelFileName";
             this.labelFileName.Size = new System.Drawing.Size(186, 23);
-            this.labelFileName.TabIndex = 14;
+            this.labelFileName.TabIndex = 13;
             this.labelFileName.Text = "Файл отсутствует";
             // 
             // labelListContractsTotals
@@ -137,7 +137,7 @@
             this.labelListContractsTotals.Location = new System.Drawing.Point(4, 580);
             this.labelListContractsTotals.Name = "labelListContractsTotals";
             this.labelListContractsTotals.Size = new System.Drawing.Size(307, 23);
-            this.labelListContractsTotals.TabIndex = 13;
+            this.labelListContractsTotals.TabIndex = 12;
             this.labelListContractsTotals.Text = "Договоров:        на сумму:";
             // 
             // labelListContracts
@@ -147,7 +147,7 @@
             this.labelListContracts.Location = new System.Drawing.Point(8, 139);
             this.labelListContracts.Name = "labelListContracts";
             this.labelListContracts.Size = new System.Drawing.Size(351, 23);
-            this.labelListContracts.TabIndex = 12;
+            this.labelListContracts.TabIndex = 11;
             this.labelListContracts.Text = "  Дата      Номер         Сумма";
             // 
             // buttonDeleteContract
@@ -155,7 +155,7 @@
             this.buttonDeleteContract.Location = new System.Drawing.Point(863, 87);
             this.buttonDeleteContract.Name = "buttonDeleteContract";
             this.buttonDeleteContract.Size = new System.Drawing.Size(182, 47);
-            this.buttonDeleteContract.TabIndex = 11;
+            this.buttonDeleteContract.TabIndex = 7;
             this.buttonDeleteContract.Text = "Удалить";
             this.buttonDeleteContract.UseVisualStyleBackColor = true;
             this.buttonDeleteContract.Click += new System.EventHandler(this.ButtonDeleteContract_Click);
@@ -175,7 +175,7 @@
             this.buttonEditClient.Location = new System.Drawing.Point(317, 7);
             this.buttonEditClient.Name = "buttonEditClient";
             this.buttonEditClient.Size = new System.Drawing.Size(182, 38);
-            this.buttonEditClient.TabIndex = 9;
+            this.buttonEditClient.TabIndex = 4;
             this.buttonEditClient.Text = "Редактировать";
             this.buttonEditClient.UseVisualStyleBackColor = true;
             this.buttonEditClient.Click += new System.EventHandler(this.ButtonEditClient_Click);
@@ -185,7 +185,7 @@
             this.buttonNewClient.Location = new System.Drawing.Point(134, 7);
             this.buttonNewClient.Name = "buttonNewClient";
             this.buttonNewClient.Size = new System.Drawing.Size(166, 38);
-            this.buttonNewClient.TabIndex = 8;
+            this.buttonNewClient.TabIndex = 3;
             this.buttonNewClient.Text = "Добавить";
             this.buttonNewClient.UseVisualStyleBackColor = true;
             this.buttonNewClient.Click += new System.EventHandler(this.ButtonNewClient_Click);
@@ -195,7 +195,7 @@
             this.buttonEditContract.Location = new System.Drawing.Point(666, 87);
             this.buttonEditContract.Name = "buttonEditContract";
             this.buttonEditContract.Size = new System.Drawing.Size(191, 47);
-            this.buttonEditContract.TabIndex = 7;
+            this.buttonEditContract.TabIndex = 6;
             this.buttonEditContract.Text = "Редактировать";
             this.buttonEditContract.UseVisualStyleBackColor = true;
             this.buttonEditContract.Click += new System.EventHandler(this.ButtonEditContract_Click);
@@ -205,7 +205,7 @@
             this.buttonNewContract.Location = new System.Drawing.Point(298, 87);
             this.buttonNewContract.Name = "buttonNewContract";
             this.buttonNewContract.Size = new System.Drawing.Size(142, 47);
-            this.buttonNewContract.TabIndex = 6;
+            this.buttonNewContract.TabIndex = 5;
             this.buttonNewContract.Text = "Новый";
             this.buttonNewContract.UseVisualStyleBackColor = true;
             this.buttonNewContract.Click += new System.EventHandler(this.ButtonNewContract_Click);
@@ -216,7 +216,7 @@
             this.labelClient.Location = new System.Drawing.Point(8, 15);
             this.labelClient.Name = "labelClient";
             this.labelClient.Size = new System.Drawing.Size(76, 23);
-            this.labelClient.TabIndex = 5;
+            this.labelClient.TabIndex = 8;
             this.labelClient.Text = "Клиент";
             // 
             // labelContract
@@ -225,7 +225,7 @@
             this.labelContract.Location = new System.Drawing.Point(483, 101);
             this.labelContract.Name = "labelContract";
             this.labelContract.Size = new System.Drawing.Size(109, 23);
-            this.labelContract.TabIndex = 4;
+            this.labelContract.TabIndex = 10;
             this.labelContract.Text = "Договор №";
             // 
             // labelContracts
@@ -234,7 +234,7 @@
             this.labelContracts.Location = new System.Drawing.Point(8, 101);
             this.labelContracts.Name = "labelContracts";
             this.labelContracts.Size = new System.Drawing.Size(98, 23);
-            this.labelContracts.TabIndex = 3;
+            this.labelContracts.TabIndex = 9;
             this.labelContracts.Text = "Договоры";
             // 
             // listBoxContracts
@@ -334,17 +334,17 @@
             this.ColumnIdService});
             this.dataGridViewContract.Location = new System.Drawing.Point(6, 157);
             this.dataGridViewContract.Name = "dataGridViewContract";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridViewContract.RowTemplate.Height = 28;
             this.dataGridViewContract.Size = new System.Drawing.Size(1492, 460);
             this.dataGridViewContract.StandardTab = true;
@@ -541,7 +541,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1778, 744);
             this.Controls.Add(this.richTextBoxDebug);
             this.Controls.Add(this.PanelTabs);
