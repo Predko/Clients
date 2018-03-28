@@ -174,9 +174,9 @@ namespace Clients
                 ColumnSubdivision.Items.Add(namesd);
             row.Cells["ColumnSubdivision"].Value = namesd;
 
-            if (!ColumnAddInfo.Items.Contains(sv.Ai.InfoString))
-                ColumnAddInfo.Items.Add(sv.Ai.InfoString);
-            row.Cells["ColumnAddInfo"].Value = sv.Ai.InfoString;
+            if (!ColumnAddInfo.Items.Contains(sv.Ai.Name))
+                ColumnAddInfo.Items.Add(sv.Ai.Name);
+            row.Cells["ColumnAddInfo"].Value = sv.Ai.Name;
 
             // Заполяем остальные ячейки
             row.Cells["ColumnServiceNumb"].Value = sv.Number;
@@ -381,7 +381,7 @@ namespace Clients
                  || nw != sv.Nw.Name
                  || nd != sv.Nd.Name
                  || sd != sv.Sd
-                 || ai != sv.Ai.InfoString)
+                 || ai != sv.Ai.Name)
                 {
                     CurrentContract.SetService(nw, nd, sd, numb, summ, sv.Id, ai); // меняем значения
                 }

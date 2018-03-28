@@ -30,6 +30,10 @@ namespace Clients
         private SortedList<int, Contract> _contracts => Clients.AllContracts;
         private static readonly FreeID LastUnusedKey = new FreeID();
 
+        private static int lastnumb = 1;    // последний неиспользованный номер договора
+
+        public static int LastNumberContract => lastnumb;   // Возвращает последний неисползованный номер договора
+
         // Здесь хранится список Id(ключей из списка _contracts) всех договоров данного клиента
         private readonly List<int> contracts = new List<int>();
 
@@ -41,6 +45,20 @@ namespace Clients
             {   // да.
                 // получаем Id последний не использованный ключ в списке 
                 contract.Id = LastUnusedKey.Id;
+            }
+            else
+            if (contract.Id != -1)
+            {
+                LastUnusedKey.SetLastId(contract.Id);   // меняем последний не используемый Id на новое значение
+            }
+
+            // Корректируем номер последнего неиспользованного договора
+            if (contract.Dt.Year == DateTime.Now.Year)
+            {
+                if(lastnumb <= contract.Numb)
+                {
+                    lastnumb = contract.Numb + 1;
+                }
             }
 
             _contracts.Add(contract.Id, contract);  // в общий список
@@ -57,12 +75,28 @@ namespace Clients
 
         public void Remove(Contract contract)
         {
-            LastUnusedKey.Id = contract.Id; // Помещаем неиспользуемый Id в список свободных Id
-
             contract.ClearServices();   // Очищаем список услуг договора
 
             _contracts.Remove(contract.Id);
             contracts.Remove(contract.Id);
+
+            // Корректируем номер последнего неиспользованного договора
+            if (contract.Dt.Year == DateTime.Now.Year)
+            {
+                if ((lastnumb - 1) == contract.Numb)    // удаляется договор с последним номером?
+                {
+                    lastnumb = contract.Numb;
+                }
+            }
+
+            if (_contracts.Count == 0)
+            {
+                LastUnusedKey.SetLastId(0); // договоров в списке нет, очищаем список неиспользованных Id
+            }
+            else
+            {
+                LastUnusedKey.Id = contract.Id; // Помещаем неиспользуемый Id в список свободных Id
+            }
 
             if (ChangedContracts != null)
             {
@@ -82,9 +116,25 @@ namespace Clients
             {
                 LastUnusedKey.Id = id;  // Освободившийся ключ - в список
 
-                _contracts[id].ClearServices(); // Очищаем список услуг договора
+                var contract = _contracts[id];
+
+                contract.ClearServices(); // Очищаем список услуг договора
+
+                // Корректируем номер последнего неиспользованного договора
+                if (contract.Dt.Year == DateTime.Now.Year)
+                {
+                    if ((lastnumb - 1) == contract.Numb)    // удаляется договор с последним номером?
+                    {
+                        lastnumb = contract.Numb;
+                    }
+                }
 
                 _contracts.Remove(id);
+            }
+
+            if (_contracts.Count == 0)
+            {
+                LastUnusedKey.SetLastId(0); // договоров в списке нет - очищаем список неиспользованных Id
             }
 
             contracts.Clear(); // удаляем список ключей договоров

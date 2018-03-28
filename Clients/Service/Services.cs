@@ -41,28 +41,23 @@ namespace Clients
         }
     }
 
-// услуга(работа)
-// При создании экземпляра классов - NameWork,Subdivision,NameDevice
-// свойство Name, добавляет имя к списку имён данных классов(наименование работ, подразделения, названия устройств),
-// если его ещё нет в списке, и присваевает Id экземпляра, соответствующему ключу списка
-// при попытке присвоить экземпляру имя = null, Имя удаляется из списка.
-#region class NameWork
-public class NameWork : IComparable<NameWork>, IEquatable<NameWork>
+    #region class NameService
+    public abstract class NameService<T> : IComparable<T>, IEquatable<T> where T : NameService<T>
     {
-        public static SortedList<int, string> NWlist => Clients.AllNameWorks;      // список всех видов услуг
+        public abstract SortedList<int, string> List { get; }     // список наименований услуг
 
         public int Id { get; set; }             // идентификатор услуги
 
-        public string Name                      // название выполненной работы, например: "Заправка картриджа"
+        public string Name                      // название услуги, например: "Заправка картриджа"
         {
-            get => NWlist[Id];
+            get => List[Id];
             set
             {
                 if (value == null)
                 {
                     if (Id != 0)
                     {
-                        NWlist.Remove(Id); // удаляем имя из списка
+                        List.Remove(Id); // удаляем имя из списка
                         return;
                     }
 
@@ -70,21 +65,60 @@ public class NameWork : IComparable<NameWork>, IEquatable<NameWork>
                 }
 
                 int i;
-                if ((i = NWlist.IndexOfValue(value)) != -1) // если такое значение есть
+                if ((i = List.IndexOfValue(value)) != -1) // если такое значение есть
                 {
-                    Id = NWlist.Keys[i]; // устанавливаем Id на Id найденного значения
+                    Id = List.Keys[i]; // устанавливаем Id на Id найденного значения
                     return;
                 }
                 else
                 { // если такого значения нет
                     Id = 1; // ищем все свободные ключи
-                    while (NWlist.Keys.Contains(Id))    // если такой ключ уже есть - увеличиваем и проверяем опять
+                    while (List.Keys.Contains(Id))    // если такой ключ уже есть - увеличиваем и проверяем опять
                         Id++;
 
-                    NWlist.Add(Id, value);  // Добавляем новое значение в список
+                    List.Add(Id, value);  // Добавляем новое значение в список
                 }
             }
         }
+
+        public int CompareTo(T other) => Id.CompareTo(other.Id);
+
+        public static bool operator ==(T a, NameService<T> b)
+        {
+            return a.Id == b.Id;
+        }
+
+        public static bool operator !=(T a, NameService<T> b)
+        {
+            return a.Id != b.Id;
+        }
+
+        public bool Equals(T other)
+        {
+            return Id == other.Id;
+        }
+
+        public override bool Equals(Object obj)
+        {
+            return Equals((T)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+    }
+    #endregion
+
+// услуга(работа)
+// При создании экземпляра классов - NameWork,Subdivision,NameDevice
+// свойство Name, добавляет имя к списку имён данных классов(наименование работ, подразделения, названия устройств),
+// если его ещё нет в списке, и присваевает Id экземпляра, соответствующему ключу списка
+// при попытке присвоить экземпляру имя = null, Имя удаляется из списка.
+#region class NameWork
+	public class NameWork: NameService<NameWork>
+	{
+        public override SortedList<int, string> List => Clients.AllNameWorks;      // список всех видов услуг
 
         public NameWork(string name)
         {
@@ -92,188 +126,38 @@ public class NameWork : IComparable<NameWork>, IEquatable<NameWork>
         }
 
         public NameWork(int id) => Id = id;     // Имя уже должно быть в списке!
-
-        public int CompareTo(NameWork other) => Id.CompareTo(other.Id);
-
-        public static bool operator ==(NameWork a, NameWork b)
-        {
-            return a.Id == b.Id;
-        }
-
-        public static bool operator !=(NameWork a, NameWork b)
-        {
-            return a.Id != b.Id;
-        }
-
-        public bool Equals(NameWork other)
-        {
-            return Id == other.Id;
-        }
-
-        public override bool Equals(Object obj)
-        {
-            return Equals((NameWork)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
     }
+
     #endregion
 
     // Название устройства
     #region class NameDevice
-    public class NameDevice : IComparable<NameDevice>, IEquatable<NameDevice>
+    public class NameDevice : NameService<NameDevice>
     {
-        public static SortedList<int, string> NDlist => Clients.AllNameDevices;     // Список всех обслуживаемых устройств
-
-        public int Id { get; set; }         // идентификатор устройства
-
-        public string Name                  // название (например, "Canon 725")
-        {
-            get => NDlist[Id];
-            set
-            {
-                if (value == null)
-                {
-                    if (Id != 0)
-                    {
-                        NDlist.Remove(Id); // удаляем имя из списка
-                        return;
-                    }
-
-                    value = ""; // обрабатываем как пустую строку.
-                }
-
-                int i;
-                if ((i = NDlist.IndexOfValue(value)) != -1) // если такое значение есть
-                {
-                    Id = NDlist.Keys[i]; // устанавливаем Id на Id найденного значения
-                    return;
-                }
-                else
-                { // если такого значения нет
-                    Id = 1; // ищем все свободные ключи
-                    while (NDlist.Keys.Contains(Id))    // если такой ключ уже есть - увеличиваем и проверяем опять
-                        Id++;
-
-                    NDlist.Add(Id, value);  // Добавляем новое значение в список
-                }
-            }
-        }
+        public override SortedList<int, string> List => Clients.AllNameDevices;      // список всех видов услуг
 
         public NameDevice(string name)
         {
             Name = name;
         }
 
-        public NameDevice(int id) => Id = id;
-
-        public int CompareTo(NameDevice other) => Id.CompareTo(other.Id);
-
-        public static bool operator==(NameDevice a, NameDevice b)
-        {
-            return a.Id == b.Id;
-        }
-
-        public static bool operator !=(NameDevice a, NameDevice b)
-        {
-            return a.Id != b.Id;
-        }
-
-        public bool Equals(NameDevice other)
-        {
-            return Id == other.Id;
-        }
-
-        public override bool Equals(Object obj)
-        {
-            return Equals((NameDevice)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+        public NameDevice(int id) => Id = id;     // Имя уже должно быть в списке!
     }
     #endregion
 
 
     // Дополнительная информация о услуге
     #region class AddInfo
-    public class AddInfo : IComparable<AddInfo>, IEquatable<AddInfo>
+    public class AddInfo : NameService<AddInfo>
     {
-        public static SortedList<int, string> AIlist => Clients.AllAddInfo;     // Список всех видов дополнительной информации о услуге
-
-        public int Id { get; set; }                     // идентификатор информации
-
-        public string InfoString                        // значение, например: "фотовал, доз. нож, без запр."
-        {
-            get => AIlist[Id];
-            set
-            {
-                if (value == null)
-                {
-                    if(Id != 0)
-                    {
-                        AIlist.Remove(Id); // удаляем имя из списка
-                        return;
-                    }
-
-                    value = ""; // обрабатываем как пустую строку.
-                }
-
-                int i;
-                if ((i = AIlist.IndexOfValue(value)) != -1) // если такое значение есть
-                {
-                    Id = AIlist.Keys[i]; // устанавливаем Id на Id найденного значения
-                    return;
-                }
-                else
-                { // если такого значения нет
-                    Id = 1; // ищем все свободные ключи
-                    while (AIlist.Keys.Contains(Id))    // если такой ключ уже есть - увеличиваем и проверяем опять
-                        Id++;
-
-                    AIlist.Add(Id, value);  // Добавляем новое значение в список
-                }
-            }
-        }
+        public override SortedList<int, string> List => Clients.AllAddInfo;      // список всех видов услуг
 
         public AddInfo(string info)
         {
-            InfoString = info;
+            Name = info;
         }
 
         public AddInfo(int id) => Id = id;
-
-        public int CompareTo(AddInfo other) => Id.CompareTo(other.Id);
-
-        public static bool operator ==(AddInfo a, AddInfo b)
-        {
-            return a.Id == b.Id;
-        }
-
-        public static bool operator !=(AddInfo a, AddInfo b)
-        {
-            return a.Id != b.Id;
-        }
-
-        public bool Equals(AddInfo other)
-        {
-            return Id == other.Id;
-        }
-
-        public override bool Equals(Object obj)
-        {
-            return Equals((AddInfo)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
     }
     #endregion
 
@@ -285,9 +169,19 @@ public class NameWork : IComparable<NameWork>, IEquatable<NameWork>
     {
         private readonly List<int> freeId = new List<int>();
 
-        private int LastId = 0;
-        public void SetLastId(int id)   // устанавливаем последний неиспользованный id
+        private int LastId = 0;         // последний использованный идентификатор
+        public void SetLastId(int id)   // устанавливаем последний неиспользованный id. В 0 - при очистке списка, или в максимальное значение
         {                               // Используем это при загрузке списка с уже установленными id
+            if (id == 0)
+            {
+                freeId.Clear(); // при установке идентификатора в 0 - очищаем список свободных Id
+            }
+
+            if(id <= LastId)
+            {
+                return;
+            }
+
             LastId = id;
         }
 
@@ -334,7 +228,7 @@ public class NameWork : IComparable<NameWork>, IEquatable<NameWork>
         public decimal Value { get; set; }  // стоимость услуги
 
         public Service(NameWork nw, NameDevice nd, int sd, int number, decimal value, int id = -1, AddInfo ai = null)
-                            : this(nw.Name, nd.Name, sd, number, value, id, ai?.InfoString)
+                            : this(nw.Name, nd.Name, sd, number, value, id, ai?.Name)
         {
         }
 
@@ -423,7 +317,7 @@ public class NameWork : IComparable<NameWork>, IEquatable<NameWork>
             Sd = sd;
             Number = number;
             Value = value;
-            Ai.InfoString = ai;
+            Ai.Name = ai;
         }
 
         // Сравниваем по номеру услуги

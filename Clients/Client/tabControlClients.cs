@@ -149,7 +149,7 @@ namespace Clients
 
                 CurrentClient.contracts.Remove(CurrentContract); // Удаляем договор из списка договоров выбранного клиента
 
-                if (count == 1) // Это последний договор и список будет пуст?
+                if (count == 1) // Это последний договор клиента и список пуст?
                 {
                     CurrentContract = null;
 
@@ -158,7 +158,7 @@ namespace Clients
                 else
                 if(index == count - 1) // Удалённый договор был последним в списке?
                 {
-                    listBoxContracts.SelectedIndex = index + 1; // Выбираем ближайший договор в списке
+                    listBoxContracts.SelectedIndex = index - 1; // Выбираем ближайший договор в списке
                 }
             }
         }

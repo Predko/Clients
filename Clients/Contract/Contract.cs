@@ -105,28 +105,10 @@ namespace Clients
 
         public static ChangingListServicesEventArgs ChangingLS_EventArgs = new ChangingListServicesEventArgs();
 
-        private static int lastYear = DateTime.Now.Year;    // год в последнем договоре с номером lastNumb
-
-        private static int lastNumb = 1;                    // номер последнего договора.
-
-        private int _numb;
-
         public bool Signed;                                 // договор подписан и возвращён = true. Иначе - false
         public int Id { get; set; }                         // Идентификатор договора
         public DateTime Dt { get; set; }                    // дата договора(устанавливается на текущую)
-        public int Numb                                     // Номер договора. Корректируем lastNumber по максимальному номеру
-        {
-            get => _numb;
-            set
-            {
-                if(value >= lastNumb)
-                {
-                    lastNumb = value + 1;
-                }
-
-                _numb = value;
-            }
-        }
+        public int Numb { get; set; }
 
         public decimal Summ { get; set; }                   // Сумма по договору. 
                                                             // Вычисляется из сумм всех оказанных услуг
@@ -145,7 +127,7 @@ namespace Clients
             this.Signed = false;
             this.Id = id;
             this.Dt = DateTime.Now;
-            this.Numb = IncNumb();
+            this.Numb = Contracts.LastNumberContract;   // Получаем последний неиспользованный номер договора
             this.Summ = 0;
             this.FileName = String.Empty;
             Type = TypeContract.Contract;
@@ -165,22 +147,6 @@ namespace Clients
             this.Type = type;
 
             services = new List<int>();
-        }
-
-
-
-        // увеличивает номер договора на 1.
-        // если это первый договор в году, сбрасывает номер договора на 1
-        private int IncNumb()
-        {
-            int Year = DateTime.Now.Year;
-            if (Year != lastYear)
-            {
-                lastYear = Year;
-                lastNumb = 1;
-            }
-
-            return lastNumb++;
         }
 
         public override string ToString()
