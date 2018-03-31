@@ -27,7 +27,7 @@ namespace Clients
 
         private FlagChangeTextBoxes isChangeTextBox;
 
-        public Client CurrentClient
+        public Client DBC_CurrentClient
         {
             get
             {
@@ -107,10 +107,10 @@ namespace Clients
         {
             SetTextBoxAddTextChangedEvent(false);   // Удаляем события
 
-            textBoxClientName.Text = CurrentClient.Name;
-            textBoxClientCity.Text = CurrentClient.City;
-            textBoxClientAddress.Text = CurrentClient.Address;
-            textBoxClientSettlementAccount.Text = CurrentClient.SettlementAccount;
+            textBoxClientName.Text = DBC_CurrentClient.Name;
+            textBoxClientCity.Text = DBC_CurrentClient.City;
+            textBoxClientAddress.Text = DBC_CurrentClient.Address;
+            textBoxClientSettlementAccount.Text = DBC_CurrentClient.SettlementAccount;
 
             SetTextBoxAddTextChangedEvent(true);    // Добавляем события
 
@@ -155,18 +155,29 @@ namespace Clients
         // Сохраняем изменения внесённые в текстовые поля
         private void DialogBoxClientSaveChanges()
         {
-            CurrentClient.Name = textBoxClientName.Text;
-            CurrentClient.City = textBoxClientCity.Text;
-            CurrentClient.Address = textBoxClientAddress.Text;
-            CurrentClient.SettlementAccount = textBoxClientSettlementAccount.Text;
+            DBC_CurrentClient.Name = textBoxClientName.Text;
+            DBC_CurrentClient.City = textBoxClientCity.Text;
+            DBC_CurrentClient.Address = textBoxClientAddress.Text;
+            DBC_CurrentClient.SettlementAccount = textBoxClientSettlementAccount.Text;
 
-            if (CurrentClient.Id == -1)  // Это новый клиент?
+            // Меняем название клиента(возможно оно изменилось)
+            listBoxClients.BeginUpdate();
+
+            listBoxClients.Items.Remove(listBoxClients.SelectedItem);
+
+            listBoxClients.Items.Add(DBC_CurrentClient);
+
+            listBoxClients.SelectedItem = DBC_CurrentClient;
+
+            listBoxClients.EndUpdate();
+
+            if (DBC_CurrentClient.Id == -1)  // Это новый клиент?
             {
-                Clients.clients.Add(CurrentClient, true); // Добавляем в список всех клиентов
+                Clients.clients.Add(DBC_CurrentClient, true); // Добавляем в список всех клиентов
 
-                listBoxClients.Items.Add(CurrentClient);
+                listBoxClients.Items.Add(DBC_CurrentClient);
 
-                listBoxClients.SelectedItem = CurrentClient;
+                listBoxClients.SelectedItem = DBC_CurrentClient;
             }
 
             SetTextBoxAddTextChangedEvent(true);    // Добавляем события
@@ -256,7 +267,7 @@ namespace Clients
         // Добавляем нового клиента
         private void ButtonAddNewClient_Click(object sender, EventArgs e)
         {
-            CurrentClient = new Client();
+            DBC_CurrentClient = new Client();
 
             textBoxClientName.Select();
         }
@@ -268,25 +279,25 @@ namespace Clients
 
             if (cl != null)
             {
-                CurrentClient = cl;
+                DBC_CurrentClient = cl;
             }
         }
 
         // Удаляет выбранного клиента, кроме последнего
         private void ButtonRemoveCurrentClient_Click(object sender, EventArgs e)
         {
-            if(CurrentClient != null)
+            if(DBC_CurrentClient != null)
             {
-                var dlg = new DialogRemoveClient(CurrentClient.Name);
+                var dlg = new DialogRemoveClient(DBC_CurrentClient.Name);
 
                 dlg.ShowDialog();
                 if(dlg.DialogResult == DialogResult.OK)
                 {
                     if(listBoxClients.Items.Count == 1)
                     {
-                        Clients.clients.Remove(CurrentClient);  // Удаляем последнего из списка и выходим из формы редактирования
+                        Clients.clients.Remove(DBC_CurrentClient);  // Удаляем последнего из списка и выходим из формы редактирования
 
-                        CurrentClient = null;
+                        Clients.CurrentClient = null;
 
                         Close();
 
@@ -299,9 +310,9 @@ namespace Clients
                         index--;
                     }
 
-                    Clients.clients.Remove(CurrentClient);
+                    Clients.clients.Remove(DBC_CurrentClient);
 
-                    listBoxClients.Items.Remove(CurrentClient);
+                    listBoxClients.Items.Remove(DBC_CurrentClient);
 
                     isChangeTextBox = FlagChangeTextBoxes.None;
 

@@ -113,26 +113,71 @@ namespace Clients
         // Устанавливаем значения списков ComboBoxColumn
         public void SetComboBoxColumns()
         {
+            if (CurrentClient == null)
+                return;
+
             ColumnNameWork.Items.Clear();
 
-            AddRangeComboBoxColumn(ColumnNameWork.Items, AllNameWorks.Values);
+            AddRangeComboBoxColumn(ColumnNameWork.Items, typeof(NameWork));
             dataGridViewContract["ColumnNameWork", 0].Value = ColumnNameWork.Items[0];
 
             ColumnNameDevice.Items.Clear();
 
-            AddRangeComboBoxColumn(ColumnNameDevice.Items, AllNameDevices.Values);
+            AddRangeComboBoxColumn(ColumnNameDevice.Items, typeof(NameDevice));
             dataGridViewContract["ColumnNameDevice", 0].Value = ColumnNameDevice.Items[0];
 
             ColumnAddInfo.Items.Clear();
 
-            AddRangeComboBoxColumn(ColumnAddInfo.Items, AllAddInfo.Values);
+            AddRangeComboBoxColumn(ColumnAddInfo.Items, typeof(AddInfo));
             dataGridViewContract["ColumnAddInfo", 0].Value = ColumnAddInfo.Items[0];
         }
 
         // Добавление в список пунктов в ComboBoxColumn
-        private void AddRangeComboBoxColumn(DataGridViewComboBoxCell.ObjectCollection cbcell, IList<string> lstr)
+        private void AddRangeComboBoxColumn(DataGridViewComboBoxCell.ObjectCollection cbcell, Type type)
         {
-            foreach (string s in lstr)
+            SortedList<int, NameAndCount> listNameServiceCount;
+            Dictionary<int, int> listClientNameServiceCount;
+
+            if (type == typeof(NameWork))
+            {
+                listNameServiceCount = AllNameWorks;
+                listClientNameServiceCount = CurrentClient.NWCounts;
+            }
+            else if (type == typeof(NameDevice))
+            {
+                listNameServiceCount = AllNameDevices;
+                listClientNameServiceCount = CurrentClient.NDCounts;
+            }
+            else
+            {
+                listNameServiceCount = AllAddInfo;
+                listClientNameServiceCount = CurrentClient.AICounts;
+            }
+
+            // Заполнение пунктами из списка клиента с сортировкой по количеству использования в порядке убывания
+
+            //listClientNameServiceCount.OrderByDescending(k => k.Value)
+            //                          .Select(k => cbcell.Add(listNameServiceCount[k.Key].Name));
+
+            IEnumerable<string> ls = listClientNameServiceCount.OrderByDescending(k => k.Value)
+                                      .Select(k => listNameServiceCount[k.Key].Name);
+
+            foreach(string s in ls)
+            {
+                cbcell.Add(s);
+            }
+
+            // Остальные пункты, не входящие в список клиента, тоже в порядке убывания
+
+            //listNameServiceCount.OrderByDescending(k => k.Value.Count)
+            //                    .Where(k => !listClientNameServiceCount.ContainsKey(k.Key))
+            //                    .Select(k => cbcell.Add(listNameServiceCount[k.Key].Name));
+
+            ls = listNameServiceCount.OrderByDescending(k => k.Value.Count)
+                                     .Where(k => !listClientNameServiceCount.ContainsKey(k.Key))
+                                     .Select(k => listNameServiceCount[k.Key].Name);
+
+            foreach (string s in ls)
             {
                 cbcell.Add(s);
             }

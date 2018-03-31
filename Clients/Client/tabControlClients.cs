@@ -78,7 +78,7 @@ namespace Clients
                 comboBoxClients.Text = "";
             }
 
-            return dialogClient.CurrentClient;
+            return dialogClient.DBC_CurrentClient;
         }
 
         // Редактирование(и др.) клиента

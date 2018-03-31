@@ -15,6 +15,21 @@ using System.Data;
 
 namespace Clients
 {
+    public static partial class ExtensionMethods
+    {
+        public static void IncrementValue(this Dictionary<int, int> ns, int key)
+        {
+            if (!ns.ContainsKey(key))
+            {
+                ns[key] = 1;
+            }
+            else
+            {
+                ns[key]++;
+            }
+        }
+    }
+
     public partial class Clients : Form
     {
         private Contract _currentContract;  // текущий договор
@@ -41,6 +56,13 @@ namespace Clients
         public string SettlementAccount;    // Расчётный счёт
         public string City;                 // Населённый пункт
         public string Address;              // Адрес
+
+        // Статистические данные: Количество использования названий работ(NameWork),
+        // названия устройства(NameDevice) и дополнительной информации услуги(AddInfo)
+        // Key - Id, Value - count
+        public Dictionary<int, int> NWCounts = new Dictionary<int, int>();
+        public Dictionary<int, int> NDCounts = new Dictionary<int, int>();
+        public Dictionary<int, int> AICounts = new Dictionary<int, int>();
 
         public Contracts contracts = new Contracts(); // список договоров с данным клиентом
 
@@ -123,6 +145,31 @@ namespace Clients
         public string GetNameSubdivision(int id)
         {
             return Subdivisions[id];
+        }
+
+        // Увеличения счётчика использования имени...
+        public void IncrementNameService(Object sender, IncrCountNameServiceEventArgs e)
+        {
+            switch (sender)
+            {
+                case NameWork nw:
+
+                    NWCounts[e.Id]++;
+
+                    break;
+
+                case NameDevice nd:
+
+                    NDCounts[e.Id]++;
+
+                    break;
+
+                case AddInfo ai:
+
+                    AICounts[e.Id]++;
+
+                    break;
+            }
         }
 
         public int CompareTo(Client other)

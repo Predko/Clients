@@ -50,6 +50,9 @@ namespace Clients
         {
             if (CurrentClient == null)
             {
+                // Очищаем список
+                listBoxContracts.Items.Clear();
+
                 // Выводим информацию о количестве и общей сумме договоров
                 labelListContractsTotals.Text = String.Format($"Договоров: {0,-5}  на сумму: {0:C}");
                 return;

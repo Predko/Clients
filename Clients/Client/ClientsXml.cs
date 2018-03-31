@@ -14,7 +14,7 @@ namespace Clients
 {
     public class ClientsXml
     {
-        XDocument xClients = null;  // xml документ
+        private XDocument xClients = null;  // xml документ
         private bool _load_Ok;
 
         public bool Load_Ok         // true - операция загрузки файла успешна
@@ -223,19 +223,16 @@ namespace Clients
                     {
                         int id = int.Parse(xe.Attribute("Id").Value);
 
-                        var sv = new Service(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)],
-                                            Clients.AllNameDevices[int.Parse(xe.Element("NameDevice").Attribute("Id").Value)],
+                        var sv = new Service(Clients.AllNameWorks[int.Parse(xe.Element("NameWork").Attribute("Id").Value)].Name,
+                                            Clients.AllNameDevices[int.Parse(xe.Element("NameDevice").Attribute("Id").Value)].Name,
                                             int.Parse(xe.Element("Subdivision").Attribute("Id").Value),
                                             int.Parse(xe.Element("Number").Value),
                                             decimal.Parse(xe.Element("Value").Value),
                                             id,
-                                            Clients.AllAddInfo[int.Parse(xe.Element("AddInfo").Attribute("Id").Value)]);
+                                            Clients.AllAddInfo[int.Parse(xe.Element("AddInfo").Attribute("Id").Value)].Name);
 
                         sv.Add();
                     }
-
-                    // выполняем необходимую обработку связанных cо списком услуг данных
-                    //OnChangeServiceList();
                 }
             }
 
@@ -337,7 +334,17 @@ namespace Clients
 
                             foreach (XElement servelem in ServicesElements)
                             {
-                                ctr.services.Add(int.Parse(servelem.Attribute("Id").Value));
+                                int idService = int.Parse(servelem.Attribute("Id").Value);
+
+                                ctr.services.Add(idService);
+
+                                var sv = Service.Svlist[idService];
+
+                                // Увеличиваем счётчики использования компонентов услуги
+
+                                client.NWCounts.IncrementValue(sv.Nw.Id);
+                                client.NDCounts.IncrementValue(sv.Nd.Id);
+                                client.AICounts.IncrementValue(sv.Ai.Id);
                             }
                         }
                     }
@@ -350,14 +357,14 @@ namespace Clients
             Clients.ChangedServiceList?.Invoke();
         }
 
-        private bool ReadListFromXml(SortedList<int, string> sl, IEnumerable<XElement> xelement, string name = "Name")
+        private bool ReadListFromXml(SortedList<int, NameAndCount> sl, IEnumerable<XElement> xelement, string name = "Name")
         {
             if (xelement != null)
             {
                 sl.Clear();
                 foreach (XElement element in xelement)
                 {
-                    sl.Add(int.Parse(element.Attribute("Id").Value), element.Element(name).Value);
+                    sl.Add(int.Parse(element.Attribute("Id").Value), new NameAndCount(element.Element(name).Value));
                 }
                 return true;
             }

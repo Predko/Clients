@@ -203,6 +203,7 @@ namespace Clients
 
             int countRows = dt.Rows.Count;
 
+            // Функция, сбрасывающая результат чтения данных в случае ошибки.
             bool ErrorLoadRow()
             {
                 contract.ClearServices();

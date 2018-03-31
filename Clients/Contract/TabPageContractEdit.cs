@@ -72,6 +72,8 @@ namespace Clients
 
             ClearDataGridView();
 
+            SetComboBoxColumns();
+
             labelClientName.Text = CurrentClient.Name;  // Название клиента
 
             // заполняем список подразделений текущего клиента

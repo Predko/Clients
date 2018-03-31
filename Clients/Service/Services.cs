@@ -10,11 +10,11 @@ namespace Clients
     {
         public static SortedList<int, Service> AllServices = new SortedList<int, Service>();    // Спискок всех услуг, всех клиентов
 
-        public static SortedList<int, string> AllNameWorks = new SortedList<int, string>() { { 0, "" } };     // список всех видов услуг
+        public static SortedList<int, NameAndCount> AllNameWorks = new SortedList<int, NameAndCount>() { { 0, new NameAndCount("", 0) } };     // список всех видов услуг
 
-        public static SortedList<int, string> AllNameDevices = new SortedList<int, string>() { { 0, "" } };   // Список всех обслуживаемых устройств
+        public static SortedList<int, NameAndCount> AllNameDevices = new SortedList<int, NameAndCount>() { { 0, new NameAndCount("", 0) } };   // Список всех обслуживаемых устройств
 
-        public static SortedList<int, string> AllAddInfo = new SortedList<int, string>() { { 0, "" } };   // Список всех видов дополнительной информации о услуге
+        public static SortedList<int, NameAndCount> AllAddInfo = new SortedList<int, NameAndCount>() { { 0, new NameAndCount("", 0) } };   // Список всех видов дополнительной информации о услуге
 
         public static Action<int> RemovedDgvRows;     // Метод, вызываемый при удалении строк в dataGridViewContract.
 
@@ -34,6 +34,9 @@ namespace Clients
 
         public void RemoveService(int id)
         {
+            if (id == -1)    // удаление строки, не занесённой в список услуг(во время редактирования)
+                return;
+
             Service sv = AllServices[id];
 
             if (sv != null)
@@ -42,15 +45,47 @@ namespace Clients
     }
 
     #region class NameService
-    public abstract class NameService<T> : IComparable<T>, IEquatable<T> where T : NameService<T>
+
+    public class NameAndCount : IEquatable<NameAndCount>
     {
-        public abstract SortedList<int, string> List { get; }     // список наименований услуг
+        public string Name { get; set; }
+        public int Count { get; set; }
+
+        public NameAndCount(string name, int count = 0)
+        {
+            Name = name;
+            Count = count;
+        }
+
+        public bool Equals(NameAndCount other)
+        {
+            return Name.Equals(other.Name);
+        }
+    }
+
+
+    public class IncrCountNameServiceEventArgs : EventArgs
+    {
+        public int Id;
+
+        public IncrCountNameServiceEventArgs(int id)
+        {
+            Id = id;
+        }
+    }
+
+    public abstract class NameService : IComparable<NameService>, IEquatable<NameService>
+    {
+        public abstract SortedList<int, NameAndCount> List { get; }     // список наименований услуг
+
+        // Вызывается при увеличения счётчика использования имени услуги/устройства/доп информации
+        public static EventHandler<IncrCountNameServiceEventArgs> IncrCountNameService;
 
         public int Id { get; set; }             // идентификатор услуги
 
         public string Name                      // название услуги, например: "Заправка картриджа"
         {
-            get => List[Id];
+            get => List[Id].Name;
             set
             {
                 if (value == null)
@@ -65,10 +100,12 @@ namespace Clients
                 }
 
                 int i;
-                if ((i = List.IndexOfValue(value)) != -1) // если такое значение есть
+                NameAndCount nc = new NameAndCount(value);
+                if ((i = List.IndexOfValue(nc)) != -1) // если такое значение есть
                 {
-                    Id = List.Keys[i]; // устанавливаем Id на Id найденного значения
-                    return;
+                    Id = List.Keys[i];  // устанавливаем Id на Id найденного значения
+                    List[Id].Count++;    // увеличиваем счётчик использования данного имени
+                    OnIncCountNameService(Id);
                 }
                 else
                 { // если такого значения нет
@@ -76,31 +113,38 @@ namespace Clients
                     while (List.Keys.Contains(Id))    // если такой ключ уже есть - увеличиваем и проверяем опять
                         Id++;
 
-                    List.Add(Id, value);  // Добавляем новое значение в список
+                    nc.Count = 1;
+                    List.Add(Id, nc);  // Добавляем новое значение в список
                 }
             }
         }
 
-        public int CompareTo(T other) => Id.CompareTo(other.Id);
+        // Вызов события увеличения счётчика NameService
+        private void OnIncCountNameService(int id)
+        {
+            IncrCountNameService?.Invoke(this, new IncrCountNameServiceEventArgs(id));
+        }
 
-        public static bool operator ==(T a, NameService<T> b)
+        public int CompareTo(NameService other) => Id.CompareTo(other.Id);
+
+        public static bool operator ==(NameService a, NameService b)
         {
             return a.Id == b.Id;
         }
 
-        public static bool operator !=(T a, NameService<T> b)
+        public static bool operator !=(NameService a, NameService b)
         {
             return a.Id != b.Id;
         }
 
-        public bool Equals(T other)
+        public bool Equals(NameService other)
         {
             return Id == other.Id;
         }
 
         public override bool Equals(Object obj)
         {
-            return Equals((T)obj);
+            return Equals((NameService)obj);
         }
 
         public override int GetHashCode()
@@ -115,10 +159,10 @@ namespace Clients
 // свойство Name, добавляет имя к списку имён данных классов(наименование работ, подразделения, названия устройств),
 // если его ещё нет в списке, и присваевает Id экземпляра, соответствующему ключу списка
 // при попытке присвоить экземпляру имя = null, Имя удаляется из списка.
-#region class NameWork
-	public class NameWork: NameService<NameWork>
+    #region class NameWork
+	public class NameWork: NameService
 	{
-        public override SortedList<int, string> List => Clients.AllNameWorks;      // список всех видов услуг
+        public override SortedList<int, NameAndCount> List => Clients.AllNameWorks;      // список всех видов услуг
 
         public NameWork(string name)
         {
@@ -132,9 +176,9 @@ namespace Clients
 
     // Название устройства
     #region class NameDevice
-    public class NameDevice : NameService<NameDevice>
+    public class NameDevice : NameService
     {
-        public override SortedList<int, string> List => Clients.AllNameDevices;      // список всех видов услуг
+        public override SortedList<int, NameAndCount> List => Clients.AllNameDevices;      // список всех видов услуг
 
         public NameDevice(string name)
         {
@@ -148,9 +192,9 @@ namespace Clients
 
     // Дополнительная информация о услуге
     #region class AddInfo
-    public class AddInfo : NameService<AddInfo>
+    public class AddInfo : NameService
     {
-        public override SortedList<int, string> List => Clients.AllAddInfo;      // список всех видов услуг
+        public override SortedList<int, NameAndCount> List => Clients.AllAddInfo;      // список всех видов услуг
 
         public AddInfo(string info)
         {
