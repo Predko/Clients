@@ -32,7 +32,7 @@ namespace Clients
 
         private void LoadAllServices()
         {
-            string path = null;
+            string pathfile = DefaultPathFile;
             DateTime minDate = DateTime.Parse("01/01/2015");
 
             foreach (Client cl in clients)
@@ -44,23 +44,16 @@ namespace Clients
                         continue;
                     }
 
-                    while (path == null && !File.Exists(path + ct.FileName))
+                    pathfile = GetPathFile(ct.FileName, pathfile);
+
+                    if(pathfile == null)
                     {
-                        var fbd = new FolderBrowserDialog();  // Если файл не существует, предлагаем ввести путь к файлу(один раз)
-
-                        switch (fbd.ShowDialog())
-                        {
-                            case DialogResult.Cancel:
-                            case DialogResult.Abort:
-                                return;
-
-                            case DialogResult.OK:
-                                path = fbd.SelectedPath;
-                                break;
-                        }
+                        return; // Отсутствует путь к файлу
                     }
 
-                    LoadFromFile_xls(ct, path + ct.FileName);
+                    ct.ClearServices();
+
+                    ct.LoadServicesFrom_xls(pathfile);
                 }
             }
         }
@@ -109,7 +102,8 @@ namespace Clients
             {
                 CurrentContract = new Contract();
 
-                listBoxContracts.Items.Add(CurrentContract);
+                // Вставляем CurrentContract первым элементом, т.к. список отсортирован в обратном порядке
+                listBoxContracts.Items.Insert(0, CurrentContract);
                 listBoxContracts.SelectedItem = CurrentContract;
 
                 CurrentClient.contracts.Add(CurrentContract, true);

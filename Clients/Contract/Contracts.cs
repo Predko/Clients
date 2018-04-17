@@ -49,7 +49,7 @@ namespace Clients
             else
             if (contract.Id != -1)
             {
-                LastUnusedKey.SetLastId(contract.Id);   // меняем последний не используемый Id на новое значение
+                LastUnusedKey.SetLastId(contract.Id);   // меняем последний использованный Id на новое значение
             }
 
             // Корректируем номер последнего неиспользованного договора
@@ -91,7 +91,7 @@ namespace Clients
 
             if (_contracts.Count == 0)
             {
-                LastUnusedKey.SetLastId(0); // договоров в списке нет, очищаем список неиспользованных Id
+                LastUnusedKey.SetLastId(-1); // договоров в списке нет, очищаем список неиспользованных Id
             }
             else
             {
@@ -134,7 +134,7 @@ namespace Clients
 
             if (_contracts.Count == 0)
             {
-                LastUnusedKey.SetLastId(0); // договоров в списке нет - очищаем список неиспользованных Id
+                LastUnusedKey.SetLastId(-1); // договоров в списке нет - очищаем список неиспользованных Id
             }
 
             contracts.Clear(); // удаляем список ключей договоров

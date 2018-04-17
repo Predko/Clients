@@ -101,20 +101,34 @@ namespace Clients
 
         // Добавляет имя подразделения в список. Если такое есть - возвращает его id(индекс в списке).
         // Возвращает индекс подразделения в списке
-        public int AddSubdision(string name)
+        public int AddSubdivision(string name, int id = -1)
         {
-            int id = Subdivisions.IndexOfValue(name);   // получаем индекс в списке для name
-            if (id == -1)
+            if(id != -1) // Добавляем подразделение с определённым id
             {
-                id = freeIdSubdiv.Id;
-                Subdivisions.Add(id, name);
+                freeIdSubdiv.SetLastId(id);
 
-                if (Subdivisions.IndexOfKey(id) == -1)
-                    return -1;      // добавление нового элемента не удалось
+                if (!Subdivisions.ContainsKey(id))
+                {
+                    Subdivisions.Add(id, name);
+                }
             }
             else
             {
-                id = Subdivisions.Keys[id]; // ключ для индекса
+                int index = Subdivisions.IndexOfValue(name);   // получаем индекс в списке для name
+
+                if (index == -1)
+                {
+                    id = freeIdSubdiv.Id;
+                    Subdivisions.Add(id, name);
+
+                    if (Subdivisions.IndexOfKey(id) == -1)
+                        return -1;      // добавление нового элемента не удалось
+                }
+                else
+                {
+                    id = Subdivisions.Keys[index]; // ключ для индекса
+
+                }
             }
 
             return id;

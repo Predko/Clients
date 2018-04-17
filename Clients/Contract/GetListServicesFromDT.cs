@@ -190,16 +190,8 @@ namespace Clients
         private bool GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
         {
             Service sv;
-            decimal oldSumm = contract.Summ;
 
-            if (contract.services.Count == 0)
-            {
-                contract.Summ = 0;
-            }
-            else
-            {
-                contract.ClearServices();
-            }
+            decimal OldSumm = contract.Summ;
 
             int countRows = dt.Rows.Count;
 
@@ -207,7 +199,7 @@ namespace Clients
             bool ErrorLoadRow()
             {
                 contract.ClearServices();
-                contract.Summ = oldSumm;    // Возвращаем старое значение суммы
+                contract.Summ = OldSumm;    // Возвращаем старое значение суммы
                 return false;
             }
 
@@ -216,7 +208,9 @@ namespace Clients
                 return ErrorLoadRow();
             }
 
-            while ((sv = GetContractServices(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
+            contract.Summ = 0;
+
+            while ((sv = GetContractService(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
             {
                 contract.AddService(sv); // добавляем услугу в список услуг договора
 
@@ -252,7 +246,7 @@ namespace Clients
             //  NameDevice - название устройства(напр. "Canon 725")
             //  Price   - стоимость услуги
 
-        private Service GetContractServices(Client cl, DataRow dr, int NameOfServiceCol, int SummCol)
+        private Service GetContractService(Client cl, DataRow dr, int NameOfServiceCol, int SummCol)
         {
             string s = dr.ItemArray[NameOfServiceCol].ToString();
 
@@ -285,7 +279,7 @@ namespace Clients
 
             var culture = new CultureInfo("ru-RU");
 
-            int IdSubdiv = cl.AddSubdision(subdiv);
+            int IdSubdiv = cl.AddSubdivision(subdiv);
 
             string summ = dr.ItemArray[SummCol]?.ToString().Trim();
 

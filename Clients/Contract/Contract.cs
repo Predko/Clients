@@ -236,6 +236,20 @@ namespace Clients
                     DelService(Clients.AllServices[id]);
                 }
             }
+
+            Summ = 0;
+        }
+
+        public bool LoadServicesFrom_xls(string path)
+        {
+            var xls = new GetContractInfoFromXls(path + FileName, ModeGetData.OLEDB);
+
+            if (xls.Dt == null) // Не удалось загрузить информацию
+                return false;
+
+            var gls = new GetListServicesFromDT(xls.Dt, this);
+
+            return gls.GetListServices(); // если false - чтение списка услуг не удалось
         }
 
         // клонируем Contract(неполная копия. Список услуг - ссылка)
@@ -250,4 +264,16 @@ namespace Clients
             return Numb.CompareTo(other.Numb);
         }
     }
+
+    //public class SortedContractDescending: IComparer<Contract>
+    //{
+    //    int IComparer<Contract>.Compare(Contract x, Contract y)
+    //    {
+    //        int c = x.Dt.CompareTo(y.Dt);
+    //        if (c != 0)
+    //            return c;
+
+    //        return x.Numb.CompareTo(y.Numb);
+    //    }
+    //}
 }

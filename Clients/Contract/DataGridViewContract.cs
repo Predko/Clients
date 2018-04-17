@@ -324,7 +324,6 @@ namespace Clients
                     SelectedRow[dr.Index] = (int)dr.Cells["ColumnIdService"].Value;
                 }
             }
-
         }
 
         // при удалении строки, переписываем изначения заголовков строк, начиная со следующей, после удалённой

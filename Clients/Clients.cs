@@ -13,6 +13,8 @@ namespace Clients
     {
         public static readonly ListClients clients = new ListClients();    // Список всех клиентов
 
+        public static string DefaultPathFile = @"H:\Документы"; // Путь к файлам договоров по умолчанию
+
         public Clients()
         {
             InitializeComponent();
@@ -28,6 +30,8 @@ namespace Clients
             InitTabPageContractEdit();
 
             InitTabControlClients();
+
+            ResizeRedraw = true;    // Перерисовка при изменении размера
         }
     }
 }

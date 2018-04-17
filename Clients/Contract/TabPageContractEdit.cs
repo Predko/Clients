@@ -102,54 +102,58 @@ namespace Clients
             }
 
             labelInTotalValue.Text = $"{CurrentContract.Summ}";
-
-//            SetRowsNumber(0);
         }
 
-        // Загружаем информацию об услугах из файла договора .xls
-        private void ButtonLoadContractFrom_xls_Click(object sender, EventArgs e)
-        {
-            string filename = @"H:\Документы" + CurrentContract.FileName;
 
-            while (!File.Exists(filename))  // Если файл не существует, предлагаем ввести путь к файлу
+        // Предлагает ввести путь путь к файлу и проверяет наличие файла.
+        // Возвращает null если имя файла == null или если пользователь отменил выбор пути к файлу
+        public static string GetPathFile(string filename, string path = null)
+        {
+            if(filename == null)
             {
-                var fbd = new FolderBrowserDialog();
+                return null;    // Отсутствует имя файла
+            }
+
+            FolderBrowserDialog fbd = null;
+
+            while (!File.Exists(path + filename))  // Если файл не существует, предлагаем ввести путь к файлу
+            {
+                fbd = new FolderBrowserDialog();
 
                 switch (fbd.ShowDialog())
                 {
                     case DialogResult.Cancel:
                     case DialogResult.Abort:
-                        return;
+                        return null;
 
                     case DialogResult.OK:
-                        filename = fbd.SelectedPath + CurrentContract.FileName;
+                        path = fbd.SelectedPath;
                         break;
                 }
             }
 
-            ClearDataGridView();
-
-            LoadFromFile_xls(CurrentContract, filename);
-
-            labelInTotalValue.Text = $"{CurrentContract.Summ}";
+            return path;
         }
 
-
-        private bool LoadFromFile_xls(Contract contract, string filename)
+        // Загружаем информацию об услугах из файла договора .xls
+        private void ButtonLoadContractFrom_xls_Click(object sender, EventArgs e)
         {
-            var xls = new GetContractInfoFromXls(filename, ModeGetData.OLEDB);
+            string path = DefaultPathFile;
 
-            if (xls.Dt == null) // Не удалось загрузить информацию
-                return false;
+            path = GetPathFile(CurrentContract.FileName, path);
 
-            var gls = new GetListServicesFromDT(xls.Dt, contract);
-
-            if (!gls.GetListServices())
+            if(path == null)
             {
-                return false; // чтение списка услуг не удалось
+                return;
             }
 
-            return true;
+            ClearDataGridView();
+
+            CurrentContract.ClearServices();
+
+            CurrentContract.LoadServicesFrom_xls(path);
+
+            labelInTotalValue.Text = $"{CurrentContract.Summ}";
         }
     }
 }

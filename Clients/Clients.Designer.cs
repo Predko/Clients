@@ -251,10 +251,12 @@
             // 
             // comboBoxClients
             // 
+            this.comboBoxClients.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxClients.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.comboBoxClients.Location = new System.Drawing.Point(12, 50);
+            this.comboBoxClients.Location = new System.Drawing.Point(8, 50);
             this.comboBoxClients.Name = "comboBoxClients";
-            this.comboBoxClients.Size = new System.Drawing.Size(1217, 31);
+            this.comboBoxClients.Size = new System.Drawing.Size(1488, 31);
             this.comboBoxClients.Sorted = true;
             this.comboBoxClients.TabIndex = 0;
             // 
@@ -322,6 +324,7 @@
             this.dataGridViewContract.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewContract.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dataGridViewContract.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewContract.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnNumberRow,
@@ -369,7 +372,7 @@
             this.импортЭкспортToolStripMenuItem});
             this.menuStripMain.Location = new System.Drawing.Point(5, 5);
             this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size(1768, 33);
+            this.menuStripMain.Size = new System.Drawing.Size(1568, 33);
             this.menuStripMain.TabIndex = 3;
             this.menuStripMain.Text = "Главное меню";
             // 
@@ -458,7 +461,7 @@
             this.richTextBoxDebug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxDebug.Location = new System.Drawing.Point(1517, 38);
             this.richTextBoxDebug.Name = "richTextBoxDebug";
-            this.richTextBoxDebug.Size = new System.Drawing.Size(256, 701);
+            this.richTextBoxDebug.Size = new System.Drawing.Size(56, 701);
             this.richTextBoxDebug.TabIndex = 5;
             this.richTextBoxDebug.Text = "";
             // 
@@ -496,17 +499,17 @@
             // 
             // ColumnAddInfo
             // 
-            this.ColumnAddInfo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnAddInfo.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.ColumnAddInfo.DropDownWidth = 100;
             this.ColumnAddInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ColumnAddInfo.HeaderText = "Доп. информация";
             this.ColumnAddInfo.MaxDropDownItems = 5;
             this.ColumnAddInfo.Name = "ColumnAddInfo";
-            this.ColumnAddInfo.Width = 181;
+            this.ColumnAddInfo.Width = 163;
             // 
             // ColumnSubdivision
             // 
-            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.ColumnSubdivision.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.ColumnSubdivision.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
             this.ColumnSubdivision.DropDownWidth = 100;
             this.ColumnSubdivision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -521,7 +524,7 @@
             this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.ColumnServiceNumb.HeaderText = "№ услуги";
             this.ColumnServiceNumb.Name = "ColumnServiceNumb";
-            this.ColumnServiceNumb.Width = 134;
+            this.ColumnServiceNumb.Width = 124;
             // 
             // ColumnServiceSumm
             // 
@@ -541,12 +544,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1778, 744);
+            this.ClientSize = new System.Drawing.Size(1578, 744);
             this.Controls.Add(this.richTextBoxDebug);
             this.Controls.Add(this.PanelTabs);
             this.Controls.Add(this.menuStripMain);
+            this.DoubleBuffered = true;
             this.Location = new System.Drawing.Point(50, 50);
             this.MainMenuStrip = this.menuStripMain;
+            this.MinimumSize = new System.Drawing.Size(1600, 800);
             this.Name = "Clients";
             this.Padding = new System.Windows.Forms.Padding(5);
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;

@@ -4,9 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Reflection;
 
 namespace Clients
 {
+    public static partial class ExtensionMethods
+    {
+        public static void DoubleBuffered(this ListBox lb, bool setting)
+        {
+            Type lbType = lb.GetType();
+            PropertyInfo pi = lbType.GetProperty("DoubleBuffered",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            pi.SetValue(lb, setting, null);
+        }
+    }
+
+
     public partial class Clients: Form
     {
 //
@@ -21,6 +34,8 @@ namespace Clients
 
             // при изменении текущего клиента, вызываем это событие и отображаем список договоров для него
             ChangedCurrentClient_EventHandler += SetClientContracts;
+
+            listBoxContracts.DoubleBuffered(true);
         }
 
         // обрабатываем подключённые события после изменения текущего договора
@@ -65,9 +80,10 @@ namespace Clients
             // заполняем listBoxContracts списком договоров и подсчитываем общую сумму
             listBoxContracts.Items.Clear();
 
-            foreach (Contract c in CurrentClient.contracts)
+            // Заполняем ListBox в обратном порядке
+            for(int i = CurrentClient.contracts.Count - 1; i >= 0; i--)
             {
-                //SortedInsertItem(listBoxContracts, c);  // Добавляем без нарушения сортировки списка
+                Contract c = CurrentClient.contracts[i];
 
                 listBoxContracts.Items.Add(c);
 

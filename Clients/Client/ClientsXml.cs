@@ -254,9 +254,9 @@ namespace Clients
 
                 clients.Add(client);
 
-                // загружаем список подразделений данного клиента
                 client.Subdivisions.Clear();
 
+                // загружаем список подразделений данного клиента
                 IEnumerable<XElement> xelement = xe.Element("Subdivisions")?.Elements();
                 if (xelement != null)
                 {
@@ -266,7 +266,7 @@ namespace Clients
                         {// Ошибка! Повтор имени подразделения в xml файле
                         }
 
-                        client.Subdivisions.Add(int.Parse(element.Attribute("Id").Value), element.Value);
+                        client.AddSubdivision(element.Value, int.Parse(element.Attribute("Id").Value));
                     }
                 }
 
@@ -377,6 +377,7 @@ namespace Clients
         // Загрузка списка клиентов и контрактов из xml документа сформированного MS Access
         public void AccessXmlToClients(ListClients clients)
         {
+            /* Закоментировано для варианта с добавлением новых записей 
             // Очищаем  все списки
             Clients.clients.Clear();
 
@@ -385,6 +386,7 @@ namespace Clients
             Clients.AllNameWorks.Clear();
             Clients.AllNameDevices.Clear();
             Clients.AllAddInfo.Clear();
+            */
 
             #region CultureInfo setting
             CultureInfo ci = Thread.CurrentThread.CurrentCulture;
@@ -405,9 +407,19 @@ namespace Clients
                 string city = xe.Element("Город")?.Value;
                 string address = xe.Element("ОбластьКрайРеспублика")?.Value;
 
-                var client = new Client(name, id, settlementAccount, city, address);
+                Client client;
 
-                clients.Add(client);
+                // Проверяем, есть ли клиент. Если нет - создаём
+                if (clients.Contains(id))
+                {
+                    client = clients[id];
+                }
+                else
+                {
+                    client = new Client(name, id, settlementAccount, city, address);
+
+                    clients.Add(client);
+                }
 
                 string svalue;
 
@@ -417,6 +429,11 @@ namespace Clients
                     foreach (XElement element in xelement)
                     {
                         id = int.Parse(element.Element("КодЗаказа").Value);
+
+                        if (Clients.AllContracts.ContainsKey(id))
+                        {
+                            continue;
+                        }
 
                         svalue = element.Element("ДатаРазмещения")?.Value;
 
@@ -458,7 +475,17 @@ namespace Clients
                                                    : TypeContract.CWC;         // Акт приёмки сдачи работ
                         }
 
-                        client.contracts.Add(new Contract(client, id, dt, number, summ, signed, filename, tc));
+                        var contract = new Contract(client, id, dt, number, summ, signed, filename, tc);
+
+                        // Получаем правильный путь к файлу договора
+                        string path = Clients.GetPathFile(contract.FileName, Clients.DefaultPathFile);
+
+                        if(path != null)
+                        {
+                            contract.LoadServicesFrom_xls(path); // загружаем список услуг договора
+                        }
+
+                        client.contracts.Add(contract);
                     }
                 }
             }

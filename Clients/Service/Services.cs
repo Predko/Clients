@@ -214,9 +214,9 @@ namespace Clients
         private readonly List<int> freeId = new List<int>();
 
         private int LastId = 0;         // последний использованный идентификатор
-        public void SetLastId(int id)   // устанавливаем последний неиспользованный id. В 0 - при очистке списка, или в максимальное значение
+        public void SetLastId(int id)   // устанавливаем последний неиспользованный id. В -1 - при очистке списка, или в максимальное значение
         {                               // Используем это при загрузке списка с уже установленными id
-            if (id == 0)
+            if (id == -1)
             {
                 freeId.Clear(); // при установке идентификатора в 0 - очищаем список свободных Id
             }
@@ -336,7 +336,7 @@ namespace Clients
             }
             else
             {
-                LastfreeId.SetLastId(Id + 1);   // меняем последний неиспользованный на Id + 1
+                LastfreeId.SetLastId(Id);   // меняем последний использованный на Id
             }
 
             Svlist.Add(Id, this);   // иначе, добавляем с Id, присвоенным данному экземпляру
