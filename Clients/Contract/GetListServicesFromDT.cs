@@ -99,13 +99,25 @@ namespace Clients
         {
             int count = dr.ItemArray.Length;
 
-            // ищем тип: строки "Акт" или "Договор"
-            var tc = TypeContract.None;
             string s;
-            int i = -1;
-            while (++i < count)
+            int CurrentIndex = 0;
+
+            // ищем тип договора: строки "Акт" или "Договор"
+            var tc = GetTypeContract(dr.ItemArray, ref CurrentIndex);
+
+            if (CurrentIndex >= count && tc == TypeContract.None)
+                return false;       // в этой строке нет искомых подстрок
+
+            // Ищем номер договора. Продолжаем со следующей колонки, если не найден возвращаем false
+            return FindNumbContract(dr.ItemArray, CurrentIndex, tc);
+        }
+
+        // ищем тип: строки "Акт" или "Договор"
+        private TypeContract GetTypeContract(object[] items, ref int CurrentIndex)
+        {
+            for (; CurrentIndex < items.Length; CurrentIndex++)
             {
-                s = dr.ItemArray[i].ToString();
+                string s = items[CurrentIndex].ToString();
 
                 if (s?.Length == 0)
                 {
@@ -114,51 +126,46 @@ namespace Clients
 
                 if (s.Contains("Акт"))
                 {
-                    tc = TypeContract.CWC;
-                    break;
+                    return TypeContract.CWC;
                 }
                 else
                 if (s.Contains("Договор"))
                 {
-                    tc = TypeContract.Contract;
-                    break;
+                    return TypeContract.Contract;
                 }
             }
 
-            if (i >= count && tc == TypeContract.None)
-                return false;       // в этой строке нет искомых подстрок
+            return TypeContract.None;
+        }
 
-            // Ищем номер договора. Продолжаем со следующей колонки
+        // Ищем номер договора. Продолжаем со следующей колонки
+        private bool FindNumbContract(object[] items, int CurrentIndex, TypeContract tc)
+        {
             bool isNumb = false;
-            while (i < count)
+            while (CurrentIndex < items.Length)
             {
-                s = dr.ItemArray[i++].ToString();
+                string s = items[CurrentIndex++].ToString();
 
                 if (s?.Length == 0)
-                {
                     continue;
-                }
 
                 if (isNumb)
                 {
                     if (!int.TryParse(s, out int n))
-                        return false;    //не удалось определить номер.   
+                        break;    //не удалось определить номер.   
 
                     contract.Numb = n;
-
                     contract.Type = tc;
 
                     return true;        // завершаем после получения номера.
                 }
                 else
                 if (s.Contains("№"))
-                {
                     isNumb = true;
-                }
             }
-
-            return false;   // Номер не найден
+            return false; // Номер договора не найден
         }
+
 
         // Извлекаем номера колонок списка услуг из строк такого вида:
         // "№" "Наименование работ" "Сумма в бел.р."
@@ -190,26 +197,20 @@ namespace Clients
         private bool GetContractListServices(int indexRow, int NameOfServiceCol, int SummCol)
         {
             Service sv;
-
             decimal OldSumm = contract.Summ;
-
             int countRows = dt.Rows.Count;
 
             // Функция, сбрасывающая результат чтения данных в случае ошибки.
-            bool ErrorLoadRow()
-            {
+            bool ErrorLoadRow() {
                 contract.ClearServices();
                 contract.Summ = OldSumm;    // Возвращаем старое значение суммы
                 return false;
             }
 
             if (indexRow >= countRows)
-            {
                 return ErrorLoadRow();
-            }
 
             contract.Summ = 0;
-
             while ((sv = GetContractService(contract.Client, dt.Rows[indexRow++], NameOfServiceCol, SummCol)) != null)
             {
                 contract.AddService(sv); // добавляем услугу в список услуг договора
@@ -219,7 +220,6 @@ namespace Clients
                     return ErrorLoadRow();
                 }
             }
-
             return true;
         }
 

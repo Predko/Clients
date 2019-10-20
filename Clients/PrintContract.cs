@@ -34,10 +34,6 @@ namespace Clients
             {
                 pd_Contract.PrintPage += PrintPage; // подключаем событие печати документа на принтер по умолчанию
             }
-            else
-            {
-                pd_Contract.PrintPage += PrintPageToJPG;    // печатаем(сохраняем) в файл jpg 
-            }
         }
 
         // Печать договора

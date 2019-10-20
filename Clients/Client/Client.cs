@@ -43,7 +43,7 @@ namespace Clients
                 if (_currentContract != value)
                 {
                     _currentContract = value;
-                    OnChangeCurrentContractInfo(EventArgs.Empty); // обрабатываем подключённые события после изменения текущего договора
+                    OnChangeCurrentContractInfo(EventArgs.Empty); // обрабатываем подключенные события после изменения текущего договора
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace Clients
         public string Address;              // Адрес
 
         // Статистические данные: Количество использования названий работ(NameWork),
-        // названия устройства(NameDevice) и дополнительной информации услуги(AddInfo)
+        // названий устройств(NameDevice) и дополнительной информации услуги(AddInfo)
         // Key - Id, Value - count
         public Dictionary<int, int> NWCounts = new Dictionary<int, int>();
         public Dictionary<int, int> NDCounts = new Dictionary<int, int>();
@@ -101,9 +101,9 @@ namespace Clients
 
         // Добавляет имя подразделения в список. Если такое есть - возвращает его id(индекс в списке).
         // Возвращает индекс подразделения в списке
-        public int AddSubdivision(string name, int id = -1)
+        public int AddSubdivision(string name, int id = FreeID.ClearListId)
         {
-            if(id != -1) // Добавляем подразделение с определённым id
+            if(id != FreeID.ClearListId) // Добавляем подразделение с определённым id
             {
                 freeIdSubdiv.SetLastId(id);
 
@@ -116,12 +116,12 @@ namespace Clients
             {
                 int index = Subdivisions.IndexOfValue(name);   // получаем индекс в списке для name
 
-                if (index == -1)
+                if (index == FreeID.IndexNotFound)
                 {
                     id = freeIdSubdiv.Id;
                     Subdivisions.Add(id, name);
 
-                    if (Subdivisions.IndexOfKey(id) == -1)
+                    if (Subdivisions.IndexOfKey(id) == FreeID.IndexNotFound)
                         return -1;      // добавление нового элемента не удалось
                 }
                 else

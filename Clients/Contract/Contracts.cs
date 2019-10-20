@@ -32,10 +32,10 @@ namespace Clients
 
         private static int lastnumb = 1;    // последний неиспользованный номер договора
 
-        public static int LastNumberContract => lastnumb;   // Возвращает последний неисползованный номер договора
-
         // Здесь хранится список Id(ключей из списка _contracts) всех договоров данного клиента
         private readonly List<int> contracts = new List<int>();
+
+        public static int LastNumberContract => lastnumb;   // Возвращает последний неисползованный номер договора
 
         public  int Count { get => contracts.Count;}
 
@@ -91,7 +91,7 @@ namespace Clients
 
             if (_contracts.Count == 0)
             {
-                LastUnusedKey.SetLastId(-1); // договоров в списке нет, очищаем список неиспользованных Id
+                LastUnusedKey.SetLastId(FreeID.ClearListId); // договоров в списке нет, очищаем список неиспользованных Id
             }
             else
             {
@@ -134,7 +134,7 @@ namespace Clients
 
             if (_contracts.Count == 0)
             {
-                LastUnusedKey.SetLastId(-1); // договоров в списке нет - очищаем список неиспользованных Id
+                LastUnusedKey.SetLastId(FreeID.ClearListId); // договоров в списке нет - очищаем список неиспользованных Id
             }
 
             contracts.Clear(); // удаляем список ключей договоров

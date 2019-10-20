@@ -1,9 +1,9 @@
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\bin\Debug\PrintGraphics.exe
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\bin\Debug\PrintGraphics.pdb
-C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.csprojResolveAssemblyReference.cache
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.PrintGraphics.resources
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.Properties.Resources.resources
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.csproj.GenerateResource.cache
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.csproj.CoreCompileInputs.cache
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.exe
 C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.pdb
+C:\Users\Admin\Documents\Visual Studio 2017\Projects\Clients\PrintGraphics\obj\Debug\PrintGraphics.csprojAssemblyReference.cache
