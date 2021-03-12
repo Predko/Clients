@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using Microsoft.Win32;
+
 
 namespace Clients
 {
@@ -14,6 +16,8 @@ namespace Clients
         public static readonly ListClients clients = new ListClients();    // Список всех клиентов
 
         public static string DefaultPathFile = @"H:\Документы"; // Путь к файлам договоров по умолчанию
+
+
 
         public Clients()
         {
@@ -31,7 +35,9 @@ namespace Clients
 
             InitTabControlClients();
 
+ 
             ResizeRedraw = true;    // Перерисовка при изменении размера
         }
+
     }
 }

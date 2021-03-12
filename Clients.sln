@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clients", "Clients\Clients.csproj", "{A16C44FA-2383-4F0D-8479-572FB6525BBD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintGraphics", "PrintGraphics\PrintGraphics.csproj", "{111581A5-325A-4D27-9C02-E3941E8F421C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintContract", "PrintForm\PrintContract.csproj", "{D40CA2B8-3892-451C-B848-3470109987C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{111581A5-325A-4D27-9C02-E3941E8F421C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{111581A5-325A-4D27-9C02-E3941E8F421C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{111581A5-325A-4D27-9C02-E3941E8F421C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D40CA2B8-3892-451C-B848-3470109987C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D40CA2B8-3892-451C-B848-3470109987C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D40CA2B8-3892-451C-B848-3470109987C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D40CA2B8-3892-451C-B848-3470109987C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

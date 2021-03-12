@@ -345,6 +345,7 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewContract.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataGridViewContract.RowHeadersWidth = 62;
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
             this.dataGridViewContract.RowsDefaultCellStyle = dataGridViewCellStyle2;
@@ -366,6 +367,7 @@
             // 
             // menuStripMain
             // 
+            this.menuStripMain.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStripMain.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemFile,
@@ -383,25 +385,25 @@
             this.toolStripMenuItemLoad,
             this.toolStripMenuItemExit});
             this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
-            this.toolStripMenuItemFile.Size = new System.Drawing.Size(65, 29);
+            this.toolStripMenuItemFile.Size = new System.Drawing.Size(69, 29);
             this.toolStripMenuItemFile.Text = "Файл";
             // 
             // toolStripMenuItemSaveXml
             // 
             this.toolStripMenuItemSaveXml.Name = "toolStripMenuItemSaveXml";
-            this.toolStripMenuItemSaveXml.Size = new System.Drawing.Size(216, 30);
+            this.toolStripMenuItemSaveXml.Size = new System.Drawing.Size(233, 34);
             this.toolStripMenuItemSaveXml.Text = "Сохранить xml";
             // 
             // toolStripMenuItemLoad
             // 
             this.toolStripMenuItemLoad.Name = "toolStripMenuItemLoad";
-            this.toolStripMenuItemLoad.Size = new System.Drawing.Size(216, 30);
+            this.toolStripMenuItemLoad.Size = new System.Drawing.Size(233, 34);
             this.toolStripMenuItemLoad.Text = "Загрузить xml";
             // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
-            this.toolStripMenuItemExit.Size = new System.Drawing.Size(216, 30);
+            this.toolStripMenuItemExit.Size = new System.Drawing.Size(233, 34);
             this.toolStripMenuItemExit.Text = "Выход";
             // 
             // импортЭкспортToolStripMenuItem
@@ -413,37 +415,37 @@
             this.toolStripSeparator1,
             this.LoadAllServicesToolStripMenuItem});
             this.импортЭкспортToolStripMenuItem.Name = "импортЭкспортToolStripMenuItem";
-            this.импортЭкспортToolStripMenuItem.Size = new System.Drawing.Size(89, 29);
+            this.импортЭкспортToolStripMenuItem.Size = new System.Drawing.Size(93, 29);
             this.импортЭкспортToolStripMenuItem.Text = "Импорт";
             // 
             // toolStripMenuItemLoadXmlAccess
             // 
             this.toolStripMenuItemLoadXmlAccess.Name = "toolStripMenuItemLoadXmlAccess";
-            this.toolStripMenuItemLoadXmlAccess.Size = new System.Drawing.Size(384, 30);
+            this.toolStripMenuItemLoadXmlAccess.Size = new System.Drawing.Size(401, 34);
             this.toolStripMenuItemLoadXmlAccess.Text = "Загрузить xml(Access)";
             // 
             // toolStripMenuItemRead_xls
             // 
             this.toolStripMenuItemRead_xls.Name = "toolStripMenuItemRead_xls";
-            this.toolStripMenuItemRead_xls.Size = new System.Drawing.Size(384, 30);
+            this.toolStripMenuItemRead_xls.Size = new System.Drawing.Size(401, 34);
             this.toolStripMenuItemRead_xls.Text = "Читать .xls через Interop";
             // 
             // toolStripMenuItemReadXlsOLEDB
             // 
             this.toolStripMenuItemReadXlsOLEDB.Name = "toolStripMenuItemReadXlsOLEDB";
-            this.toolStripMenuItemReadXlsOLEDB.Size = new System.Drawing.Size(384, 30);
+            this.toolStripMenuItemReadXlsOLEDB.Size = new System.Drawing.Size(401, 34);
             this.toolStripMenuItemReadXlsOLEDB.Text = "Читать .xls через OLEDB";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(381, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(398, 6);
             // 
             // LoadAllServicesToolStripMenuItem
             // 
             this.LoadAllServicesToolStripMenuItem.Enabled = false;
             this.LoadAllServicesToolStripMenuItem.Name = "LoadAllServicesToolStripMenuItem";
-            this.LoadAllServicesToolStripMenuItem.Size = new System.Drawing.Size(384, 30);
+            this.LoadAllServicesToolStripMenuItem.Size = new System.Drawing.Size(401, 34);
             this.LoadAllServicesToolStripMenuItem.Text = "Загрузить все услуги из файлов .xls";
             this.LoadAllServicesToolStripMenuItem.Click += new System.EventHandler(this.LoadAllServicesToolStripMenuItem_Click);
             // 
@@ -470,6 +472,7 @@
             this.ColumnNumberRow.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.ColumnNumberRow.Frozen = true;
             this.ColumnNumberRow.HeaderText = "№";
+            this.ColumnNumberRow.MinimumWidth = 8;
             this.ColumnNumberRow.Name = "ColumnNumberRow";
             this.ColumnNumberRow.ReadOnly = true;
             this.ColumnNumberRow.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -480,9 +483,10 @@
             this.ColumnNameWork.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ColumnNameWork.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
             this.ColumnNameWork.DropDownWidth = 100;
-            this.ColumnNameWork.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ColumnNameWork.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ColumnNameWork.HeaderText = "Оказанные услуги";
             this.ColumnNameWork.MaxDropDownItems = 5;
+            this.ColumnNameWork.MinimumWidth = 8;
             this.ColumnNameWork.Name = "ColumnNameWork";
             this.ColumnNameWork.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
@@ -494,6 +498,7 @@
             this.ColumnNameDevice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ColumnNameDevice.HeaderText = "Устройство";
             this.ColumnNameDevice.MaxDropDownItems = 5;
+            this.ColumnNameDevice.MinimumWidth = 8;
             this.ColumnNameDevice.Name = "ColumnNameDevice";
             this.ColumnNameDevice.Width = 126;
             // 
@@ -504,6 +509,7 @@
             this.ColumnAddInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ColumnAddInfo.HeaderText = "Доп. информация";
             this.ColumnAddInfo.MaxDropDownItems = 5;
+            this.ColumnAddInfo.MinimumWidth = 8;
             this.ColumnAddInfo.Name = "ColumnAddInfo";
             this.ColumnAddInfo.Width = 163;
             // 
@@ -515,6 +521,7 @@
             this.ColumnSubdivision.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ColumnSubdivision.HeaderText = "Подразделение";
             this.ColumnSubdivision.MaxDropDownItems = 10;
+            this.ColumnSubdivision.MinimumWidth = 8;
             this.ColumnSubdivision.Name = "ColumnSubdivision";
             this.ColumnSubdivision.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.ColumnSubdivision.Width = 159;
@@ -523,6 +530,7 @@
             // 
             this.ColumnServiceNumb.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.ColumnServiceNumb.HeaderText = "№ услуги";
+            this.ColumnServiceNumb.MinimumWidth = 8;
             this.ColumnServiceNumb.Name = "ColumnServiceNumb";
             this.ColumnServiceNumb.Width = 124;
             // 
@@ -530,14 +538,17 @@
             // 
             this.ColumnServiceSumm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.ColumnServiceSumm.HeaderText = "Сумма";
+            this.ColumnServiceSumm.MinimumWidth = 8;
             this.ColumnServiceSumm.Name = "ColumnServiceSumm";
             this.ColumnServiceSumm.Width = 101;
             // 
             // ColumnIdService
             // 
             this.ColumnIdService.HeaderText = "Id услуги";
+            this.ColumnIdService.MinimumWidth = 8;
             this.ColumnIdService.Name = "ColumnIdService";
             this.ColumnIdService.Visible = false;
+            this.ColumnIdService.Width = 150;
             // 
             // Clients
             // 
